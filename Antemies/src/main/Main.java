@@ -2,13 +2,28 @@ package main;
 
 import org.lwjgl.glfw.GLFW;
 
+import engine.graphics.Mesh;
+import engine.graphics.Renderer;
+import engine.graphics.Vertex;
 import engine.io.Input;
 import engine.io.Window;
+import engine.maths.Vector3f;
 
 public class Main implements Runnable {
 	public Thread game;
 	public Window window;
+	public Renderer renderer;
 	public final int WIDTH = 1280, HEIGHT = 760;
+	
+	public Mesh mesh = new Mesh(new Vertex[] {
+			new Vertex(new Vector3f(-0.5f, 0.5f, 0.0f)),
+			new Vertex(new Vector3f(0.5f, 0.5f, 0.0f)),
+			new Vertex(new Vector3f(0.5f, -0.5f, 0.0f)),
+			new Vertex(new Vector3f(-0.5f, -0.5f, 0.0f))
+	}, new int[] {
+			0, 1, 2,
+			0, 3, 2
+	});
 	
 	public void start() {
 		game = new Thread(this, "game");
@@ -16,10 +31,11 @@ public class Main implements Runnable {
 	}
 	
 	public void init() {
-		System.out.println("Initializing game!");
 		window = new Window(WIDTH, HEIGHT, "Game");
+		renderer = new Renderer();
 		window.setBackgroundColor(1.0f, 0.0f, 0.0f);
 		window.create();
+		mesh.create();
 	}
 	
 	public void run() {
@@ -33,13 +49,12 @@ public class Main implements Runnable {
 	}
 	
 	private void update() {
-//		System.out.println("Updating game!");
 		window.update();
-		if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) System.out.println("X: " + Input.getScrollX() + ", Y: " + Input.getScrollY());
+		if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) System.out.println("X: " + Input.getMouseX() + ", Y: " + Input.getMouseY());
 	}
 	
 	private void render() {
-//		System.out.println("Rendering game!");
+		renderer.renderMesh(mesh);
 		window.swapBuffers();
 	}
 	
