@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 
 import engine.graphics.Mesh;
 import engine.graphics.Renderer;
+import engine.graphics.Shader;
 import engine.graphics.Vertex;
 import engine.io.Input;
 import engine.io.Window;
@@ -13,6 +14,7 @@ public class Main implements Runnable {
 	public Thread game;
 	public Window window;
 	public Renderer renderer;
+	public Shader shader;
 	public final int WIDTH = 1280, HEIGHT = 760;
 	
 	public Mesh mesh = new Mesh(new Vertex[] {
@@ -32,10 +34,12 @@ public class Main implements Runnable {
 	
 	public void init() {
 		window = new Window(WIDTH, HEIGHT, "Game");
-		renderer = new Renderer();
+		shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
+		renderer = new Renderer(shader);
 		window.setBackgroundColor(1.0f, 0.0f, 0.0f);
 		window.create();
 		mesh.create();
+		shader.create();
 	}
 	
 	public void run() {
