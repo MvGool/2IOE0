@@ -1,10 +1,13 @@
 #version 330 core
 
-layout(location = 0) in vec3 position;
+in vec3 position;
+in vec3 color;
 
-out vec3 color;
+out vec3 passColor;
+
+uniform mat4 model;
 
 void main() {
-	gl_Position = vec4(position, 1.0);
-	color = vec3(position.x, position.y - position.x, position.y);
+	gl_Position = vec4(position, 1.0) * model;
+	passColor = color;
 }
