@@ -9,11 +9,11 @@ import engine.objects.GameObject;
 
 public class Renderer {
 	private Shader shader;
-	
+
 	public Renderer(Shader shader) {
 		this.shader = shader;
 	}
-	
+
 	public void renderMesh(GameObject object) {
 		GL30.glBindVertexArray(object.getMesh().getVAO());
 		GL30.glEnableVertexAttribArray(0);
