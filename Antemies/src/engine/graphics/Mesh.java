@@ -12,14 +12,18 @@ import org.lwjgl.opengl.GL15;
 public class Mesh {
 	private Vertex[] vertices;
 	private int[] indices;
-	private int vao, pbo, ibo, cbo;
+	private Material material;
+	private int vao, pbo, ibo, cbo, tbo;
 
-	public Mesh(Vertex[] vertices, int[] indices) {
+	public Mesh(Vertex[] vertices, int[] indices, Material material) {
 		this.vertices = vertices;
 		this.indices = indices;
+		this.material = material;
 	}
 
 	public void create() {
+		material.create();
+		
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
 
@@ -45,6 +49,16 @@ public class Mesh {
 
 		cbo = storeData(colorBuffer, 1, 3);
 
+		FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
+		float[] textureData = new float[vertices.length * 2];
+		for (int i = 0; i < vertices.length; i++) {
+			textureData[i * 2] = vertices[i].getTextureCoord().getX();
+			textureData[i * 2 + 1] = vertices[i].getTextureCoord().getY();
+		}
+		textureBuffer.put(textureData).flip();
+
+		tbo = storeData(textureBuffer, 2, 2);
+
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
 		indicesBuffer.put(indices).flip();
 
@@ -68,8 +82,15 @@ public class Mesh {
 		GL15.glDeleteBuffers(pbo);
 		GL15.glDeleteBuffers(cbo);
 		GL15.glDeleteBuffers(ibo);
+		GL15.glDeleteBuffers(tbo);
 
 		GL30.glDeleteVertexArrays(vao);
+		
+		material.destroy();
+	}
+
+	public Material getMaterial() {
+		return material;
 	}
 
 	public Vertex[] getVertices() {
@@ -94,5 +115,9 @@ public class Mesh {
 
 	public int getCBO() {
 		return cbo;
+	}
+
+	public int getTBO() {
+		return tbo;
 	}
 }

@@ -1,6 +1,7 @@
 package engine.graphics;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 
@@ -20,7 +21,8 @@ public class Renderer {
 		GL30.glEnableVertexAttribArray(1);
 		GL30.glEnableVertexAttribArray(2);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, object.getMesh().getIBO());
-		// texture
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL13.glBindTexture(GL11.GL_TEXTURE_2D, object.getMesh().getMaterial().getTextureID());
 		shader.bind();
 		shader.setUniform("model", Matrix4f.transform(object.getPosition(), object.getRotation(), object.getScalar()));
 		GL11.glDrawElements(GL11.GL_TRIANGLES, object.getMesh().getIndices().length, GL11.GL_UNSIGNED_INT, 0);
