@@ -5,14 +5,18 @@ import engine.maths.Vector3f;
 
 public class GameObject {
 	private Vector3f position, rotation, scalar;
-	private Mesh mesh;
+	private Mesh[] meshes;
 	private double temp;
 	
-	public GameObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh mesh) {
+	public GameObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
 		this.position = position;
 		this.rotation = rotation;
 		this.scalar = scalar;
-		this.mesh = mesh;
+		this.meshes = meshes;
+	}
+
+	public GameObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh mesh) {
+		this(position, rotation, scalar, new Mesh[]{mesh});
 	}
 	
 	public void update() {
@@ -20,6 +24,12 @@ public class GameObject {
 		position.setX((float) Math.sin(temp));
 		rotation.set((float) Math.sin(temp) * 360, (float) Math.sin(temp) * 360, (float) Math.sin(temp) * 360);
 		scalar.set((float) Math.sin(temp), (float) Math.sin(temp), (float) Math.sin(temp));
+	}
+
+	public void create(boolean initTextureBuffer) {
+		for (Mesh m : meshes) {
+			m.create(initTextureBuffer);
+		}
 	}
 
 	public Vector3f getPosition() {
@@ -34,7 +44,7 @@ public class GameObject {
 		return scalar;
 	}
 
-	public Mesh getMesh() {
-		return mesh;
+	public Mesh[] getMeshes() {
+		return meshes;
 	}
 }

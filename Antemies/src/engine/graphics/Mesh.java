@@ -21,9 +21,15 @@ public class Mesh {
 		this.material = material;
 	}
 
-	public void create() {
-		material.create();
-		
+	public Mesh(Vertex[] vertices, int[] indices) {
+		this(vertices, indices, null);
+	}
+
+	public void create(boolean initTextureBuffer) {
+		if (material != null) {
+			material.create();
+		}
+
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
 
@@ -49,15 +55,17 @@ public class Mesh {
 
 		cbo = storeData(colorBuffer, 1, 3);
 
-		FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
-		float[] textureData = new float[vertices.length * 2];
-		for (int i = 0; i < vertices.length; i++) {
-			textureData[i * 2] = vertices[i].getTextureCoord().getX();
-			textureData[i * 2 + 1] = vertices[i].getTextureCoord().getY();
-		}
-		textureBuffer.put(textureData).flip();
+		if (initTextureBuffer) {
+			FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
+			float[] textureData = new float[vertices.length * 2];
+			for (int i = 0; i < vertices.length; i++) {
+				textureData[i * 2] = vertices[i].getTextureCoord().getX();
+				textureData[i * 2 + 1] = vertices[i].getTextureCoord().getY();
+			}
+			textureBuffer.put(textureData).flip();
 
-		tbo = storeData(textureBuffer, 2, 2);
+			tbo = storeData(textureBuffer, 2, 2);
+		}
 
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
 		indicesBuffer.put(indices).flip();
@@ -85,8 +93,10 @@ public class Mesh {
 		GL15.glDeleteBuffers(tbo);
 
 		GL30.glDeleteVertexArrays(vao);
-		
-		material.destroy();
+
+		if (material != null) {
+			material.destroy();
+		}
 	}
 
 	public Material getMaterial() {
