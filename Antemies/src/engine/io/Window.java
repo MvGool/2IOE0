@@ -131,6 +131,10 @@ public class Window {
 			GLFW.glfwSetWindowMonitor(window, 0, windowPosX[0], windowPosY[0], width, height, 0);
 		}
 	}
+	
+	public void mouseState(boolean lock) {
+		GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, lock ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
+	}
 
 	public int getWidth() {
 		return width;

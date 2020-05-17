@@ -17,7 +17,7 @@ public class StaticModelLoader
 {
 
 	public static Mesh[] load(String src) throws Exception {
-		src = System.getProperty("user.dir") + "/Antemies/resources" + src;
+		src = System.getProperty("user.dir") + "/resources" + src;
 		AIScene scene = aiImportFile(src, aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals);
 		if (scene == null || scene.mRootNode() == null) {
 			throw new Exception(aiGetErrorString());
