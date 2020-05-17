@@ -23,9 +23,9 @@ public class Matrix4f {
 	public static Matrix4f translate(Vector3f translation) {
 		Matrix4f result = Matrix4f.identity();
 		
-		result.set(0, 3, translation.getX());
-		result.set(1, 3, translation.getY());
-		result.set(2, 3, translation.getZ());
+		result.set(3, 0, translation.getX());
+		result.set(3, 1, translation.getY());
+		result.set(3, 2, translation.getZ());
 		
 		return result;
 	}
@@ -72,6 +72,38 @@ public class Matrix4f {
 		Matrix4f rotationMatrix = Matrix4f.multiply(XRotationMatrix, Matrix4f.multiply(YRotationMatrix, ZRotationMatrix));
 		
 		result = Matrix4f.multiply(translationMatrix, Matrix4f.multiply(rotationMatrix, scalarMatrix));
+				
+		return result;
+	}
+	
+	public static Matrix4f projection(float fov, float aspectRatio, float near, float far) {
+		Matrix4f result = Matrix4f.identity();
+		
+		float tanFOV = (float) Math.atan(Math.toRadians(fov/2));
+		float range = far - near;
+		
+		result.set(0, 0, 1.0f / (aspectRatio * tanFOV));
+		result.set(1, 1, 1.0f / tanFOV);
+		result.set(2, 2, -(far + near) / range);
+		result.set(2, 3, -1.0f);
+		result.set(3, 2, -(2*far*near) / range);
+		
+		return result;
+	}
+	
+	public static Matrix4f view(Vector3f position, Vector3f rotation) {
+		Matrix4f result = Matrix4f.identity();
+		
+		Vector3f negativePos = new Vector3f(-position.getX(), -position.getY(), -position.getZ());
+		
+		Matrix4f translationMatrix = Matrix4f.translate(negativePos);
+		Matrix4f xRotationMatrix = Matrix4f.rotate(rotation.getX(), new Vector3f(1, 0, 0));
+		Matrix4f yRotationMatrix = Matrix4f.rotate(rotation.getY(), new Vector3f(0, 1, 0));
+		Matrix4f zRotationMatrix = Matrix4f.rotate(rotation.getZ(), new Vector3f(0, 0, 1));
+		
+		Matrix4f rotationMatrix = Matrix4f.multiply(zRotationMatrix, Matrix4f.multiply(yRotationMatrix, xRotationMatrix));
+		
+		result = Matrix4f.multiply(translationMatrix, rotationMatrix);
 				
 		return result;
 	}

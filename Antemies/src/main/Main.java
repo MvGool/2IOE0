@@ -6,6 +6,7 @@ import engine.io.Window;
 import engine.maths.Vector2f;
 import engine.maths.Vector3f;
 import engine.model_loaders.StaticModelLoader;
+import engine.objects.Camera;
 import engine.objects.GameObject;
 import org.lwjgl.glfw.GLFW;
 
@@ -31,6 +32,8 @@ public class Main implements Runnable {
 	public GameObject monkeyModel;
 	Mesh[] monkey;
 	
+	public Camera camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0));
+	
 	public void start() {
 		game = new Thread(this, "game");
 		game.start();
@@ -47,11 +50,11 @@ public class Main implements Runnable {
 
 		window = new Window(WIDTH, HEIGHT, "Game");
 		shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
-		renderer = new Renderer(shader);
+		renderer = new Renderer(window, shader);
 		window.setBackgroundColor(1.0f, 0.0f, 0.0f);
 		window.create();
 		object.create(true);
-		monkeyModel.create(false);
+//		monkeyModel.create(false);
 		shader.create();
 	}
 	
@@ -67,13 +70,13 @@ public class Main implements Runnable {
 	
 	private void update() {
 		window.update();
-		monkeyModel.update();
+//		monkeyModel.update();
 		if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) System.out.println("X: " + Input.getMouseX() + ", Y: " + Input.getMouseY());
 	}
 	
 	private void render() {
-		renderer.renderMesh(object);
-		renderer.renderMesh(monkeyModel);
+		renderer.renderMesh(object, camera);
+//		renderer.renderMesh(monkeyModel);
 		window.swapBuffers();
 	}
 	
