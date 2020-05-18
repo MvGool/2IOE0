@@ -42,7 +42,7 @@ public class Main implements Runnable {
 	public void init() {
 		monkey = null;
 		try {
-			monkey = StaticModelLoader.load("/models/monkey.obj");
+			monkey = StaticModelLoader.load("resources/models/monkey.obj", "/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -54,7 +54,7 @@ public class Main implements Runnable {
 		window.setBackgroundColor(1.0f, 0.0f, 0.0f);
 		window.create();
 		object.create(true);
-//		monkeyModel.create(false);
+		monkeyModel.create(true);
 		shader.create();
 	}
 	
@@ -70,13 +70,13 @@ public class Main implements Runnable {
 	
 	private void update() {
 		window.update();
-//		monkeyModel.update();
+		//monkeyModel.update();
 		if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_LEFT)) System.out.println("X: " + Input.getMouseX() + ", Y: " + Input.getMouseY());
 	}
 	
 	private void render() {
-		renderer.renderMesh(object, camera);
-//		renderer.renderMesh(monkeyModel);
+		//renderer.renderMesh(object, camera);
+		renderer.renderMesh(monkeyModel,camera);
 		window.swapBuffers();
 	}
 	
