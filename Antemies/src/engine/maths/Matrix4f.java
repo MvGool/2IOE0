@@ -124,11 +124,11 @@ public class Matrix4f {
 	}
 	
 	public float get(int x, int y) {
-		return elements[y * SIZE + x];
+		return elements[x * SIZE + y];
 	}
 	
 	public void set(int x, int y, float value) {
-		elements[y * SIZE + x] = value;
+		elements[x * SIZE + y] = value;
 	}
 	
 	public float[] getMatrix() {
