@@ -1,7 +1,5 @@
 package engine.maths;
 
-import java.util.HashMap;
-
 public class Spline {
 	private Vector3f[] controlPoints;
 	private int n;
@@ -22,6 +20,43 @@ public class Spline {
 	public CubicPolynomial[] createSpline() {
 		CubicPolynomial[] result = new CubicPolynomial[n - 1];
 
+		setConstraints();
+		VectorXf xConstants = GaussJordanElimination.solve(constraints, xValues);
+		VectorXf yConstants = GaussJordanElimination.solve(constraints, yValues);
+		VectorXf zConstants = GaussJordanElimination.solve(constraints, zValues);
+		
+		Vector3f[] aValues = new Vector3f[n];
+		Vector3f[] bValues = new Vector3f[n];
+		Vector3f[] cValues = new Vector3f[n];
+		Vector3f[] dValues = new Vector3f[n];
+		for (int i = 0; i < xConstants.getSize(); i++) {
+			Vector3f constant = new Vector3f(xConstants.get(i), yConstants.get(i), zConstants.get(i));
+			
+			switch(i % 4) {
+				case 0:
+					aValues[i / 4] = constant;
+					break;
+				case 1:
+					bValues[i / 4] = constant;
+					break;
+				case 2:
+					cValues[i / 4] = constant;
+					break;
+				case 3:
+					dValues[i / 4] = constant;
+					break;
+			}
+		}
+		
+		for (int i = 0; i < n - 1; i++) {
+			CubicPolynomial function = new CubicPolynomial(aValues[i], bValues[i], cValues[i], dValues[i]);
+			result[i] = function;
+		}
+		
+		return result;
+	}
+	
+	private void setConstraints() {
 		int row = 0;
 		for (int i = 0; i < n - 1; i++) {
 			if (i == 0) {
@@ -60,8 +95,6 @@ public class Spline {
 				row++;
 			}
 		}
-		
-		return result;
 	}
 	
 	private void setConstraint(int row, int splineNumber, int unknown, float value) {

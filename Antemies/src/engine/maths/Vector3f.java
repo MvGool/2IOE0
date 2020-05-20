@@ -59,4 +59,7 @@ public class Vector3f {
 		return result;
 	}
 	
+	public String toString() {
+		return "(" + x + ", " + y + ", " + z + ")";
+	}
 }

@@ -13,8 +13,7 @@ import org.lwjgl.assimp.*;
 
 import static org.lwjgl.assimp.Assimp.*;
 
-public class StaticModelLoader extends ModelLoader
-{
+public class StaticModelLoader extends ModelLoader {
 
 	public static Mesh[] load(String modelPath, String texturePath) throws Exception {
 		AIScene scene = aiImportFile(modelPath, aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals);
@@ -29,6 +28,7 @@ public class StaticModelLoader extends ModelLoader
 			Mesh mesh = processMesh(aiMesh, texturePath);
 			meshes[i] = mesh;
 		}
+		
 		return meshes;
 	}
 }

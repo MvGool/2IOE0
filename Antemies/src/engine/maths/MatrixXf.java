@@ -76,4 +76,21 @@ public class MatrixXf {
 	public int getSize() {
 		return size;
 	}
+	
+	public String toString() {
+		String matrix = "";
+		for (int i = 0; i < size; i++) {
+			matrix += "[";
+			for (int j = 0; j < size; j++) {
+				if (j == size - 1) {
+					matrix += this.get(i, j);
+				} else {
+					matrix += this.get(i, j) + " ";
+				}
+			}
+			matrix += "]\n";
+		}
+		
+		return matrix;
+	}
 }

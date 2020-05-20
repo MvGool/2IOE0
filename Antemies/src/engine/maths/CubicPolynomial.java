@@ -13,41 +13,13 @@ public class CubicPolynomial {
 		this.d = d;
 	}
 	
-	public Vector3f position(float t) {
+	public Vector3f computePosition(float t) {
 		Vector3f result = Vector3f.add(Vector3f.add(Vector3f.add(Vector3f.multiply(a, t * t * t), Vector3f.multiply(b, t * t)), Vector3f.multiply(c, t)), d);
 				
 		return result;
 	}
 	
-	public Vector3f getA() {
-		return a;
-	}
-
-	public void setA(Vector3f a) {
-		this.a = a;
-	}
-
-	public Vector3f getB() {
-		return b;
-	}
-
-	public void setB(Vector3f b) {
-		this.b = b;
-	}
-
-	public Vector3f getC() {
-		return c;
-	}
-
-	public void setC(Vector3f c) {
-		this.c = c;
-	}
-
-	public Vector3f getD() {
-		return d;
-	}
-
-	public void setD(Vector3f d) {
-		this.d = d;
+	public String toString() {
+		return a.toString() + "t^3 + " + b.toString() + "t^2 + " + c.toString() + "t + " + d.toString();
 	}
 }

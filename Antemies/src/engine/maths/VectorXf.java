@@ -20,4 +20,17 @@ public class VectorXf {
 	public int getSize() {
 		return size;
 	}
+	
+	public String toString() {
+		String values = "";
+		for (int i = 0; i < size; i++) {
+			if (i == size - 1) {
+				values += this.get(i);
+			} else {
+				values += this.get(i) + ", ";
+			}
+		}
+		
+		return "(" + values + ")";
+	}
 }
