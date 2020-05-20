@@ -78,5 +78,6 @@
 	<classpathentry kind="lib" path="libs/lwjglx-debug-1.0.0.jar"/>
 	<classpathentry kind="lib" path="libs/steamworks4j-1.8.0.jar"/>
 	<classpathentry kind="lib" path="libs/steamworks4j-server-1.8.0.jar"/>
+	<classpathentry kind="lib" path="libs/slick-util3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

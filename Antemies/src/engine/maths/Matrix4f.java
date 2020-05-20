@@ -134,4 +134,21 @@ public class Matrix4f {
 	public float[] getMatrix() {
 		return elements;
 	}
+	
+	public String toString() {
+		String matrix = "";
+		for (int i = 0; i < SIZE; i++) {
+			matrix += "[";
+			for (int j = 0; j < SIZE; j++) {
+				if (j == SIZE - 1) {
+					matrix += this.get(i, j);
+				} else {
+					matrix += this.get(i, j) + " ";
+				}
+			}
+			matrix += "]\n";
+		}
+		
+		return matrix;
+	}
 }
