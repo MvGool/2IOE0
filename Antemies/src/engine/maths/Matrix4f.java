@@ -1,5 +1,7 @@
 package engine.maths;
 
+import java.util.Arrays;
+
 public class Matrix4f {
 	public static final int SIZE = 4;
 	private float[] elements = new float[SIZE * SIZE];
@@ -23,9 +25,9 @@ public class Matrix4f {
 	public static Matrix4f translate(Vector3f translation) {
 		Matrix4f result = Matrix4f.identity();
 		
-		result.set(3, 0, translation.getX());
-		result.set(3, 1, translation.getY());
-		result.set(3, 2, translation.getZ());
+		result.set(0, 3, translation.getX());
+		result.set(1, 3, translation.getY());
+		result.set(2, 3, translation.getZ());
 		
 		return result;
 	}
@@ -123,15 +125,54 @@ public class Matrix4f {
 		return result;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(elements);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Matrix4f other = (Matrix4f) obj;
+		if (!Arrays.equals(elements, other.elements))
+			return false;
+		return true;
+	}
+
 	public float get(int x, int y) {
-		return elements[y * SIZE + x];
+		return elements[x * SIZE + y];
 	}
 	
 	public void set(int x, int y, float value) {
-		elements[y * SIZE + x] = value;
+		elements[x * SIZE + y] = value;
 	}
 	
 	public float[] getMatrix() {
 		return elements;
+	}
+	
+	public String toString() {
+		String matrix = "";
+		for (int i = 0; i < SIZE; i++) {
+			matrix += "[";
+			for (int j = 0; j < SIZE; j++) {
+				if (j == SIZE - 1) {
+					matrix += this.get(i, j);
+				} else {
+					matrix += this.get(i, j) + " ";
+				}
+			}
+			matrix += "]\n";
+		}
+		
+		return matrix;
 	}
 }

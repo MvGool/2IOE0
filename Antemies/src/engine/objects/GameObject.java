@@ -6,7 +6,6 @@ import engine.maths.Vector3f;
 public class GameObject {
 	private Vector3f position, rotation, scalar;
 	private Mesh[] meshes;
-	private double temp;
 	
 	public GameObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
 		this.position = position;
