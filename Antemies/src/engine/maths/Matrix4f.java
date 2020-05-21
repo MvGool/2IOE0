@@ -25,9 +25,9 @@ public class Matrix4f {
 	public static Matrix4f translate(Vector3f translation) {
 		Matrix4f result = Matrix4f.identity();
 		
-		result.set(3, 0, translation.getX());
-		result.set(3, 1, translation.getY());
-		result.set(3, 2, translation.getZ());
+		result.set(0, 3, translation.getX());
+		result.set(1, 3, translation.getY());
+		result.set(2, 3, translation.getZ());
 		
 		return result;
 	}
@@ -148,14 +148,31 @@ public class Matrix4f {
 	}
 
 	public float get(int x, int y) {
-		return elements[y * SIZE + x];
+		return elements[x * SIZE + y];
 	}
 	
 	public void set(int x, int y, float value) {
-		elements[y * SIZE + x] = value;
+		elements[x * SIZE + y] = value;
 	}
 	
 	public float[] getMatrix() {
 		return elements;
+	}
+	
+	public String toString() {
+		String matrix = "";
+		for (int i = 0; i < SIZE; i++) {
+			matrix += "[";
+			for (int j = 0; j < SIZE; j++) {
+				if (j == SIZE - 1) {
+					matrix += this.get(i, j);
+				} else {
+					matrix += this.get(i, j) + " ";
+				}
+			}
+			matrix += "]\n";
+		}
+		
+		return matrix;
 	}
 }

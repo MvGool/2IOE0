@@ -94,7 +94,7 @@ public class Main implements Runnable {
 	public void init() {
 		ant = null;
 		try {
-			ant = StaticModelLoader.load("/models/ant.obj");
+			ant = StaticModelLoader.load("resources/models/ant.obj", "/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
