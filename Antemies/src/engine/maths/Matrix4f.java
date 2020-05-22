@@ -2,6 +2,7 @@ package engine.maths;
 
 import java.util.Arrays;
 
+/* INDEX: (COLUMN, ROW) */
 public class Matrix4f {
 	public static final int SIZE = 4;
 	private float[] elements = new float[SIZE * SIZE];
@@ -12,9 +13,9 @@ public class Matrix4f {
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
 				if (i == j) {
-					result.set(i,  j, 1);
+					result.set(j,  i, 1);
 				} else {
-					result.set(i,  j, 0);
+					result.set(j,  i, 0);
 				}
 			}
 		}
@@ -163,9 +164,9 @@ public class Matrix4f {
 			matrix += "[";
 			for (int j = 0; j < SIZE; j++) {
 				if (j == SIZE - 1) {
-					matrix += this.get(i, j);
+					matrix += this.get(j, i);
 				} else {
-					matrix += this.get(i, j) + " ";
+					matrix += this.get(j, i) + " ";
 				}
 			}
 			matrix += "]\n";

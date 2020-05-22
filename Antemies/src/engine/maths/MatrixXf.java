@@ -1,5 +1,6 @@
 package engine.maths;
 
+/* INDEX: (ROW, COLUMN) */
 public class MatrixXf {
 	private int size;
 	private float[] elements;
