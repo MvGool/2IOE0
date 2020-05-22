@@ -43,6 +43,10 @@ public class Vector3f {
 		return vec1.getX() * vec2.getX() + vec1.getY() * vec2.getY() + vec1.getZ() * vec2.getZ();
 	}
 	
+	public Vector3f invert() {
+		return new Vector3f(-x, -y, -z);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

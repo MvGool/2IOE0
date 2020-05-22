@@ -25,9 +25,11 @@ public class StaticModelLoader extends ModelLoader {
 		Mesh[] meshes = new Mesh[scene.mNumMeshes()];
 		for (int i = 0; i < meshes.length; i++) {
 			AIMesh aiMesh = AIMesh.create(aiMeshes.get(i));
-			Mesh mesh = processMesh(aiMesh, texturePath);
+			Mesh mesh = processMesh(aiMesh, texturePath); // Error here
 			meshes[i] = mesh;
 		}
+		
+		System.out.println(meshes.length);
 
 		return meshes;
 	}

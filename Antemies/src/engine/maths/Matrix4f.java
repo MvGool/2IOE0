@@ -95,10 +95,8 @@ public class Matrix4f {
 	
 	public static Matrix4f view(Vector3f position, Vector3f rotation) {
 		Matrix4f result = Matrix4f.identity();
-		
-		Vector3f negativePos = new Vector3f(-position.getX(), -position.getY(), -position.getZ());
-		
-		Matrix4f translationMatrix = Matrix4f.translate(negativePos);
+				
+		Matrix4f translationMatrix = Matrix4f.translate(position.invert());
 		Matrix4f xRotationMatrix = Matrix4f.rotate(rotation.getX(), new Vector3f(1, 0, 0));
 		Matrix4f yRotationMatrix = Matrix4f.rotate(rotation.getY(), new Vector3f(0, 1, 0));
 		Matrix4f zRotationMatrix = Matrix4f.rotate(rotation.getZ(), new Vector3f(0, 0, 1));
