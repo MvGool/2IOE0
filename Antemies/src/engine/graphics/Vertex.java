@@ -15,12 +15,6 @@ public class Vertex {
 	public Vertex(float x, float y, float z) {
 		this.position = new Vector3f(x, y ,z);
 	}
-
-	public Vertex(Vector3f position, Vector2f textureCoord) {
-		this.position = position;
-		this.color = new Vector3f(1, 1, 1);
-		this.textureCoord = textureCoord;
-	}
 	
 	public Vector3f getPostion() {
 		return position;

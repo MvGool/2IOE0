@@ -93,12 +93,12 @@ public class Main implements Runnable {
 	
 	public void init() {
 		ant = null;
-		try {
-			ant = StaticModelLoader.load("resources/models/ant.obj", "/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		antModel = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
+//		try {
+//			ant = StaticModelLoader.load("resources/models/ant.obj", "/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg");
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//		}
+//		antModel = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
 
 		window = new Window(WIDTH, HEIGHT, "Game");
 		shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
@@ -106,10 +106,10 @@ public class Main implements Runnable {
 		window.setBackgroundColor(1.0f, 0.0f, 0.0f);
 		window.create();
 		object.create(true);
-		antModel.create(false);
-		for (int i = 0; i < objects.length; i++) {
-			objects[i] = new GameObject(new Vector3f((float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25)), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
-		}
+//		antModel.create(false);
+//		for (int i = 0; i < objects.length; i++) {
+//			objects[i] = new GameObject(new Vector3f((float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25)), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
+//		}
 		
 		shader.create();
 	}
@@ -127,13 +127,13 @@ public class Main implements Runnable {
 	
 	private void update() {
 		window.update();
-		camera.update(object);
+		camera.update();
 	}
 	
 	private void render() {
-		for (int i = 0; i < objects.length; i++) {
-			renderer.renderMesh(objects[i], camera);
-		}
+//		for (int i = 0; i < objects.length; i++) {
+//			renderer.renderMesh(objects[i], camera);
+//		}
 		renderer.renderMesh(object, camera);
 //		renderer.renderMesh(antModel, camera);
 		window.swapBuffers();
