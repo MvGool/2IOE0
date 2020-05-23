@@ -33,15 +33,18 @@ public class ModelLoader
 
 	static List<Vertex> processVertices(AIMesh aiMesh) {
 		AIVector3D.Buffer aiVertices = aiMesh.mVertices();
+		AIVector3D.Buffer aiNormals = aiMesh.mNormals();
 		AIVector3D.Buffer aiTextCoords = aiMesh.mTextureCoords(0);
 		List<Vertex> vertices = new ArrayList<>();
 		while (aiVertices.remaining() > 0 && aiTextCoords.remaining() > 0) {
 			AIVector3D aiVertex = aiVertices.get();
+			AIVector3D aiNormal = aiNormals.get();
 			AIVector3D textCoords = aiTextCoords.get();
 			vertices.add(new Vertex(
-							new Vector3f(aiVertex.x(), aiVertex.y(), aiVertex.z()),
-							new Vector2f(textCoords.x(), 1 - textCoords.y())
-					)
+					new Vector3f(aiVertex.x(), aiVertex.y(), aiVertex.z()),
+					new Vector3f(aiNormal.x(), aiNormal.y(), aiNormal.z()),
+					new Vector2f(textCoords.x(), 1 - textCoords.y())
+				)
 			);
 		}
 		return vertices;

@@ -16,11 +16,11 @@ public class Camera {
 		this.rotation = rotation;
 	}
 	
-	public void update(String type, GameObject object) {
+	public void update(String type) {
 		switch(type) {
 		case "firstperson": firstPerson();
 		break;
-		case "thirdperson": thirdPerson(object);
+		case "thirdperson": thirdPerson(null);
 		break;
 		case "topdown": topDown();
 		break;
@@ -91,7 +91,7 @@ public class Camera {
 		
 		oldScroll = newScroll;
 				
-		newZoom += dScroll;
+		newZoom -= dScroll;
 		newZoom = Math.max(1, Math.min(newZoom, 100));
 
 		float dZoom = (float) (newZoom - currentZoom);

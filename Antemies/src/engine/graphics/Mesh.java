@@ -103,6 +103,10 @@ public class Mesh {
 		return material;
 	}
 
+	public void setMaterial(Material material) {
+		this.material = material;
+	}
+
 	public Vertex[] getVertices() {
 		return vertices;
 	}
