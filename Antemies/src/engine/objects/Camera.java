@@ -1,21 +1,33 @@
 package engine.objects;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjglx.input.Mouse;
 
 import engine.io.Input;
 import engine.maths.Vector3f;
 
 public class Camera {
 	private Vector3f position, rotation;
-	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, distance = 2.0f, angle = 0, horizontalAngle = 0, verticalAngle = 0;
-	private double oldMouseX, oldMouseY = 0, newMouseX, newMouseY;
+	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, angle = 0, horizontalAngle = 0, verticalAngle = 0;
+	private double oldMouseX, oldMouseY, oldScroll, currentZoom = 0, newMouseX, newMouseY, newScroll, newZoom;
 
 	public Camera(Vector3f position, Vector3f rotation) {
 		this.position = position;
 		this.rotation = rotation;
 	}
 	
-	public void update() {
+	public void update(String type, GameObject object) {
+		switch(type) {
+		case "firstperson": firstPerson();
+		break;
+		case "thirdperson": thirdPerson(object);
+		break;
+		case "topdown": topDown();
+		break;
+		}
+	}
+	
+	private void firstPerson() {
 		newMouseX = Input.getMouseX();
 		newMouseY = Input.getMouseY();
 		
@@ -38,7 +50,7 @@ public class Camera {
 		rotation = Vector3f.add(rotation, new Vector3f(-dy * mouseSensitivity, -dx * mouseSensitivity, 0));
 	}
 	
-	public void update(GameObject object) {
+	private void thirdPerson(GameObject object) {
 		newMouseX = Input.getMouseX();
 		newMouseY = Input.getMouseY();
 		
@@ -70,6 +82,30 @@ public class Camera {
 		position.set(object.getPosition().getX() + xOffset, object.getPosition().getY() - verticalDist, object.getPosition().getZ() + zOffset);
 		
 		rotation.set(verticalAngle, -horizontalAngle, 0);
+	}
+	
+	private void topDown() {	
+		newScroll = Input.getScrollY();
+		
+		float dScroll = (float) (newScroll - oldScroll);
+		
+		oldScroll = newScroll;
+				
+		newZoom += dScroll;
+		newZoom = Math.max(1, Math.min(newZoom, 100));
+
+		float dZoom = (float) (newZoom - currentZoom);
+		
+		currentZoom += dZoom/scrollSpeed;
+		
+		position = Vector3f.add(position, new Vector3f(0, dZoom/scrollSpeed, 0));		
+		
+		if (Input.isKeyDown(GLFW.GLFW_KEY_A)) position = Vector3f.add(position, new Vector3f(-moveSpeed, 0, 0));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_D)) position = Vector3f.add(position, new Vector3f(moveSpeed, 0, 0));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_W)) position = Vector3f.add(position, new Vector3f(0, 0, -moveSpeed));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_S)) position = Vector3f.add(position, new Vector3f(0, 0, moveSpeed));
+		
+		rotation.set(-90, 0, 0);
 	}
 
 	public Vector3f getPosition() {

@@ -120,14 +120,18 @@ public class Main implements Runnable {
 			update();
 			render();
 			if (Input.isKeyDown(GLFW.GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
-			if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) window.mouseState(true);
+			if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) { 
+				window.mouseState(true);
+			} else {
+				window.mouseState(false);
+			}
 		}
 		close();
 	}
 	
 	private void update() {
 		window.update();
-		camera.update();
+		camera.update("topdown", object);
 	}
 	
 	private void render() {
