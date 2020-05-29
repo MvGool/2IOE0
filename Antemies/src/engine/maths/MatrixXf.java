@@ -78,6 +78,7 @@ public class MatrixXf {
 		return size;
 	}
 
+	@Override
 	public String toString() {
 		String matrix = "";
 		for (int i = 0; i < size; i++) {

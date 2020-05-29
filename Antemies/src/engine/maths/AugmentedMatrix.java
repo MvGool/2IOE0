@@ -40,6 +40,7 @@ public class AugmentedMatrix {
 		return columnCount;
 	}
 	
+	@Override
 	public String toString() {
 		String matrix = "";
 		for (int i = 0; i < rowCount; i++) {

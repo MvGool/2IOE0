@@ -29,7 +29,7 @@ public class World {
 		cubeMesh = null;
 		cube = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), cubeMesh);
 		ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
-		ant.moveTo(new Vector3f(1, 1, 1));
+		ant.moveTo(grid, new Tile(3, 2));
 		
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));

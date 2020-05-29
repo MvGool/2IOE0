@@ -3,6 +3,7 @@ package engine.objects;
 import engine.graphics.Mesh;
 import engine.graphics.Vertex;
 import engine.maths.*;
+import main.Astar;
 
 public class AntObject extends GameObject {
 	private static final Mesh ANT_MESH = new Mesh(new Vertex[] {new Vertex(0, 0, 1), new Vertex(1, 0, 1), new Vertex(1, 1, 1),new Vertex(0, 1, 1)}, new int[] {0, 1, 2, 0, 3, 2});
@@ -16,11 +17,23 @@ public class AntObject extends GameObject {
 		super(position, rotation, scalar, ANT_MESH);
 	}
 	
-	public void moveTo(Vector3f newPosition) {
-		// A* Algorithm with input: (this.getPosition, newPosition)
+	public void moveTo(Grid2D grid, Tile newPosition) {
+		if (grid.getTile(newPosition.getX(), newPosition.getY()).isObstacle()) {
+			System.out.println("New position is an obstacle");
+			return;
+		}
+		
+		Grid2D astarGrid = new Grid2D(grid);
+		Astar astar = new Astar(astarGrid, new Tile(2, 3), new Tile(8, 6)); // (this.getTile(), newPosition)
+		Tile[] shortestPath = astar.run();
+		if (shortestPath.length == 0) {
+			System.out.println("No path exists");
+			return;
+		}
+		astar.displaySolution();
 		
 		// Choose control points for the spline
-		Vector3f[] controlPoints = new Vector3f[] {this.getPosition(), new Vector3f(5, 1, 2), new Vector3f(-2, 1, 8)};
+		Vector3f[] controlPoints = chooseControlPoints(shortestPath);
 		
 		Spline spline = new Spline(controlPoints);
 		move = true;
@@ -28,6 +41,12 @@ public class AntObject extends GameObject {
 		currentFunction = functions[0];
 		functionNumber = 0;
 		t = 0;
+	}
+	
+	private Vector3f[] chooseControlPoints(Tile[] shortestPath) {
+		Vector3f[] controlPoints = new Vector3f[] {this.getPosition(), new Vector3f(5, 1, 2), new Vector3f(-2, 1, 8), new Vector3f(-5, 1, -3)};
+		
+		return controlPoints;
 	}
 	
 	public void update() {

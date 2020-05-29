@@ -5,6 +5,7 @@ import engine.maths.Vector3f;
 
 public class GameObject {
 	private Vector3f position, rotation, scalar;
+	private Tile tile;
 	private Mesh[] meshes;
 	
 	public GameObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
@@ -50,6 +51,10 @@ public class GameObject {
 	
 	public void setScalar(Vector3f scalar) {
 		this.scalar = scalar;
+	}
+	
+	public Tile getTile() {
+		return tile;
 	}
 
 	public Mesh[] getMeshes() {
