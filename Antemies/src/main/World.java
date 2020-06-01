@@ -4,6 +4,7 @@ import engine.graphics.Material;
 import engine.graphics.Mesh;
 import engine.graphics.Renderer;
 import engine.graphics.Vertex;
+import engine.maths.Matrix4f;
 import engine.maths.Vector2f;
 import engine.maths.Vector3f;
 import engine.model_loaders.StaticModelLoader;
@@ -29,8 +30,10 @@ public class World {
 		cubeMesh = null;
 		cube = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), cubeMesh);
 		ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
-		ant.moveTo(grid, new Tile(3, 2));
-		
+		ant.moveTo(grid, new Vector3f(1, 1, 1));
+		System.out.println(Matrix4f.translate(new Vector3f(1,2,3)).toString());
+		System.out.println(Matrix4f.scale(new Vector3f(4, 3, 5)).toString());
+		System.out.println(Matrix4f.transform(new Vector3f(1,2,3), new Vector3f(0,0,0), new Vector3f(4, 3, 5)).toString());
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));
 		gridObject = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), gridMesh);
