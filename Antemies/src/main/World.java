@@ -14,7 +14,7 @@ public class World {
 	private Camera camera;
 	private Grid2D grid = new Grid2D(100);
 	
-	private Mesh cubeMesh;	
+	private Mesh[] antMesh;	
 	private GameObject cube;
 	private Mesh gridMesh;	
 	private GameObject gridObject;
@@ -26,9 +26,17 @@ public class World {
 	}
 	
 	public void load() {
-		cubeMesh = null;
-		cube = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), cubeMesh);
-		ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
+//		cubeMesh = null;
+//		cube = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), cubeMesh);
+		
+		try {
+			antMesh = StaticModelLoader.load("resources/models/monkey.obj", "/textures/ant2Texture.jpg");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
+		ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
 		ant.moveTo(grid, new Tile(3, 2));
 		
 		gridMesh = grid.getMesh();

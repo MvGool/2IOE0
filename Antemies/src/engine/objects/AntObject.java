@@ -1,20 +1,23 @@
 package engine.objects;
 
+import java.awt.List;
+
 import engine.graphics.Mesh;
 import engine.graphics.Vertex;
+import engine.model_loaders.StaticModelLoader;
 import engine.maths.*;
 import main.Astar;
 
 public class AntObject extends GameObject {
-	private static final Mesh ANT_MESH = new Mesh(new Vertex[] {new Vertex(0, 0, 1), new Vertex(1, 0, 1), new Vertex(1, 1, 1),new Vertex(0, 1, 1)}, new int[] {0, 1, 2, 0, 3, 2});
+	private static final Mesh[] ANT_MESH = null;
 	private boolean move = false;
 	private CubicPolynomial[] functions;
 	private CubicPolynomial currentFunction;
 	private int functionNumber;
 	private float t;
 	
-	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar) {
-		super(position, rotation, scalar, ANT_MESH);
+	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
+		super(position, rotation, scalar, meshes);
 	}
 	
 	public void moveTo(Grid2D grid, Tile newPosition) {

@@ -1,5 +1,6 @@
 package engine.graphics;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -40,7 +41,7 @@ public class Mesh {
 			positionData[i * 3 + 1] = vertices[i].getPostion().getY();
 			positionData[i * 3 + 2] = vertices[i].getPostion().getZ();
 		}
-		positionBuffer.put(positionData).flip();
+		((Buffer)positionBuffer.put(positionData)).flip();
 
 		pbo = storeData(positionBuffer, 0, 3);
 
@@ -62,13 +63,13 @@ public class Mesh {
 				textureData[i * 2] = vertices[i].getTextureCoord().getX();
 				textureData[i * 2 + 1] = vertices[i].getTextureCoord().getY();
 			}
-			textureBuffer.put(textureData).flip();
+			((Buffer)textureBuffer.put(textureData)).flip();
 
 			tbo = storeData(textureBuffer, 2, 2);
 		}
 
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-		indicesBuffer.put(indices).flip();
+		((Buffer)indicesBuffer.put(indices)).flip();
 
 		ibo = GL15.glGenBuffers();
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);

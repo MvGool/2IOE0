@@ -1,5 +1,6 @@
 package engine.graphics;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.opengl.GL11;
@@ -83,7 +84,7 @@ public class Shader {
 	
 	public void setUniform(String name, Matrix4f value) {
 		FloatBuffer matrix = MemoryUtil.memAllocFloat(Matrix4f.SIZE * Matrix4f.SIZE);
-		matrix.put(value.getMatrix()).flip();
+		((Buffer)matrix.put(value.getMatrix())).flip();
 		GL20.glUniformMatrix4fv(getUniformLocation(name), true, matrix);
 	}
 	
