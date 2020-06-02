@@ -1,6 +1,7 @@
 package engine.objects;
 
 import java.awt.List;
+import java.util.ArrayList;
 
 import engine.graphics.Mesh;
 import engine.graphics.Vertex;
@@ -75,7 +76,7 @@ public class AntObject extends GameObject {
 	}
 	
 	private Vector3f[] chooseControlPoints(Tile[] shortestPath) {
-		List<Vector3f> controlPointsList = new ArrayList<>();
+		ArrayList<Vector3f> controlPointsList = new ArrayList<>();
 		
 		if (shortestPath.length == 1) {
 			controlPointsList.add(this.getPosition());

@@ -38,7 +38,7 @@ public class World {
 		}
 		
 		ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
-		ant.moveTo(grid, new Tile(3, 2));
+		ant.moveTo(grid, new Vector3f(3, 1, 2));
 		
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));
