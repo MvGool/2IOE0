@@ -19,6 +19,7 @@ public class CubicPolynomial {
 		return result;
 	}
 	
+	@Override
 	public String toString() {
 		return a.toString() + "t^3 + " + b.toString() + "t^2 + " + c.toString() + "t + " + d.toString();
 	}

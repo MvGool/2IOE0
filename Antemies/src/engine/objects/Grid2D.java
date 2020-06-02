@@ -10,14 +10,28 @@ import engine.maths.Vector3f;
 
 public class Grid2D {
 	private int size;
-	private Tile[][] grid = new Tile[size][size];
+	private Tile[][] grid;
 	
 	public Grid2D(int size) {
 		this.size = size;
+		grid = new Tile[size][size];
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				grid[i][j] = new Tile(i, j);
+			}
+		}
 	}
 	
 	public Tile getTile(int x, int y) {
 		return grid[x][y];
+	}
+	
+	public void setTile(Tile tile) {
+		grid[tile.getX()][tile.getY()] = tile;
+	}
+	
+	public void addObstacle(Tile tile) {
+		grid[tile.getX()][tile.getY()].setObstacle(true);
 	}
 	
 	public Mesh getMesh() {
@@ -44,5 +58,21 @@ public class Grid2D {
 		Vertex[] verticesArray = new Vertex[vertices.size()];
 		return new Mesh(vertices.toArray(verticesArray),
 				indices.stream().mapToInt(i->i).toArray());
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	// Creates a copy of otherGrid
+	public Grid2D(Grid2D otherGrid) {
+		int size = otherGrid.getSize();
+		this.size = size;
+		grid = new Tile[this.size][this.size];
+		for (int i = 0; i < this.size; i++) {
+			for (int j = 0; j < this.size; j++) {
+				grid[i][j] = new Tile(otherGrid.getTile(i, j).getX(), otherGrid.getTile(i, j).getY());
+			}
+		}
 	}
 }

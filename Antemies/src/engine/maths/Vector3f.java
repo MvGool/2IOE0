@@ -1,8 +1,11 @@
 package engine.maths;
 
+import engine.objects.Tile;
+
 public class Vector3f {
 	private float x, y, z;
-
+	private Tile tile;
+	
 	public Vector3f(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
@@ -99,6 +102,11 @@ public class Vector3f {
 		this.z = z;
 	}
 
+	public Tile getTile() {
+		return tile;
+	}
+	
+	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ", " + z + ")";
 	}
