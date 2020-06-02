@@ -177,11 +177,8 @@ public class Astar {
             System.out.println("Path: ");
             Tile current = goal;
             System.out.println(current);
-            //List<Tile> solution = new ArrayList<>();
-            //solution.add(grid.getTile(current.getX(), current.getY()));
             while (current.getParent() != null) {
                 System.out.println(" ->" + current.getParent());
-                //solution.add(grid.getTile(current.getParent().getX(), current.getParent().getY()));
                 current = current.getParent();
             }
 
