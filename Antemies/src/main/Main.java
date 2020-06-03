@@ -20,7 +20,7 @@ public class Main implements Runnable {
 	public World world;
 	public final int WIDTH = 1280, HEIGHT = 760;
 		
-	public Camera camera = new Camera(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0));
+	public Camera camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0));
 	
 	public void start() {
 		game = new Thread(this, "game");

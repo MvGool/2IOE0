@@ -16,6 +16,7 @@ public class AntObject extends GameObject {
 	private CubicPolynomial currentFunction;
 	private int functionNumber;
 	private float t;
+	private float dt = 0.01f;
 	private Vector3f newPosition;
 	
 	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
@@ -44,7 +45,6 @@ public class AntObject extends GameObject {
 				System.out.println("No path exists");
 				return;
 			}
-			astar.displaySolution();
 		}
 		
 		Vector3f[] controlPoints = chooseControlPoints(shortestPath);
@@ -57,20 +57,24 @@ public class AntObject extends GameObject {
 	}
 	
 	public void update() {
+		float angle;
+		
 		if (move && t > 1) {
 			if (functionNumber + 1 < functions.length) {
 				functionNumber += 1;
 				currentFunction = functions[functionNumber];
 				t = 0;
 				setPosition(currentFunction.computePosition(t));
-				setRotation(new Vector3f(90*t, 90*t, 90*t));
+				angle = getAngle();
+				setRotation(new Vector3f(this.getRotation().getX(), angle, this.getRotation().getZ()));
 				increaseT();
 			} else {
 				move = false;
 			}
 		} else if (move && t <= 1) {
 			setPosition(currentFunction.computePosition(t));
-			setRotation(new Vector3f(90 * t, 90*t, 90*t));
+			angle = getAngle();
+			setRotation(new Vector3f(this.getRotation().getX(), angle, this.getRotation().getZ()));
 			increaseT();
 		}
 	}
@@ -131,7 +135,19 @@ public class AntObject extends GameObject {
 		return direction;
 	}
 	
+	private float getAngle() {
+		Vector3f current = currentFunction.computePosition(t);
+		Vector3f next = currentFunction.computePosition(t + dt);
+		
+		float angle = (float) Math.toDegrees(Math.atan((next.getX() - current.getX()) / (next.getZ() - current.getZ())));
+		/*if (angle < 0) {
+	        angle += 360;
+	    }*/
+		
+		return this.getRotation().getZ() + angle;
+	}
+	
 	private void increaseT() {
-		t += 0.01;
+		t += dt;
 	}
 }

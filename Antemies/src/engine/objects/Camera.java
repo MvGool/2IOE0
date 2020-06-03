@@ -8,7 +8,7 @@ import engine.maths.Vector3f;
 
 public class Camera {
 	private Vector3f position, rotation;
-	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, angle = 0, horizontalAngle = 0, verticalAngle = 0;
+	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, angle = 0, horizontalAngle = 0, verticalAngle = 0, zoomLowerBound = 1, zoomUpperBound = 10;
 	private double oldMouseX, oldMouseY, oldScroll, currentZoom = 10, newMouseX, newMouseY, newScroll, newZoom = 10;
 
 	public Camera(Vector3f position, Vector3f rotation) {
@@ -98,14 +98,18 @@ public class Camera {
 		
 		currentZoom += dZoom/scrollSpeed;
 		
-		position = Vector3f.add(position, new Vector3f(0, dZoom/scrollSpeed, 0));		
+		if (position.getZ() + dZoom/scrollSpeed >= zoomLowerBound && position.getZ() + dZoom/scrollSpeed <= zoomUpperBound) {
+			position = Vector3f.add(position, new Vector3f(0, 0, dZoom/scrollSpeed));
+		}
 		
 		if (Input.isKeyDown(GLFW.GLFW_KEY_A)) position = Vector3f.add(position, new Vector3f(-moveSpeed, 0, 0));
 		if (Input.isKeyDown(GLFW.GLFW_KEY_D)) position = Vector3f.add(position, new Vector3f(moveSpeed, 0, 0));
-		if (Input.isKeyDown(GLFW.GLFW_KEY_W)) position = Vector3f.add(position, new Vector3f(0, 0, -moveSpeed));
-		if (Input.isKeyDown(GLFW.GLFW_KEY_S)) position = Vector3f.add(position, new Vector3f(0, 0, moveSpeed));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_W)) position = Vector3f.add(position, new Vector3f(0, moveSpeed, 0));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_S)) position = Vector3f.add(position, new Vector3f(0, -moveSpeed, 0));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_SPACE) && position.getZ() + moveSpeed <= zoomUpperBound) position = Vector3f.add(position, new Vector3f(0, 0, moveSpeed));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) && position.getZ() + moveSpeed >= zoomLowerBound) position = Vector3f.add(position, new Vector3f(0, 0, -moveSpeed));
 		
-		rotation.set(-90, 0, 0);
+		rotation.set(90, 0, 0);
 	}
 
 	public Vector3f getPosition() {

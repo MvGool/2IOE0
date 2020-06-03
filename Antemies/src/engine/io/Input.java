@@ -10,6 +10,7 @@ public class Input {
 	private static boolean[] keys = new boolean[GLFW.GLFW_KEY_LAST];
 	private static boolean[] buttons = new boolean[GLFW.GLFW_MOUSE_BUTTON_LAST];
 	private static double mouseX, mouseY;
+	private static double clickX, clickY;
 	private static double scrollX, scrollY;
 
 	private GLFWKeyCallback keyboard;
@@ -33,6 +34,10 @@ public class Input {
 		
 		mouseButtons = new GLFWMouseButtonCallback() {
 			public void invoke(long window, int button, int action, int mods) {
+				if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS) {
+					clickX = mouseX;
+					clickY = mouseY;
+				}
 				buttons[button] = (action != GLFW.GLFW_RELEASE);
 			}
 		};
@@ -68,6 +73,14 @@ public class Input {
 		return mouseY;
 	}
 	
+	public static double getClickX() {
+		return clickX;
+	}
+
+	public static double getClickY() {
+		return clickY;
+	}
+	
 	public static double getScrollX() {
 		return scrollX;
 	}
@@ -90,6 +103,5 @@ public class Input {
 
 	public GLFWScrollCallback getMouseScrollCallback() {
 		return mouseScroll;
-	}
-	
+	}	
 }
