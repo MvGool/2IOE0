@@ -8,8 +8,9 @@ import engine.maths.Vector3f;
 
 public class Camera {
 	private Vector3f position, rotation;
-	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, angle = 0, horizontalAngle = 0, verticalAngle = 0, zoomLowerBound = 1, zoomUpperBound = 10;
-	private double oldMouseX, oldMouseY, oldScroll, currentZoom = 10, newMouseX, newMouseY, newScroll, newZoom = 10;
+	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, angle = 0, 
+			horizontalAngle = 0, verticalAngle = 0, zoomLowerBound = 1, zoomUpperBound = 20;
+	private double oldMouseX, oldMouseY, oldScroll, currentZoom = 0, newMouseX, newMouseY, newScroll, newZoom;
 
 	public Camera(Vector3f position, Vector3f rotation) {
 		this.position = position;
@@ -92,7 +93,7 @@ public class Camera {
 		oldScroll = newScroll;
 				
 		newZoom -= dScroll;
-		newZoom = Math.max(1, Math.min(newZoom, 100));
+		newZoom = Math.max(zoomLowerBound, Math.min(newZoom, zoomUpperBound));
 
 		float dZoom = (float) (newZoom - currentZoom);
 		

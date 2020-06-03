@@ -38,7 +38,7 @@ public class AntObject extends GameObject {
 			shortestPath = new Tile[] {newTile};
 		} else {
 			Grid2D astarGrid = new Grid2D(grid);
-			astarGrid.addObstacle(new Tile(4, 3));
+			astarGrid.addObstacle(4, 3);
 			Astar astar = new Astar(astarGrid, new Tile(2, 3), newTile); // (this.getTile(), newTile)
 			shortestPath = astar.run();
 			if (shortestPath.length == 0) {

@@ -1,37 +1,57 @@
 package engine.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import engine.graphics.Mesh;
 import engine.graphics.Vertex;
 import engine.maths.Vector2f;
 import engine.maths.Vector3f;
+import engine.maths.Coordinate;
 
 public class Grid2D {
 	private int size;
-	private Tile[][] grid;
+	private Map<Coordinate, Tile> grid = new HashMap<>();
 	
 	public Grid2D(int size) {
 		this.size = size;
-		grid = new Tile[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				grid[i][j] = new Tile(i, j);
+				Coordinate key = new Coordinate(i-size/2, j-size/2);
+				if (grid.containsKey(key)) {
+					System.out.println(grid.get(key));
+				} else {
+					grid.put(key, new Tile(i-size/2, j-size/2));
+				}
+			}
+		}
+	}
+	
+	// Creates a copy of otherGrid
+	public Grid2D(Grid2D otherGrid) {
+		int size = otherGrid.getSize();
+		this.size = size;
+		for (int i = 0; i < this.size; i++) {
+			for (int j = 0; j < this.size; j++) {
+				Tile tile = otherGrid.getTile(i-size/2, j-size/2);
+				grid.put(new Coordinate(i-size/2, j-size/2), tile);
 			}
 		}
 	}
 	
 	public Tile getTile(int x, int y) {
-		return grid[x][y];
+		return grid.get(new Coordinate(x, y));
 	}
 	
 	public void setTile(Tile tile) {
-		grid[tile.getX()][tile.getY()] = tile;
+		grid.replace(new Coordinate(tile.getX(), tile.getY()), tile);
 	}
 	
-	public void addObstacle(Tile tile) {
-		grid[tile.getX()][tile.getY()].setObstacle(true);
+	public void addObstacle(int x, int y) {
+		System.out.println(grid.get(new Coordinate(x, y)).toString());
+		grid.get(new Coordinate(x, y)).setObstacle(true);
 	}
 	
 	public Mesh getMesh() {
@@ -62,17 +82,5 @@ public class Grid2D {
 	
 	public int getSize() {
 		return size;
-	}
-	
-	// Creates a copy of otherGrid
-	public Grid2D(Grid2D otherGrid) {
-		int size = otherGrid.getSize();
-		this.size = size;
-		grid = new Tile[this.size][this.size];
-		for (int i = 0; i < this.size; i++) {
-			for (int j = 0; j < this.size; j++) {
-				grid[i][j] = new Tile(otherGrid.getTile(i, j).getX(), otherGrid.getTile(i, j).getY());
-			}
-		}
 	}
 }

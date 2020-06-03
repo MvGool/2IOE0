@@ -30,7 +30,7 @@ public class Astar {
 
         for (int i = 0; i < grid.getSize(); i++) {
             for (int j = 0; j < grid.getSize(); j++) {
-                grid.getTile(i, j).setHeuristic(Math.abs(i - goal.getX()) + Math.abs(j - goal.getY()));
+                grid.getTile(i-grid.getSize()/2, j-grid.getSize()/2).setHeuristic(Math.abs(i-grid.getSize()/2 - goal.getX()) + Math.abs(j-grid.getSize()/2 - goal.getY()));
             }
         }
 
@@ -209,12 +209,12 @@ public class Astar {
     	Tile start = new Tile(0, 0);
     	Tile goal = new Tile(3, 2);
     	Grid2D grid = new Grid2D(5);
-    	grid.addObstacle(new Tile(0,4));
-    	grid.addObstacle(new Tile(2,2));
-    	grid.addObstacle(new Tile(3,1));
-    	grid.addObstacle(new Tile(3,3));
-    	grid.addObstacle(new Tile(2,1));
-    	grid.addObstacle(new Tile(2,3));
+    	grid.addObstacle(0,4);
+    	grid.addObstacle(2,2);
+    	grid.addObstacle(3,1);
+    	grid.addObstacle(3,3);
+    	grid.addObstacle(2,1);
+    	grid.addObstacle(2,3);
     	Astar aStar = new Astar(grid, start, goal);
         aStar.display();
         aStar.run();
