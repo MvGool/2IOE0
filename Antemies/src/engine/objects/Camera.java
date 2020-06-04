@@ -8,7 +8,7 @@ import engine.maths.Vector3f;
 
 public class Camera {
 	private Vector3f position, rotation;
-	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, angle = 0, 
+	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, viewAngle = 30, 
 			horizontalAngle = 0, verticalAngle = 0, zoomLowerBound = 1, zoomUpperBound = 20;
 	private double oldMouseX, oldMouseY, oldScroll, currentZoom = 10, newMouseX, newMouseY, newScroll, newZoom = 10;
 
@@ -20,8 +20,6 @@ public class Camera {
 	public void update(String type) {
 		switch(type) {
 		case "firstperson": firstPerson();
-		break;
-		case "thirdperson": thirdPerson(null);
 		break;
 		case "topdown": topDown();
 		break;
@@ -51,40 +49,6 @@ public class Camera {
 		rotation = Vector3f.add(rotation, new Vector3f(-dy * mouseSensitivity, -dx * mouseSensitivity, 0));
 	}
 	
-	private void thirdPerson(GameObject object) {
-		newMouseX = Input.getMouseX();
-		newMouseY = Input.getMouseY();
-		
-		float dx = (float) (newMouseX - oldMouseX);
-		float dy = (float) (newMouseY - oldMouseY);
-		
-		oldMouseX = newMouseX;
-		oldMouseY = newMouseY;
-
-		if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
-			verticalAngle -= dy * mouseSensitivity;
-			horizontalAngle += dx * mouseSensitivity;
-		}
-		
-		if (Input.isButtonDown(GLFW.GLFW_MOUSE_BUTTON_MIDDLE)) {
-			if (distance > 0) {
-				distance += dy * mouseSensitivity;
-			} else {
-				distance = 0.1f;
-			}
-		}
-		
-		float horizontalDist = (float) (distance * Math.cos(Math.toRadians(verticalAngle)));
-		float verticalDist = (float) (distance * Math.sin(Math.toRadians(verticalAngle)));
-		
-		float xOffset = (float) (horizontalDist * Math.sin(Math.toRadians(-horizontalAngle)));
-		float zOffset = (float) (horizontalDist * Math.cos(Math.toRadians(-horizontalAngle)));
-		
-		position.set(object.getPosition().getX() + xOffset, object.getPosition().getY() - verticalDist, object.getPosition().getZ() + zOffset);
-		
-		rotation.set(verticalAngle, -horizontalAngle, 0);
-	}
-	
 	private void topDown() {	
 		newScroll = Input.getScrollY();
 		
@@ -108,7 +72,7 @@ public class Camera {
 		if (Input.isKeyDown(GLFW.GLFW_KEY_W)) position = Vector3f.add(position, new Vector3f(0, 0, -moveSpeed));
 		if (Input.isKeyDown(GLFW.GLFW_KEY_S)) position = Vector3f.add(position, new Vector3f(0, 0, moveSpeed));
 		
-		rotation.set(-90, 0, 0);
+		rotation.set(viewAngle-90, 0, 0);
 	}
 
 	public Vector3f getPosition() {
