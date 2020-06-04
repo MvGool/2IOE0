@@ -35,6 +35,7 @@ public class ModelLoader
 		AIVector3D.Buffer aiVertices = aiMesh.mVertices();
 		AIVector3D.Buffer aiNormals = aiMesh.mNormals();
 		AIVector3D.Buffer aiTextCoords = aiMesh.mTextureCoords(0);
+
 		List<Vertex> vertices = new ArrayList<>();
 		while (aiVertices.remaining() > 0 && aiTextCoords.remaining() > 0) {
 			AIVector3D aiVertex = aiVertices.get();

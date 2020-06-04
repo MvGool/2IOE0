@@ -1,5 +1,6 @@
 package engine.objects;
 
+import engine.graphics.BoneMesh;
 import engine.graphics.Mesh;
 import engine.maths.Vector3f;
 
@@ -20,13 +21,18 @@ public class GameObject {
 	}
 	
 	public void update() {
-		position.setZ(position.getZ() - 0.05f);
+		position.setZ(position.getZ() - 0.5f);
 	}
 
 	public void create(boolean initTextureBuffer) {
+		//System.out.println(meshes.length);
+		//System.out.println((Mesh)meshes[0]);
 		for (Mesh m : meshes) {
 			m.create(initTextureBuffer);
 		}
+		//for (int i = 0; i < meshes.length; i++) {
+		//	meshes[i].create(initTextureBuffer);
+		//}
 	}
 
 	public Vector3f getPosition() {

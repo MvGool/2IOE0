@@ -87,6 +87,24 @@ public class Shader {
 		((Buffer)matrix.put(value.getMatrix())).flip();
 		GL20.glUniformMatrix4fv(getUniformLocation(name), true, matrix);
 	}
+
+	public void setUniform(String name, Matrix4f[] values) {
+		FloatBuffer matrix = MemoryUtil.memAllocFloat(Matrix4f.SIZE * Matrix4f.SIZE * values.length);
+		//matrix.put(value.getMatrix()).flip();
+		for (int i = 0; i < values.length; i++) {
+			matrix.put(values[i].getMatrix()).flip();
+		}
+		GL20.glUniformMatrix4fv(getUniformLocation(name), true, matrix);
+	}
+
+	public void setUniform(String name, org.joml.Matrix4f[] values) {
+		FloatBuffer matrix = MemoryUtil.memAllocFloat(16 * values.length);
+		//matrix.put(value.getMatrix()).flip();
+		for (int i = 0; i < values.length; i++) {
+			values[i].get(16 * i, matrix);
+		}
+		GL20.glUniformMatrix4fv(getUniformLocation(name), true, matrix);
+	}
 	
 	public void bind() {
 		GL20.glUseProgram(programID);

@@ -1,5 +1,7 @@
 package engine.graphics;
 
+import engine.model_loaders.AnimModelLoader;
+import engine.objects.AnimGameObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
@@ -25,6 +27,8 @@ public class Renderer {
 			GL30.glEnableVertexAttribArray(0);
 			GL30.glEnableVertexAttribArray(1);
 			GL30.glEnableVertexAttribArray(2);
+			GL30.glEnableVertexAttribArray(3);
+			GL30.glEnableVertexAttribArray(4);
 			GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, m.getIBO());
 			if (m.getMaterial() != null) {
 				GL13.glActiveTexture(GL13.GL_TEXTURE0);
@@ -34,12 +38,24 @@ public class Renderer {
 			shader.setUniform("model", Matrix4f.transform(object.getPosition(), object.getRotation(), object.getScalar()));
 			shader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
 			shader.setUniform("projection", window.getProjectionMatrix());
+			// If it is an AnimGameObject we make the shader use the skeleton
+			// for vertex deformation
+			if (object instanceof AnimGameObject) {
+
+				shader.setUniform("useSkeleton", true);
+				org.joml.Matrix4f[] transforms = ((AnimGameObject)object).getMeshes()[0].getTransforms();
+				shader.setUniform("boneMatrix", transforms);
+			} else {
+				shader.setUniform("useSkeleton", false);
+			}
 			GL11.glDrawElements(GL11.GL_TRIANGLES, m.getIndices().length, GL11.GL_UNSIGNED_INT, 0);
 			shader.unbind();
 			GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 			GL30.glDisableVertexAttribArray(0);
 			GL30.glDisableVertexAttribArray(1);
 			GL30.glDisableVertexAttribArray(2);
+			GL30.glDisableVertexAttribArray(3);
+			GL30.glDisableVertexAttribArray(4);
 			GL30.glBindVertexArray(0);
 		}
 	}

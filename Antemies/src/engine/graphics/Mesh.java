@@ -3,7 +3,9 @@ package engine.graphics;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 
+import engine.model_loaders.Weight;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.opengl.GL20;
@@ -45,6 +47,7 @@ public class Mesh {
 
 		pbo = storeData(positionBuffer, 0, 3);
 
+		storeData(positionBuffer, 0, 3);
 //		FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
 //		float[] colorData = new float[vertices.length * 3];
 //		for (int i = 0; i < vertices.length; i++) {
@@ -66,6 +69,41 @@ public class Mesh {
 			((Buffer)textureBuffer.put(textureData)).flip();
 
 			tbo = storeData(textureBuffer, 2, 2);
+		}
+
+		// If we have a bonemesh we also bind the weights per vertex
+		if (this instanceof  BoneMesh) {
+			FloatBuffer weightBuffer = MemoryUtil.memAllocFloat(vertices.length * 4);
+			float[] weightData = new float[vertices.length * 4];
+			BoneMesh m = (BoneMesh)this;
+			for (Integer i : m.getWeightsKeys()) {
+				List<Weight> weights = m.getWeightsForVertex(i);
+				for (int j = 0; j < weights.size() && j < 4; j++) {
+					weightData[i * 4 + j] = weights.get(j).getWeight();
+				}
+				if (weights.size() < 4) {
+					for (int j = weights.size(); j < 4; j++) {
+						weightData[i * 4 + j] = 0;
+					}
+				}
+			}
+			weightBuffer.put(weightData).flip();
+			storeData(weightBuffer, 3, 4);
+		}
+
+		// if we have a bonemesh we also bind the bones corresponding to the weights
+		if (this instanceof BoneMesh) {
+			FloatBuffer indexBuffer = MemoryUtil.memAllocFloat(vertices.length * 4);
+			float[] indexData = new float[vertices.length * 4];
+			BoneMesh m = (BoneMesh)this;
+			for (Integer i : m.getWeightsKeys()) {
+				List<Weight> weights = m.getWeightsForVertex(i);
+				for (int j = 0; j < weights.size() && j < 4; j++) {
+					indexData[i * 4 + j] = weights.get(j).getBoneID();
+				}
+			}
+			indexBuffer.put(indexData).flip();
+			storeData(indexBuffer, 4, 4);
 		}
 
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);

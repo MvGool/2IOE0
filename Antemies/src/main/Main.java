@@ -5,13 +5,16 @@ import engine.io.Input;
 import engine.io.Window;
 import engine.maths.Vector2f;
 import engine.maths.Vector3f;
+import engine.model_loaders.AnimModelLoader;
 import engine.model_loaders.StaticModelLoader;
+import engine.objects.AnimGameObject;
 import engine.objects.Camera;
 import engine.objects.GameObject;
 import org.lwjgl.glfw.GLFW;
 
 public class Main implements Runnable {
-	public String CAMERA_MODE = "topdown"; // Options: firstperson, topdown
+	//public String CAMERA_MODE = "topdown"; // Options: firstperson, topdown
+	public String CAMERA_MODE = "firstperson"; // Options: firstperson, topdown
 	
 	public Thread game;
 	public Window window;
@@ -19,7 +22,7 @@ public class Main implements Runnable {
 	public Shader shader;
 	public World world;
 	public final int WIDTH = 1280, HEIGHT = 760;
-		
+
 	public Camera camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0));
 	
 	public void start() {
@@ -28,12 +31,14 @@ public class Main implements Runnable {
 	}
 	
 	public void init() {
+
 		window = new Window(WIDTH, HEIGHT, "Game");
 		shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
 		renderer = new Renderer(window, shader);
 		world = new World(renderer, camera);
 		window.setBackgroundColor(0.56f, 0.92f, 0.75f);
 		window.create();
+
 		shader.create();
 		world.load();
 		world.create();
@@ -57,6 +62,7 @@ public class Main implements Runnable {
 		world.update(renderer, camera);
 		camera.update(CAMERA_MODE);
 	}
+
 	
 	private void render() {
 		world.render();
