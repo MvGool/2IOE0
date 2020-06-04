@@ -41,7 +41,7 @@ public class World {
 		try {
 			//antMesh = StaticModelLoader.load("resources/models/monkey.obj", "/textures/ant2Texture.jpg");
 
-			other = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", null);
+			other = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
 			//eric = AnimModelLoader.load("resources/models/eric.fbx");
 			eric = AnimModelLoader.load("resources/models/testmodels/eric.fbx");
 		} catch (Exception e) {

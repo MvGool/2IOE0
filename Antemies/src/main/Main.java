@@ -3,24 +3,18 @@ package main;
 import engine.graphics.*;
 import engine.io.Input;
 import engine.io.Window;
-import engine.maths.Vector2f;
 import engine.maths.Vector3f;
-import engine.model_loaders.AnimModelLoader;
-import engine.model_loaders.StaticModelLoader;
-import engine.objects.AnimGameObject;
 import engine.objects.Camera;
-import engine.objects.GameObject;
-import org.lwjgl.glfw.GLFW;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Main implements Runnable {
-	public String CAMERA_MODE = "topdown"; // Options: firstperson, topdown
-//	public String CAMERA_MODE = "firstperson"; // Options: firstperson, topdown
-	
+	public String cameraMode = "topdown"; // Options: firstperson, topdown
 	public Thread game;
 	public Window window;
 	public Renderer renderer;
-	public Shader shader;
 	public World world;
+	public boolean hold;
 	public final int WIDTH = 1280, HEIGHT = 760;
 
 	public Camera camera = new Camera(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0));
@@ -30,37 +24,60 @@ public class Main implements Runnable {
 		game.start();
 	}
 	
-	public void init() {
-
+	public void init() throws Exception {
 		window = new Window(WIDTH, HEIGHT, "Game");
-		shader = new Shader("/shaders/mainVertex.glsl", "/shaders/mainFragment.glsl");
-		renderer = new Renderer(window, shader);
+		renderer = new Renderer(window);
 		world = new World(renderer, camera);
 		window.setBackgroundColor(0.56f, 0.92f, 0.75f);
 		window.create();
-
-		shader.create();
+		renderer.init();
 		world.load();
 		world.create();
 	}
 	
 	public void run() {
-		init();
-		while (!window.shouldClose() && !Input.isKeyDown(GLFW.GLFW_KEY_ESCAPE)) {
+		try {
+			init();
+			gameLoop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			cleanup();
+		}
+	}
+	
+	private void gameLoop() {
+		while (!window.shouldClose() && !Input.isKeyDown(GLFW_KEY_ESCAPE)) {
+			handleInputs();
 			update();
 			render(); 
-			if (Input.isKeyDown(GLFW.GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
-			if (CAMERA_MODE == "firstperson") {
-				window.mouseState(true);
-			}
 		}
-		close();
+	}
+	
+	private void handleInputs() {
+		if (Input.isKeyDown(GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
+		if (Input.isKeyDown(GLFW_KEY_F1) && !hold) {
+			if (cameraMode == "topdown") {
+				cameraMode = "firstperson";
+			} else {
+				cameraMode = "topdown";
+			}
+			hold = true;
+		}
+		
+		if (!Input.isKeyDown(GLFW_KEY_F1)) hold = false;
+		
+		if (cameraMode == "firstperson") {
+			window.mouseState(true);
+		} else {
+			window.mouseState(false);
+		}
 	}
 	
 	private void update() {
 		window.update();
 		world.update(renderer, camera);
-		camera.update(CAMERA_MODE);
+		camera.update(cameraMode);
 	}
 
 	
@@ -69,10 +86,9 @@ public class Main implements Runnable {
 		window.swapBuffers();
 	}
 	
-	private void close() {
+	private void cleanup() {
 		window.destroy();
 		world.destroy();
-		shader.destroy();
 	}
 	
 	public static void main(String[] args) {
