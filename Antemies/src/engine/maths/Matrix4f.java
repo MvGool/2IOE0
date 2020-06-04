@@ -41,13 +41,13 @@ public class Matrix4f {
 		float invcos = 1 - cos;
 		
 		result.set(0, 0, cos + axis.getX() * axis.getX() * invcos);
-		result.set(1, 0, axis.getX() * axis.getY() * invcos - axis.getZ() * sin);
-		result.set(2, 0, axis.getX() * axis.getZ() * invcos + axis.getY() * sin);
-		result.set(0, 1, axis.getY() * axis.getX() * invcos + axis.getZ() * sin);
+		result.set(0, 1, axis.getX() * axis.getY() * invcos - axis.getZ() * sin);
+		result.set(0, 2, axis.getX() * axis.getZ() * invcos + axis.getY() * sin);
+		result.set(1, 0, axis.getY() * axis.getX() * invcos + axis.getZ() * sin);
 		result.set(1, 1, cos + axis.getY() * axis.getY() * invcos);
-		result.set(2, 1, axis.getY() * axis.getZ() * invcos - axis.getX() * sin);
-		result.set(0, 2, axis.getZ() * axis.getX() * invcos - axis.getY() * sin);
-		result.set(1, 2, axis.getZ() * axis.getY() * invcos + axis.getX() * sin);
+		result.set(1, 2, axis.getY() * axis.getZ() * invcos - axis.getX() * sin);
+		result.set(2, 0, axis.getZ() * axis.getX() * invcos - axis.getY() * sin);
+		result.set(2, 1, axis.getZ() * axis.getY() * invcos + axis.getX() * sin);
 		result.set(2, 2, cos + axis.getZ() * axis.getZ() * invcos);
 		
 		return result;
@@ -82,7 +82,7 @@ public class Matrix4f {
 	public static Matrix4f projection(float fov, float aspectRatio, float near, float far) {
 		Matrix4f result = Matrix4f.identity();
 		
-		float tanFOV = (float) Math.tan(Math.toRadians(fov/2));
+		float tanFOV = (float) Math.atan(Math.toRadians(fov/2));
 		float range = far - near;
 		
 		result.set(0, 0, 1.0f / (aspectRatio * tanFOV));
@@ -115,10 +115,10 @@ public class Matrix4f {
 		
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
-				result.set(j,  i, matrix1.get(0, i) * matrix2.get(j, 0) +
-								  matrix1.get(1, i) * matrix2.get(j, 1)	+
-								  matrix1.get(2, i) * matrix2.get(j, 2)	+
-								  matrix1.get(3, i) * matrix2.get(j, 3));
+				result.set(i,  j, matrix1.get(i, 0) * matrix2.get(0, j) +
+								  matrix1.get(i, 1) * matrix2.get(1, j)	+
+								  matrix1.get(i, 2) * matrix2.get(2, j)	+
+								  matrix1.get(i, 3) * matrix2.get(3, j));
 			}
 		}
 		

@@ -13,8 +13,8 @@ import engine.objects.GameObject;
 import org.lwjgl.glfw.GLFW;
 
 public class Main implements Runnable {
-	//public String CAMERA_MODE = "topdown"; // Options: firstperson, topdown
-	public String CAMERA_MODE = "firstperson"; // Options: firstperson, topdown
+	public String CAMERA_MODE = "topdown"; // Options: firstperson, topdown
+//	public String CAMERA_MODE = "firstperson"; // Options: firstperson, topdown
 	
 	public Thread game;
 	public Window window;
@@ -23,7 +23,7 @@ public class Main implements Runnable {
 	public World world;
 	public final int WIDTH = 1280, HEIGHT = 760;
 
-	public Camera camera = new Camera(new Vector3f(0, 0, 1), new Vector3f(0, 0, 0));
+	public Camera camera = new Camera(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0));
 	
 	public void start() {
 		game = new Thread(this, "game");
