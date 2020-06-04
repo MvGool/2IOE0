@@ -166,9 +166,9 @@ public class Matrix4f {
 			matrix += "[";
 			for (int j = 0; j < SIZE; j++) {
 				if (j == SIZE - 1) {
-					matrix += this.get(j, i);
+					matrix += this.get(i, j);
 				} else {
-					matrix += this.get(j, i) + " ";
+					matrix += this.get(i, j) + " ";
 				}
 			}
 			matrix += "]\n";
