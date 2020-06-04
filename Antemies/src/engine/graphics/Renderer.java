@@ -2,10 +2,10 @@ package engine.graphics;
 
 import engine.model_loaders.AnimModelLoader;
 import engine.objects.AnimGameObject;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL30.*;
 
 import engine.io.Window;
 import engine.maths.Matrix4f;
@@ -37,16 +37,16 @@ public class Renderer {
 
 	public void renderMesh(GameObject object, Camera camera) {
 		for (Mesh m : object.getMeshes()) {
-			GL30.glBindVertexArray(m.getVAO());
-			GL30.glEnableVertexAttribArray(0);
-			GL30.glEnableVertexAttribArray(1);
-			GL30.glEnableVertexAttribArray(2);
-			GL30.glEnableVertexAttribArray(3);
-			GL30.glEnableVertexAttribArray(4);
-			GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, m.getIBO());
+			glBindVertexArray(m.getVAO());
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glEnableVertexAttribArray(2);
+			glEnableVertexAttribArray(3);
+			glEnableVertexAttribArray(4);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.getIBO());
 			if (m.getMaterial() != null) {
-				GL13.glActiveTexture(GL13.GL_TEXTURE0);
-				GL13.glBindTexture(GL11.GL_TEXTURE_2D, m.getMaterial().getTextureID());
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, m.getMaterial().getTextureID());
 			}
 			objectShader.bind();
 			objectShader.setUniform("model", Matrix4f.transform(object.getPosition(), object.getRotation(), object.getScalar()));
@@ -61,36 +61,38 @@ public class Renderer {
 			} else {
 				objectShader.setUniform("useSkeleton", false);
 			}
-			GL11.glDrawElements(GL11.GL_TRIANGLES, m.getIndices().length, GL11.GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, m.getIndices().length, GL_UNSIGNED_INT, 0);
 			objectShader.unbind();
-			GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-			GL30.glDisableVertexAttribArray(0);
-			GL30.glDisableVertexAttribArray(1);
-			GL30.glDisableVertexAttribArray(2);
-			GL30.glDisableVertexAttribArray(3);
-			GL30.glDisableVertexAttribArray(4);
-			GL30.glBindVertexArray(0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+			glDisableVertexAttribArray(2);
+			glDisableVertexAttribArray(3);
+			glDisableVertexAttribArray(4);
+			glBindVertexArray(0);
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 	
 	public void renderTerrain(Mesh terrainMesh, Camera camera) {
-		GL30.glBindVertexArray(terrainMesh.getVAO());
-		GL30.glEnableVertexAttribArray(0);
-		GL30.glEnableVertexAttribArray(2);
-		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, terrainMesh.getIBO());
+		glBindVertexArray(terrainMesh.getVAO());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainMesh.getIBO());
 		if (terrainMesh.getMaterial() != null) {
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			GL13.glBindTexture(GL11.GL_TEXTURE_2D, terrainMesh.getMaterial().getTextureID());
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, terrainMesh.getMaterial().getTextureID());
 		}
 		terrainShader.bind();
 		terrainShader.setUniform("model", Matrix4f.identity());
 		terrainShader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
 		terrainShader.setUniform("projection", window.getProjectionMatrix());
-		GL11.glDrawElements(GL11.GL_TRIANGLES, terrainMesh.getIndices().length, GL11.GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, terrainMesh.getIndices().length, GL_UNSIGNED_INT, 0);
 		terrainShader.unbind();
-		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
-		GL30.glDisableVertexAttribArray(0);
-		GL30.glDisableVertexAttribArray(2);
-		GL30.glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(2);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }

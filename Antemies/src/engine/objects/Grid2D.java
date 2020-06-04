@@ -41,12 +41,18 @@ public class Grid2D {
 		}
 	}
 	
+	public boolean hasTile(int x, int y) {
+		return grid.containsKey(new Coordinate(x, y));
+	}
+	
 	public Tile getTile(int x, int y) {
 		return grid.get(new Coordinate(x, y));
 	}
 	
 	public void setTile(Tile tile) {
-		grid.replace(new Coordinate(tile.getX(), tile.getY()), tile);
+		if (grid.replace(new Coordinate(tile.getX(), tile.getY()), tile) == null) {
+			grid.put(new Coordinate(tile.getX(), tile.getY()), tile);
+		}
 	}
 	
 	public void addObstacle(int x, int y) {
@@ -55,26 +61,34 @@ public class Grid2D {
 	}
 	
 	public Mesh getMesh() {
+		// Create list for vertices and indices; 
 		List<Vertex> vertices = new ArrayList<>();
-		
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				vertices.add(new Vertex(new Vector3f(-size/2 + i, 0, -size/2 + j), new Vector3f(0, 1, 0), new Vector2f(i, j)));
-			}
-		}
-		
 		List<Integer> indices = new ArrayList<>();
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				indices.add(i * size + j);
-				indices.add((i + 1) * size + j);
-				indices.add(i * size + j + 1);
-				indices.add((i + 1) * size + j);
-				indices.add(i * size + j + 1);
-				indices.add((i + 1) * size + j + 1);
-			}
+		
+		// Loop over all tiles adding them to the mesh
+		int iter = 0;
+		for (Tile tile : grid.values()) {
+			int x = tile.getX();
+			int y = tile.getY();
+			
+			// Add 4 corners
+			vertices.add(new Vertex(new Vector3f(x, 0, y), new Vector3f(0, 1, 0), new Vector2f(x, y)));
+			vertices.add(new Vertex(new Vector3f(x, 0, y + 1), new Vector3f(0, 1, 0), new Vector2f(x, y + 1)));
+			vertices.add(new Vertex(new Vector3f(x + 1, 0, y), new Vector3f(0, 1, 0), new Vector2f(x + 1, y)));
+			vertices.add(new Vertex(new Vector3f(x + 1, 0, y + 1), new Vector3f(0, 1, 0), new Vector2f(x + 1, y + 1)));
+		
+			// Draw triangles for that tile
+			indices.add(4*iter);
+			indices.add(4*iter + 2);
+			indices.add(4*iter + 1);
+			indices.add(4*iter + 2);
+			indices.add(4*iter + 1);
+			indices.add(4*iter + 3);
+			
+			// Increase counter for the indices
+			iter++;
 		}
-
+		
 		Vertex[] verticesArray = new Vertex[vertices.size()];
 		return new Mesh(vertices.toArray(verticesArray),
 				indices.stream().mapToInt(i->i).toArray());
