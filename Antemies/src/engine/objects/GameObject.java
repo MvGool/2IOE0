@@ -21,7 +21,7 @@ public class GameObject {
 	}
 	
 	public void update() {
-		position.setZ(position.getZ() - 0.5f);
+		position.setX(position.getX() - 5f);
 	}
 
 	public void create(boolean initTextureBuffer) {

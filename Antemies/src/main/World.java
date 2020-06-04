@@ -12,7 +12,7 @@ import engine.objects.*;
 public class World {
 	private Renderer renderer;
 	private Camera camera;
-	private Grid2D grid = new Grid2D(20);
+	private Grid2D grid = new Grid2D(100);
 	
 	private Mesh[] antMesh;	
 	private GameObject cube;
@@ -75,6 +75,7 @@ public class World {
 		this.renderer = renderer;
 		this.camera = camera;
 		updateGrid();
+		updateObjects();
 	}
 	
 	public void render() {
@@ -101,5 +102,9 @@ public class World {
 			Mesh newMesh = grid.getMesh();
 			gridMesh.reset(newMesh.getVertices(), newMesh.getIndices(), true);
 		}
+	}
+
+	private void updateObjects() {
+		otherModel.update();
 	}
 }
