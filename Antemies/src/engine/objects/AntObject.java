@@ -10,13 +10,14 @@ import engine.maths.*;
 import main.Astar;
 
 public class AntObject extends GameObject {
-	private static final Mesh[] ANT_MESH = null;
+	float speed = 1; // probably within [0, 2]
 	private boolean move = false;
+	private Spline spline;
 	private CubicPolynomial[] functions;
 	private CubicPolynomial currentFunction;
 	private int functionNumber;
 	private float t;
-	private float dt = 0.01f;
+	private float dt;
 	private Vector3f newPosition;
 	
 	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
@@ -38,7 +39,6 @@ public class AntObject extends GameObject {
 			shortestPath = new Tile[] {newTile};
 		} else {
 			Grid2D astarGrid = new Grid2D(grid);
-			astarGrid.addObstacle(4, 3);
 			Astar astar = new Astar(astarGrid, new Tile(2, 3), newTile); // (this.getTile(), newTile)
 			shortestPath = astar.run();
 			if (shortestPath.length == 0) {
@@ -48,7 +48,7 @@ public class AntObject extends GameObject {
 		}
 		
 		Vector3f[] controlPoints = chooseControlPoints(shortestPath);
-		Spline spline = new Spline(controlPoints);
+		spline = new Spline(controlPoints);
 		move = true;
 		functions = spline.createSpline();
 		currentFunction = functions[0];
@@ -60,6 +60,7 @@ public class AntObject extends GameObject {
 		float angle;
 		
 		if (move && t > 1) {
+			setPosition(currentFunction.computePosition(1));
 			if (functionNumber + 1 < functions.length) {
 				functionNumber += 1;
 				currentFunction = functions[functionNumber];
@@ -104,7 +105,8 @@ public class AntObject extends GameObject {
 			}
 		}
 		
-		Vector3f[] test = new Vector3f[] {this.getPosition(), new Vector3f(5, 1, 2), new Vector3f(-2, 1, 8), new Vector3f(-2, 1, 9), new Vector3f(-5, 1, -3)};
+		//Vector3f[] test = new Vector3f[] {this.getPosition(), new Vector3f(5, 1, 2), new Vector3f(-2, 1, 8), new Vector3f(-2, 1, 9), new Vector3f(-5, 1, -3)};
+		Vector3f[] test = new Vector3f[] {this.getPosition(), new Vector3f(2, 1, 1), new Vector3f(4, 1, 1)};
 		return test;
 		
 		/*Vector3f[] controlPoints = new Vector3f[controlPointsList.size()];
@@ -136,18 +138,58 @@ public class AntObject extends GameObject {
 	}
 	
 	private float getAngle() {
+		/*Vector3f tangent = currentFunction.computeTangent(t);
+		float dotProduct = Vector3f.dotProduct(new Vector3f(-1, 0, 0), tangent);
+		float angle = (float) Math.toDegrees(Math.acos(dotProduct / (Vector3f.length(tangent))));
+		if (angle >= 180) {
+			angle = -angle;
+		}
+		System.out.println(angle);
+		
+		return angle;*/
+		
 		Vector3f current = currentFunction.computePosition(t);
 		Vector3f next = currentFunction.computePosition(t + dt);
 		
-		float angle = (float) Math.toDegrees(Math.atan((next.getX() - current.getX()) / (next.getZ() - current.getZ())));
+		float angle;
+		float slope = (next.getZ() - current.getZ()) / (next.getX() - current.getX());
+		if (slope > 0) {
+			angle = (float) Math.toDegrees(Math.atan2(next.getZ() - current.getZ(), next.getX() - current.getX()));
+		} else {
+			angle = (float) Math.toDegrees(Math.atan2(next.getX() - current.getX(), next.getZ() - current.getZ()));
+		}
 		/*if (angle < 0) {
 	        angle += 360;
 	    }*/
 		
-		return this.getRotation().getZ() + angle;
+		return angle;
+	}
+	
+	private void computeInterval() {
+		float functionLength = 0;
+		
+		if (functions.length == 1) {
+			Vector3f diff = Vector3f.subtract(spline.getControlPoints()[1], spline.getControlPoints()[0]);
+			functionLength = Vector3f.length(diff);
+		} else {
+			Vector3f previous = currentFunction.computePosition(0);
+			
+			for (float t = 0.01f; t <= 1; t += 0.001f) {
+				Vector3f current = currentFunction.computePosition(t);
+				Vector3f diff = Vector3f.subtract(current, previous);
+				functionLength += Vector3f.length(diff);
+				previous = current;
+			}
+		}
+		
+		dt = speed * 0.1f / functionLength;
 	}
 	
 	private void increaseT() {
+		if (t == 0) {
+			computeInterval();
+		}
+		
 		t += dt;
 	}
 }

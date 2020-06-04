@@ -19,6 +19,12 @@ public class CubicPolynomial {
 		return result;
 	}
 	
+	public Vector3f computeTangent(float t) {
+		Vector3f result = Vector3f.add(Vector3f.add(Vector3f.multiply(a, 3 * t * t), Vector3f.multiply(b, 2 * t)), c);
+				
+		return result;
+	}
+	
 	@Override
 	public String toString() {
 		return a.toString() + "t^3 + " + b.toString() + "t^2 + " + c.toString() + "t + " + d.toString();
