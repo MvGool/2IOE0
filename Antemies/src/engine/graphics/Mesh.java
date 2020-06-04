@@ -47,7 +47,6 @@ public class Mesh {
 
 		pbo = storeData(positionBuffer, 0, 3);
 
-		storeData(positionBuffer, 0, 3);
 //		FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
 //		float[] colorData = new float[vertices.length * 3];
 //		for (int i = 0; i < vertices.length; i++) {

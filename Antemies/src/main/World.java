@@ -17,7 +17,6 @@ public class World {
 	private Mesh[] antMesh;	
 	private GameObject cube;
 	private Mesh gridMesh;	
-	private GameObject gridObject;
 
 	private AntObject ant;
 
@@ -48,7 +47,7 @@ public class World {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		otherModel = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), other);
+		otherModel = new GameObject(new Vector3f(0, 800, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), other);
 		ericModel = new AnimGameObject(new Vector3f(0, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 		
 		//ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
@@ -56,17 +55,15 @@ public class World {
 		
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));
-		gridObject = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), gridMesh);
 
 		//antModel = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
 	}
 	
 	public void create() {
 //		cube.create(true);
-		gridObject.create(true);
 //		antModel.create(false);
 		//ant.create(false);
-
+		gridMesh.create(true);
 		otherModel.create(false);
 		ericModel.create(false);
 //		for (int i = 0; i < objects.length; i++) {
@@ -86,7 +83,7 @@ public class World {
 //		}
 //		renderer.renderMesh(cube, camera);
 		//renderer.renderMesh(ant, camera);
-		renderer.renderMesh(gridObject, camera);
+		renderer.renderTerrain(gridMesh, camera);
 		renderer.renderMesh(otherModel, camera);
 		renderer.renderMesh(ericModel, camera);
 	}

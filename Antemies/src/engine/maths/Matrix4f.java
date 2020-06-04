@@ -50,7 +50,6 @@ public class Matrix4f {
 		result.set(2, 1, axis.getZ() * axis.getY() * invcos + axis.getX() * sin);
 		result.set(2, 2, cos + axis.getZ() * axis.getZ() * invcos);
 		
-		System.out.println(result.toString());
 		return result;
 	}
 	

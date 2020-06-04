@@ -72,4 +72,25 @@ public class Renderer {
 			GL30.glBindVertexArray(0);
 		}
 	}
+	
+	public void renderTerrain(Mesh terrainMesh, Camera camera) {
+		GL30.glBindVertexArray(terrainMesh.getVAO());
+		GL30.glEnableVertexAttribArray(0);
+		GL30.glEnableVertexAttribArray(2);
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, terrainMesh.getIBO());
+		if (terrainMesh.getMaterial() != null) {
+			GL13.glActiveTexture(GL13.GL_TEXTURE0);
+			GL13.glBindTexture(GL11.GL_TEXTURE_2D, terrainMesh.getMaterial().getTextureID());
+		}
+		terrainShader.bind();
+		terrainShader.setUniform("model", Matrix4f.identity());
+		terrainShader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
+		terrainShader.setUniform("projection", window.getProjectionMatrix());
+		GL11.glDrawElements(GL11.GL_TRIANGLES, terrainMesh.getIndices().length, GL11.GL_UNSIGNED_INT, 0);
+		terrainShader.unbind();
+		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+		GL30.glDisableVertexAttribArray(0);
+		GL30.glDisableVertexAttribArray(2);
+		GL30.glBindVertexArray(0);
+	}
 }
