@@ -50,6 +50,7 @@ public class Matrix4f {
 		result.set(2, 1, axis.getZ() * axis.getY() * invcos + axis.getX() * sin);
 		result.set(2, 2, cos + axis.getZ() * axis.getZ() * invcos);
 		
+		System.out.println(result.toString());
 		return result;
 	}
 	
@@ -166,9 +167,9 @@ public class Matrix4f {
 			matrix += "[";
 			for (int j = 0; j < SIZE; j++) {
 				if (j == SIZE - 1) {
-					matrix += this.get(j, i);
+					matrix += this.get(i, j);
 				} else {
-					matrix += this.get(j, i) + " ";
+					matrix += this.get(i, j) + " ";
 				}
 			}
 			matrix += "]\n";
