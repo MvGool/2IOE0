@@ -10,7 +10,7 @@ import engine.maths.*;
 import main.Astar;
 
 public class AntObject extends GameObject {
-	float speed = 1; // probably within [0, 2]
+	float speed = 10; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;
@@ -26,8 +26,7 @@ public class AntObject extends GameObject {
 	
 	public void moveTo(Grid2D grid, Vector3f newPosition) {
 		this.newPosition = newPosition;
-		//Tile newTile = newPosition.getTile();
-		Tile newTile = new Tile(8, 3);
+		Tile newTile = new Tile((int) newPosition.getX(), (int) newPosition.getZ());
 		
 		if (grid.getTile(newTile.getX(), newTile.getY()).isObstacle()) {
 			System.out.println("New position is an obstacle");
@@ -56,7 +55,10 @@ public class AntObject extends GameObject {
 		t = 0;
 	}
 	
+	@Override
 	public void update() {
+		super.update();
+		
 		float angle;
 		
 		if (move && t > 1) {

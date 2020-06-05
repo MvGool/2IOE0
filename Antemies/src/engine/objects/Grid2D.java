@@ -46,7 +46,13 @@ public class Grid2D {
 	}
 	
 	public Tile getTile(int x, int y) {
-		return grid.get(new Coordinate(x, y));
+		Tile tile = grid.get(new Coordinate(x, y));
+		
+		if (tile == null) {
+			System.err.println("Tile not found");
+		}
+		
+		return tile;
 	}
 	
 	public void setTile(Tile tile) {

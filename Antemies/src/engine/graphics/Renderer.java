@@ -33,6 +33,11 @@ public class Renderer {
 		terrainShader.createVertexShader(FileUtils.loadAsString("/shaders/terrain/terrainVertex.vs"));
 		terrainShader.createFragmentShader(FileUtils.loadAsString("/shaders/terrain/terrainFragment.fs"));
 		terrainShader.link();
+		try {
+			createUniforms();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void renderMesh(GameObject object, Camera camera) {
@@ -94,5 +99,15 @@ public class Renderer {
 		glDisableVertexAttribArray(2);
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
+	private void createUniforms() throws Exception {
+		objectShader.createUniform("model");
+		objectShader.createUniform("view");
+		objectShader.createUniform("projection");
+		
+		terrainShader.createUniform("model");
+		terrainShader.createUniform("view");
+		terrainShader.createUniform("projection");
 	}
 }

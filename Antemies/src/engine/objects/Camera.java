@@ -72,7 +72,7 @@ public class Camera {
 		if (Input.isKeyDown(GLFW.GLFW_KEY_W)) position = Vector3f.add(position, new Vector3f(0, 0, -moveSpeed));
 		if (Input.isKeyDown(GLFW.GLFW_KEY_S)) position = Vector3f.add(position, new Vector3f(0, 0, moveSpeed));
 		
-		rotation.set(viewAngle-90, 0, 0);
+		rotation.set(viewAngle+90, 0, 0);
 	}
 
 	public Vector3f getPosition() {

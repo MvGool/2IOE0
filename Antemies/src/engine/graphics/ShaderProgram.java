@@ -4,8 +4,11 @@ import static org.lwjgl.opengl.GL20.*;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import engine.maths.Matrix4f;
@@ -19,12 +22,16 @@ public class ShaderProgram {
     private int vertexShaderId;
 
     private int fragmentShaderId;
+    
+    private final Map<String, Integer> uniforms;
 
     public ShaderProgram() throws Exception {
         programId = glCreateProgram();
         if (programId == 0) {
             throw new Exception("Could not create Shader");
         }
+        
+        uniforms = new HashMap<>();
     }
 
     public void createVertexShader(String shaderCode) throws Exception {
@@ -73,6 +80,15 @@ public class ShaderProgram {
 
     }
     
+    public void createUniform(String name) throws Exception {
+		int uniformLocation = glGetUniformLocation(programId, name);
+		if (uniformLocation < 0) {
+			throw new Exception("Could not find uniform:" + name);
+		}
+		
+		uniforms.put(name, uniformLocation);
+	}
+    
 	public int getUniformLocation(String name) {
 		return GL20.glGetUniformLocation(programId, name);
 	}
@@ -98,16 +114,17 @@ public class ShaderProgram {
 	}
 	
 	public void setUniform(String name, Matrix4f value) {
-		FloatBuffer matrix = MemoryUtil.memAllocFloat(Matrix4f.SIZE * Matrix4f.SIZE);
-		((Buffer)matrix.put(value.getMatrix())).flip();
-		GL20.glUniformMatrix4fv(getUniformLocation(name), true, matrix);
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+	        FloatBuffer fb = stack.mallocFloat(16);
+	        value.getMatrixFloatBuffer(fb);
+	        glUniformMatrix4fv(uniforms.get(name), false, fb);
+	    }
 	}
 
 	public void setUniform(String name, Matrix4f[] values) {
 		FloatBuffer matrix = MemoryUtil.memAllocFloat(Matrix4f.SIZE * Matrix4f.SIZE * values.length);
-		//matrix.put(value.getMatrix()).flip();
 		for (int i = 0; i < values.length; i++) {
-			matrix.put(values[i].getMatrix()).flip();
+			values[i].getMatrixFloatBuffer(16 * i, matrix);
 		}
 		GL20.glUniformMatrix4fv(getUniformLocation(name), true, matrix);
 	}

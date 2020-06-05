@@ -21,7 +21,7 @@ public class GameObject {
 	}
 	
 	public void update() {
-		position.setX(position.getX() - 5f);
+		// To be implemented by subclasses
 	}
 
 	public void create(boolean initTextureBuffer) {
