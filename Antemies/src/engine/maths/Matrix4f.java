@@ -54,7 +54,7 @@ public class Matrix4f {
 		float invcos = 1 - cos;
 		
 		result.m00 = cos + x * x * invcos;
-		result.m10 =  x * y * invcos - z * sin;
+		result.m10 = x * y * invcos - z * sin;
 		result.m20 = x * z * invcos + y * sin;
 		result.m01 = x * y * invcos + z * sin;
 		result.m11 = cos + y * y * invcos;

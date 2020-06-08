@@ -10,7 +10,7 @@ import engine.maths.*;
 import main.Astar;
 
 public class AntObject extends GameObject {
-	float speed = 10; // probably within [0, 2]
+	float speed = 0.5f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;
@@ -107,8 +107,7 @@ public class AntObject extends GameObject {
 			}
 		}
 		
-		//Vector3f[] test = new Vector3f[] {this.getPosition(), new Vector3f(5, 1, 2), new Vector3f(-2, 1, 8), new Vector3f(-2, 1, 9), new Vector3f(-5, 1, -3)};
-		Vector3f[] test = new Vector3f[] {this.getPosition(), new Vector3f(2, 1, 1), new Vector3f(4, 1, 1)};
+		Vector3f[] test = new Vector3f[] {this.getPosition(), new Vector3f(5, 1, 2), new Vector3f(-2, 1, 8), new Vector3f(-2, 1, 9), new Vector3f(-5, 1, -3)};
 		return test;
 		
 		/*Vector3f[] controlPoints = new Vector3f[controlPointsList.size()];
@@ -140,31 +139,16 @@ public class AntObject extends GameObject {
 	}
 	
 	private float getAngle() {
-		/*Vector3f tangent = currentFunction.computeTangent(t);
-		float dotProduct = Vector3f.dotProduct(new Vector3f(-1, 0, 0), tangent);
-		float angle = (float) Math.toDegrees(Math.acos(dotProduct / (Vector3f.length(tangent))));
-		if (angle >= 180) {
-			angle = -angle;
-		}
-		System.out.println(angle);
-		
-		return angle;*/
-		
-		Vector3f current = currentFunction.computePosition(t);
-		Vector3f next = currentFunction.computePosition(t + dt);
-		
 		float angle;
-		float slope = (next.getZ() - current.getZ()) / (next.getX() - current.getX());
-		if (slope > 0) {
-			angle = (float) Math.toDegrees(Math.atan2(next.getZ() - current.getZ(), next.getX() - current.getX()));
-		} else {
-			angle = (float) Math.toDegrees(Math.atan2(next.getX() - current.getX(), next.getZ() - current.getZ()));
-		}
-		/*if (angle < 0) {
-	        angle += 360;
-	    }*/
+		Vector3f normTangent = Vector3f.normalize(currentFunction.computeTangent(t));
 		
-		return angle;
+		if (normTangent.getZ() < 0) {
+			angle = (float) Math.toDegrees(Math.acos(normTangent.getX()));
+		} else {
+			angle = - (float) Math.toDegrees(Math.acos(normTangent.getX()));
+		}
+		
+		return 180 + angle;
 	}
 	
 	private void computeInterval() {

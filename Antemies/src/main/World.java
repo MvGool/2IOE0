@@ -47,6 +47,7 @@ public class World {
 		}
 		antModel = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), antMesh);
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
+		antModel.moveTo(grid, new Vector3f(1, 1, 1));
 		
 //		ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
 //		ant.moveTo(grid, new Vector3f(3, 1, 2));
