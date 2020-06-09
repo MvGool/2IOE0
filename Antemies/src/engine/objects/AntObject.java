@@ -1,11 +1,8 @@
 package engine.objects;
 
-import java.awt.List;
 import java.util.ArrayList;
 
 import engine.graphics.Mesh;
-import engine.graphics.Vertex;
-import engine.model_loaders.StaticModelLoader;
 import engine.maths.*;
 import main.Astar;
 
@@ -18,27 +15,23 @@ public class AntObject extends GameObject {
 	private int functionNumber;
 	private float t;
 	private float dt;
-	private Vector3f newPosition;
 	
 	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
 		super(position, rotation, scalar, meshes);
 	}
 	
-	public void moveTo(Grid2D grid, Vector3f newPosition) {
-		this.newPosition = newPosition;
-		Tile newTile = new Tile((int) newPosition.getX(), (int) newPosition.getZ());
-		
-		if (grid.getTile(newTile.getX(), newTile.getY()).isObstacle()) {
+	public void moveTo(Grid2D grid, Tile goal) {
+		if (grid.getTile(goal.getX(), goal.getY()).isObstacle()) {
 			System.out.println("New position is an obstacle");
 			return;
 		}
 		
 		Tile[] shortestPath;
-		if (newTile.equals(this.getTile())) {
-			shortestPath = new Tile[] {newTile};
+		if (goal.equals(this.getTile())) {
+			shortestPath = new Tile[] {goal};
 		} else {
 			Grid2D astarGrid = new Grid2D(grid);
-			Astar astar = new Astar(astarGrid, new Tile(2, 3), newTile); // (this.getTile(), newTile)
+			Astar astar = new Astar(astarGrid, this.getTile(), goal);
 			shortestPath = astar.run();
 			if (shortestPath.length == 0) {
 				System.out.println("No path exists");
@@ -46,7 +39,7 @@ public class AntObject extends GameObject {
 			}
 		}
 		
-		Vector3f[] controlPoints = chooseControlPoints(shortestPath);
+		Vector3f[] controlPoints = chooseControlPoints(shortestPath, goal);
 		spline = new Spline(controlPoints);
 		move = true;
 		functions = spline.createSpline();
@@ -82,12 +75,12 @@ public class AntObject extends GameObject {
 		}
 	}
 	
-	private Vector3f[] chooseControlPoints(Tile[] shortestPath) {
+	private Vector3f[] chooseControlPoints(Tile[] shortestPath, Tile goal) {
 		ArrayList<Vector3f> controlPointsList = new ArrayList<>();
 		
 		if (shortestPath.length == 1) {
 			controlPointsList.add(this.getPosition());
-			controlPointsList.add(newPosition);
+			controlPointsList.add(new Vector3f(goal.getX(), 1, goal.getY()));
 		} else {
 			int[] currentDirection = getDirection(shortestPath[0], shortestPath[1]);
 			
@@ -95,25 +88,22 @@ public class AntObject extends GameObject {
 				if (i == 0) {
 					controlPointsList.add(this.getPosition());
 				} else if (i == shortestPath.length - 1) {
-					controlPointsList.add(newPosition);
+					controlPointsList.add(new Vector3f(goal.getX(), 1, goal.getY()));
 				} else {
 					int[] direction = getDirection(shortestPath[i - 1], shortestPath[i]);
 					
 					if (direction[0] != currentDirection[0] || direction[1] != currentDirection[1]) {
 						currentDirection = direction;
-						controlPointsList.add(shortestPath[i - 1].getVectorPosition());
+						controlPointsList.add(new Vector3f(shortestPath[i - 1].getX(), 1, shortestPath[i - 1].getY()));
 					}
 				}
 			}
 		}
 		
-		Vector3f[] test = new Vector3f[] {this.getPosition(), new Vector3f(5, 1, 2), new Vector3f(-2, 1, 8), new Vector3f(-2, 1, 9), new Vector3f(-5, 1, -3)};
-		return test;
-		
-		/*Vector3f[] controlPoints = new Vector3f[controlPointsList.size()];
+		Vector3f[] controlPoints = new Vector3f[controlPointsList.size()];
 		controlPointsList.toArray(controlPoints);
 		
-		return controlPoints;*/
+		return controlPoints;
 	}
 	
 	private int[] getDirection(Tile previous, Tile current) {
