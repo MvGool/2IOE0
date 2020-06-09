@@ -4,7 +4,6 @@ import engine.maths.Vector3f;
 
 public class Tile {
 	private int x, y;
-	private Vector3f position; // No value assigned yet
 	private boolean obstacle;
 	private int heuristic;
 	private int finalCost;
@@ -21,10 +20,6 @@ public class Tile {
 	
 	public int getY() {
 		return y;
-	}
-	
-	public Vector3f getVectorPosition() {
-		return position;
 	}
 	
 	public void setObstacle(boolean bool) {

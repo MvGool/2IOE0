@@ -14,6 +14,7 @@ public class GameObject {
 		this.rotation = rotation;
 		this.scalar = scalar;
 		this.meshes = meshes;
+		this.tile = new Tile(Math.round(position.getX()), Math.round(position.getZ()));
 	}
 
 	public GameObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh mesh) {
@@ -41,6 +42,7 @@ public class GameObject {
 	
 	public void setPosition(Vector3f position) {
 		this.position = position;
+		this.tile = new Tile(Math.round(position.getX()), Math.round(position.getZ()));
 	}
 
 	public Vector3f getRotation() {
