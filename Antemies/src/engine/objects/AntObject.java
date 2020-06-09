@@ -20,6 +20,42 @@ public class AntObject extends GameObject {
 	private float dt;
 	private Vector3f newPosition;
 	
+	public int health = 100;
+	public void addHealth(int added_value) {
+		health = health + added_value;
+		if (health > 100) {
+			health = 100;
+		}
+		if (health <= 0) {
+			//die
+		}
+	}
+	public int material = 0;
+	public int addMaterial(int new_value){
+		material = material + new_value;
+		if (material + food > 40) {
+			int overload = material - 40;
+			material = material - overload;
+			return overload; //So the source can put take it back
+		}
+		else {
+			return 0;
+		}
+	}
+	public int food = 0;
+	public int addFood(int new_value){
+		food = food + new_value;
+		if (material + food > 40) {
+			int overload = food - 40;
+			food = food - overload;
+			return overload; //So the source can put take it back
+		}
+		else {
+			return 0;
+		}
+	}
+	public int attackValue = 20;
+	
 	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
 		super(position, rotation, scalar, meshes);
 	}
