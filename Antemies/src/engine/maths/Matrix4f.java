@@ -187,6 +187,37 @@ public class Matrix4f {
 		return result;
 	}
 	
+	public static MatrixXf toMatrixXf(Matrix4f matrix) {
+		MatrixXf result = new MatrixXf(SIZE);
+		VectorXf row = new VectorXf(SIZE);
+		
+		row.set(0, matrix.m00);
+		row.set(1, matrix.m01);
+		row.set(2, matrix.m02);
+		row.set(3, matrix.m03);
+		result.setRow(0, row);
+		
+		row.set(0, matrix.m10);
+		row.set(1, matrix.m11);
+		row.set(2, matrix.m12);
+		row.set(3, matrix.m13);
+		result.setRow(1, row);
+		
+		row.set(0, matrix.m20);
+		row.set(1, matrix.m21);
+		row.set(2, matrix.m22);
+		row.set(3, matrix.m23);
+		result.setRow(2, row);
+		
+		row.set(0, matrix.m30);
+		row.set(1, matrix.m31);
+		row.set(2, matrix.m32);
+		row.set(3, matrix.m33);
+		result.setRow(3, row);
+		
+		return result;
+	}
+	
 	public void set(int column, int row, float value) {
 		switch (column) {
         case 0:

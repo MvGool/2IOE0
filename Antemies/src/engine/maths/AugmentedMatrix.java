@@ -20,6 +20,21 @@ public class AugmentedMatrix {
 		}
 	}
 	
+	public AugmentedMatrix(MatrixXf matrix1, MatrixXf matrix2) {
+		this.rowCount = matrix1.getSize();
+		this.columnCount = matrix1.getSize() + matrix2.getSize();
+		this.elements = new float[rowCount * columnCount];
+		for (int i = 0; i < rowCount; i++) {
+			for (int j = 0; j < columnCount; j++) {
+				if (j < columnCount - matrix2.getSize()) {
+					elements[i * columnCount + j] = matrix1.get(i, j);
+				} else {
+					elements[i * columnCount + j] = matrix2.get(i, j - matrix1.getSize());
+				}
+			}
+		}
+	}
+	
 	public float get(int x, int y) {
 		return elements[x * columnCount + y];
 	}

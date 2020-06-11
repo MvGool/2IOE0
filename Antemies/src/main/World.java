@@ -18,7 +18,7 @@ public class World {
 	private GameObject cube;
 	private Mesh gridMesh;	
 
-	private AntObject antModel;
+	private AntObject userAnt;
 
 	private GameObject otherModel;
 	private AnimGameObject ericModel;
@@ -30,9 +30,6 @@ public class World {
 	}
 	
 	public void load() {
-//		cubeMesh = null;
-//		cube = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), cubeMesh);
-
 		// TODO: remove other and eric model, is now just for debugging
 		Mesh[] other = null;
 		BoneMesh[] eric = null;
@@ -45,23 +42,16 @@ public class World {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		antModel = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), antMesh);
+		userAnt = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), antMesh);
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
-		antModel.moveTo(grid, new Tile(15, 20));
 		
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));
-
-//		antModel = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
 	}
 	
 	public void create() {
-//		cube.create(true);
-//		antModel.create(false);
-		//ant.create(false);
 		gridMesh.create(true);
-		antModel.create(false);
-//		antModel.moveTo(grid, new Vector3f(3000, 800, 2000));
+		userAnt.create(false);
 //		ericModel.create(false);
 //		for (int i = 0; i < objects.length; i++) {
 //			objects[i] = new GameObject(new Vector3f((float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25)), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
@@ -79,15 +69,21 @@ public class World {
 //		for (int i = 0; i < objects.length; i++) {
 //			renderer.renderMesh(objects[i], camera);
 //		}
-//		renderer.renderMesh(cube, camera);
-//		renderer.renderMesh(ant, camera);
 		renderer.renderTerrain(gridMesh, camera);
-		renderer.renderMesh(antModel, camera);
+		renderer.renderMesh(userAnt, camera);
 //		renderer.renderMesh(ericModel, camera);
 	}
 	
 	public void destroy() {
 		
+	}
+	
+	public void moveUser(Vector3f position) {
+		Tile tile = new Tile(Math.round(position.getX()), Math.round(position.getZ()));
+		
+		if (! userAnt.getTile().equals(tile)) {
+			userAnt.moveTo(grid, tile);
+		}
 	}
 	
 	private void updateGrid() {
@@ -102,6 +98,6 @@ public class World {
 	}
 
 	private void updateObjects() {
-		antModel.update();
+		userAnt.update();
 	}
 }

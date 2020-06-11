@@ -3,13 +3,13 @@
 package engine.maths;
 
 public class GaussJordanElimination {
-	
 	public static VectorXf solve(MatrixXf matrix, VectorXf values) {
 	    int n = matrix.getSize();
+	    int m = n + 1;
 	    int flag = 0;
 	    
 	    AugmentedMatrix augmentedMatrix = new AugmentedMatrix(matrix, values);
-	    flag = rowReduction(augmentedMatrix, n);
+	    flag = rowReduction(augmentedMatrix, n, m);
 	    
 	    if (flag == 1) {
 	        flag = checkConsistency(augmentedMatrix, n, flag);
@@ -20,7 +20,24 @@ public class GaussJordanElimination {
 	    return result;
 	}
 	
-	private static int rowReduction(AugmentedMatrix matrix, int n) {
+	public static MatrixXf solve(MatrixXf matrix, MatrixXf values) {
+	    int n = matrix.getSize();
+	    int m = n + values.getSize();
+	    int flag = 0;
+	    
+	    AugmentedMatrix augmentedMatrix = new AugmentedMatrix(matrix, values);
+	    flag = rowReduction(augmentedMatrix, n, m);
+	    
+	    if (flag == 1) {
+	        flag = checkConsistency(augmentedMatrix, n, flag);
+	    }
+	    
+	    MatrixXf result = computeResult(augmentedMatrix, n, m, flag);
+	    
+	    return result;
+	}
+	
+	private static int rowReduction(AugmentedMatrix matrix, int n, int m) {
 	    int i, j, k = 0, c, flag = 0;
 
 	    for (i = 0; i < n; i++) {
@@ -37,7 +54,7 @@ public class GaussJordanElimination {
 	            }
 	            
 	            float temp;
-	            for (j = i, k = 0; k <= n; k++) {
+	            for (j = i, k = 0; k < m; k++) {
 	            	temp = matrix.get(j, k);
 	                matrix.set(j, k, matrix.get(j + c, k));
 	                matrix.set(j + c, k, temp);
@@ -49,7 +66,7 @@ public class GaussJordanElimination {
 	            if (i != j) {             
 	                p = matrix.get(j, i) / matrix.get(i, i);
 	                
-	                for (k = 0; k <= n; k++) {
+	                for (k = 0; k < m; k++) {
 	                	matrix.set(j, k, matrix.get(j, k) - (matrix.get(i, k)) * p);
 	                }
 	            }
@@ -69,6 +86,26 @@ public class GaussJordanElimination {
 	    } else {
 	        for (int i = 0; i < n; i++) {
 	            result.set(i, matrix.get(i, n) / matrix.get(i, i));
+	        }
+	    }
+	    
+	    return result;
+	}
+	
+	private static MatrixXf computeResult(AugmentedMatrix matrix, int n, int m, int flag) {
+	    MatrixXf result = new MatrixXf(m - n);
+	    
+	    if (flag == 2) {
+	    	System.out.println("Infinite Solutions Exists");
+	    } else if (flag == 3) {
+	    	System.out.println("No Solution Exists");
+	    } else {
+	        for (int i = 0; i < m - n; i++) {
+	        	VectorXf row = new VectorXf(m - n);
+	        	for (int j = 0; j < m - n; j++) {
+	        		row.set(j, matrix.get(i, n + j) / matrix.get(i, i));
+	        	}
+	        	result.setRow(i, row);
 	        }
 	    }
 	    

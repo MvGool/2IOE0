@@ -37,7 +37,29 @@ public class MatrixXf {
 
 		return result;
 	}
+	
+	public static MatrixXf inverse(MatrixXf matrix) {
+		MatrixXf result = GaussJordanElimination.solve(matrix, MatrixXf.identity(matrix.getSize()));
+		
+		return result;
+	}
 
+	public static VectorXf multiply(MatrixXf matrix, VectorXf vector) {
+		int size = matrix.getSize();
+		VectorXf result = new VectorXf(vector.getSize());
+
+		for (int i = 0; i < size; i++) {
+			float value = 0;
+			for (int j = 0; j < size; j++) {
+				value += matrix.get(i, j) * vector.get(j);
+			}
+			
+			result.set(i, value);
+		}
+
+		return result;
+	}
+	
 	public static MatrixXf multiply(MatrixXf matrix1, MatrixXf matrix2) {
 		int size = matrix1.getSize();
 		MatrixXf result = identity(size);

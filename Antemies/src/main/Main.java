@@ -3,7 +3,7 @@ package main;
 import engine.graphics.*;
 import engine.io.Input;
 import engine.io.Window;
-import engine.maths.Vector3f;
+import engine.maths.*;
 import engine.objects.Camera;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -72,6 +72,12 @@ public class Main implements Runnable {
 		} else {
 			window.mouseState(false);
 		}
+		
+		if (cameraMode == "topdown" && Input.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+			Vector3f position = screenToWorldSpace(Input.getClickX(), Input.getClickY());			
+			world.moveUser(position);
+			System.out.println(position.toString());
+		}
 	}
 	
 	private void update() {
@@ -89,6 +95,24 @@ public class Main implements Runnable {
 	private void cleanup() {
 		window.destroy();
 		world.destroy();
+	}
+	
+	public Vector3f screenToWorldSpace(double x, double y) {		
+	    Matrix4f viewProjection = Matrix4f.multiply(window.getProjectionMatrix(), Matrix4f.view(camera.getPosition(), camera.getRotation()));
+	    MatrixXf viewProjectionInverse = MatrixXf.inverse(Matrix4f.toMatrixXf(viewProjection));
+
+	    float newX = (float) (2.0 * x / window.getWidth() - 1);
+	    float newZ = (float) (- 2.0 * y / window.getHeight() + 1);
+	    Vector3f vec3f = new Vector3f(newX, 1, newZ);
+	    VectorXf vec4f = new VectorXf(4);
+	    vec4f.set(0, vec3f.getX());
+	    vec4f.set(1, vec3f.getY());
+	    vec4f.set(2, vec3f.getZ());
+	    vec4f.set(3, 1);
+	    
+	    VectorXf mul = MatrixXf.multiply(viewProjectionInverse, vec4f);
+		
+	    return new Vector3f(camera.getPosition().getX() + camera.getPosition().getY() * mul.get(0), 1, camera.getPosition().getZ() + camera.getPosition().getY() * mul.get(1));
 	}
 	
 	public static void main(String[] args) {
