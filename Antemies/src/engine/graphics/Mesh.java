@@ -74,31 +74,40 @@ public class Mesh {
 		if (this instanceof  BoneMesh) {
 			FloatBuffer weightBuffer = MemoryUtil.memAllocFloat(vertices.length * 4);
 			float[] weightData = new float[vertices.length * 4];
+			System.out.println(vertices.length);
 			BoneMesh m = (BoneMesh)this;
+			System.out.println(m.getWeightsKeys().toString());
 			for (Integer i : m.getWeightsKeys()) {
+				System.out.println(i);
 				List<Weight> weights = m.getWeightsForVertex(i);
 				for (int j = 0; j < weights.size() && j < 4; j++) {
 					weightData[i * 4 + j] = weights.get(j).getWeight();
 				}
-				if (weights.size() < 4) {
+				/*if (weights.size() < 4) {
 					for (int j = weights.size(); j < 4; j++) {
 						weightData[i * 4 + j] = 0;
 					}
-				}
+				}*/
 			}
+			System.out.println("weight list: " + m.getWeightsKeys().size() + " weight data: " + weightData.length);
 			weightBuffer.put(weightData).flip();
 			storeData(weightBuffer, 3, 4);
 		}
 
 		// if we have a bonemesh we also bind the bones corresponding to the weights
 		if (this instanceof BoneMesh) {
-			FloatBuffer indexBuffer = MemoryUtil.memAllocFloat(vertices.length * 4);
-			float[] indexData = new float[vertices.length * 4];
+			IntBuffer indexBuffer = MemoryUtil.memAllocInt(vertices.length * 4);
+			int[] indexData = new int[vertices.length * 4];
 			BoneMesh m = (BoneMesh)this;
 			for (Integer i : m.getWeightsKeys()) {
 				List<Weight> weights = m.getWeightsForVertex(i);
 				for (int j = 0; j < weights.size() && j < 4; j++) {
 					indexData[i * 4 + j] = weights.get(j).getBoneID();
+				}
+				if (weights.size() < 4) {
+					for (int j = weights.size(); j < 4; j++) {
+						indexData[i * 4 + j] = 0;
+					}
 				}
 			}
 			indexBuffer.put(indexData).flip();
@@ -123,12 +132,25 @@ public class Mesh {
 
 		return bufferID;
 	}
+
+	private int storeData(IntBuffer buffer, int index, int size) {
+		int bufferID = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+		glVertexAttribPointer(index, size, GL_FLOAT, false, 0, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		return bufferID;
+	}
+
 	
 	public void reset(Vertex[] vertices, int[] indices, boolean initTextureBuffer) {
 		this.vertices = vertices;
 		this.indices = indices;
 		create(initTextureBuffer);
 	}
+
+
 
 	public void destroy() {
 		glDeleteBuffers(pbo);

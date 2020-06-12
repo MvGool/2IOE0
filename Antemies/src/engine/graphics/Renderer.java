@@ -61,7 +61,7 @@ public class Renderer {
 			// for vertex deformation
 			if (object instanceof AnimGameObject) {
 				objectShader.setUniform("useSkeleton", true);
-				org.joml.Matrix4f[] transforms = ((AnimGameObject)object).getMeshes()[0].getTransforms();
+				org.joml.Matrix4f[] transforms = ((BoneMesh)m).getTransforms();
 				objectShader.setUniform("boneMatrix", transforms);
 			} else {
 				objectShader.setUniform("useSkeleton", false);
