@@ -49,5 +49,5 @@ public class Node
 
 	public AIMatrix4x4 getTransformation() {
 		return transformation;
-}
+	}
 }

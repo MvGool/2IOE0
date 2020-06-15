@@ -37,17 +37,36 @@ public class ModelLoader
 		AIVector3D.Buffer aiTextCoords = aiMesh.mTextureCoords(0);
 
 		List<Vertex> vertices = new ArrayList<>();
-		while (aiVertices.remaining() > 0 && aiTextCoords.remaining() > 0) {
+		while (aiVertices.remaining() > 0) {
 			AIVector3D aiVertex = aiVertices.get();
-			AIVector3D aiNormal = aiNormals.get();
-			AIVector3D textCoords = aiTextCoords.get();
+
+			Vector3f normalV;
+			Vector2f texV;
+
+			// we check if there are normal and/or texture present, if so we load that information
+			// if not we give null. If there are errors with models it is likely that they don't have texture coordinates
+			if (aiNormals == null) {
+				normalV = null;
+			} else {
+				AIVector3D aiNormal = aiNormals.get();
+				normalV = new Vector3f(aiNormal.x(), aiNormal.y(), aiNormal.z());
+			}
+
+			if (aiTextCoords == null) {
+				texV = null;
+			} else {
+				AIVector3D textCoords = aiTextCoords.get();
+				texV = new Vector2f(textCoords.x(), 1 - textCoords.y());
+			}
+
 			vertices.add(new Vertex(
 					new Vector3f(aiVertex.x(), aiVertex.y(), aiVertex.z()),
-					new Vector3f(aiNormal.x(), aiNormal.y(), aiNormal.z()),
-					new Vector2f(textCoords.x(), 1 - textCoords.y())
+					normalV,
+					texV
 				)
 			);
 		}
+		System.out.println(vertices.size());
 		return vertices;
 	}
 

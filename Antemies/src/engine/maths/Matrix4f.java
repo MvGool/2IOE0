@@ -153,11 +153,11 @@ public class Matrix4f {
 		Matrix4f result = Matrix4f.identity();
 				
 		Matrix4f translationMatrix = Matrix4f.translate(position.invert());
-		Matrix4f xRotationMatrix = Matrix4f.rotate(rotation.getX(), new Vector3f(1, 0, 0));
-		Matrix4f yRotationMatrix = Matrix4f.rotate(rotation.getY(), new Vector3f(0, 1, 0));
-		Matrix4f zRotationMatrix = Matrix4f.rotate(rotation.getZ(), new Vector3f(0, 0, 1));
+		Matrix4f xRotationMatrix = Matrix4f.rotationX(rotation.getX());
+		Matrix4f yRotationMatrix = Matrix4f.rotationY(rotation.getY());
+		Matrix4f zRotationMatrix = Matrix4f.rotationZ(rotation.getZ());
 		
-		Matrix4f rotationMatrix = Matrix4f.multiply(zRotationMatrix, Matrix4f.multiply(yRotationMatrix, xRotationMatrix));
+		Matrix4f rotationMatrix = Matrix4f.multiply(xRotationMatrix, Matrix4f.multiply(yRotationMatrix, zRotationMatrix));
 		
 		result = Matrix4f.multiply(rotationMatrix, translationMatrix);
 				

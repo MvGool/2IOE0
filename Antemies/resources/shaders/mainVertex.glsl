@@ -23,9 +23,9 @@ void main() {
 			float weight = boneWeights[i];
 			if (weight > 0) {
 				transform += boneMatrix[boneIndices[i]] * weight;
-				endPosition += transform * vec4(position, 1.0);
 			}
 		}
+		endPosition += transform * vec4(position, 1.0);
 	} else {
 		endPosition = vec4(position, 1.0);
 	}

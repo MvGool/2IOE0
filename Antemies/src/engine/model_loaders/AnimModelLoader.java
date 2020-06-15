@@ -27,11 +27,13 @@ public class AnimModelLoader extends ModelLoader
 		if (scene == null) {
 			throw new Exception(aiGetErrorString());
 		}
-		List<Bone> boneList = new ArrayList<>();
-		Map<Integer, List<Weight>> weightMap = new HashMap<>();
+		//List<Bone> boneList = new ArrayList<>();
+		//Map<Integer, List<Weight>> weightMap = new HashMap<>();
 		PointerBuffer aiMeshes = scene.mMeshes();
 		BoneMesh[] meshes = new BoneMesh[scene.mNumMeshes()];
 		for (int i = 0; i < meshes.length; i++) {
+			List<Bone> boneList = new ArrayList<>();
+			Map<Integer, List<Weight>> weightMap = new HashMap<>();
 			AIMesh aiMesh = AIMesh.create(aiMeshes.get(i));
 			processBones(aiMesh, boneList, weightMap);
 			Node root = processNodes(scene.mRootNode() , null);
@@ -49,6 +51,7 @@ public class AnimModelLoader extends ModelLoader
 		for (int i = 0; i < mesh.mNumBones(); i++) {
 			AIBone aiBone = AIBone.create(aiBones.get(i));
 			Bone bone = new Bone(boneList.size(), aiBone.mName().dataString(), AIMatrixToMatrix(aiBone.mOffsetMatrix()));
+
 			boneList.add(bone);
 
 			AIVertexWeight.Buffer aiWeights = aiBone.mWeights();
@@ -65,12 +68,16 @@ public class AnimModelLoader extends ModelLoader
 				}
 			}
 		}
+		System.out.println("weightmap size: " + weightMap.size());
+		System.out.println("Vertices: " + mesh.mNumVertices());
 	}
 
 	// Creates all information needed to create a boneMesh
 	static BoneMesh processMesh(AIMesh aiMesh, String texturePath, List<Bone> boneList, Map<Integer, List<Weight>> weightMap, Node root) {
 		List<Vertex> vertices = processVertices(aiMesh);
 		List<Integer> indices = processIndices(aiMesh);
+
+		System.out.println(vertices.size());
 
 		Vertex[] verticesArray = new Vertex[vertices.size()];
 			return new BoneMesh(vertices.toArray(verticesArray),
@@ -97,7 +104,7 @@ public class AnimModelLoader extends ModelLoader
 	// Transform an AIMatrix to a Joml matrix
 	public static Matrix4f AIMatrixToMatrix(AIMatrix4x4 matrix) {
 		org.joml.Matrix4f result = new org.joml.Matrix4f();
-		result.set(0, 0, matrix.a1());
+		/*result.set(0, 0, matrix.a1());
 		result.set(0, 1, matrix.a2());
 		result.set(0, 2, matrix.a3());
 		result.set(0, 3, matrix.a4());
@@ -112,9 +119,26 @@ public class AnimModelLoader extends ModelLoader
 		result.set(3, 0, matrix.d1());
 		result.set(3, 1, matrix.d2());
 		result.set(3, 2, matrix.d3());
-		result.set(3, 3, matrix.d4());
+		result.set(3, 3, matrix.d4());*/
 
-		return result;
+		result.m00(matrix.a1());
+		result.m10(matrix.a2());
+		result.m20(matrix.a3());
+		result.m30(matrix.a4());
+		result.m01(matrix.b1());
+		result.m11(matrix.b2());
+		result.m21(matrix.b3());
+		result.m31(matrix.b4());
+		result.m02(matrix.c1());
+		result.m12(matrix.c2());
+		result.m22(matrix.c3());
+		result.m32(matrix.c4());
+		result.m03(matrix.d1());
+		result.m13(matrix.d2());
+		result.m23(matrix.d3());
+		result.m33(matrix.d4());
+
+		return result.transpose();
 	}
 
 	// Transform a joml matrix to our own matrix implementation

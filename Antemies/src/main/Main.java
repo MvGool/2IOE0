@@ -57,15 +57,18 @@ public class Main implements Runnable {
 	private void handleInputs() {
 		if (Input.isKeyDown(GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
 		if (Input.isKeyDown(GLFW_KEY_F1) && !hold) {
+			hold = true;
+		}
+		
+		if (!Input.isKeyDown(GLFW_KEY_F1) && hold == true) {
 			if (cameraMode == "topdown") {
 				cameraMode = "firstperson";
 			} else {
 				cameraMode = "topdown";
 			}
-			hold = true;
+			
+			hold = false;
 		}
-		
-		if (!Input.isKeyDown(GLFW_KEY_F1)) hold = false;
 		
 		if (cameraMode == "firstperson") {
 			window.mouseState(true);
