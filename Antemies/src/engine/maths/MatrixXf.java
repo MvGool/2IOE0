@@ -101,6 +101,24 @@ public class MatrixXf {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof MatrixXf)) {
+			return false;
+		}
+		
+		MatrixXf matrix = (MatrixXf) o;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				if (this.get(i, j) != matrix.get(i, j)) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	@Override
 	public String toString() {
 		String matrix = "";
 		for (int i = 0; i < size; i++) {

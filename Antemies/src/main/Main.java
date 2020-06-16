@@ -14,7 +14,8 @@ public class Main implements Runnable {
 	public Window window;
 	public Renderer renderer;
 	public World world;
-	public boolean hold;
+	public boolean holdF1;
+	public boolean holdClick;
 	public final int WIDTH = 1280, HEIGHT = 760;
 
 	public Camera camera = new Camera(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0));
@@ -56,18 +57,18 @@ public class Main implements Runnable {
 	
 	private void handleInputs() {
 		if (Input.isKeyDown(GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
-		if (Input.isKeyDown(GLFW_KEY_F1) && !hold) {
-			hold = true;
+		if (Input.isKeyDown(GLFW_KEY_F1) && !holdF1) {
+			holdF1 = true;
 		}
 		
-		if (!Input.isKeyDown(GLFW_KEY_F1) && hold == true) {
+		if (!Input.isKeyDown(GLFW_KEY_F1) && holdF1 == true) {
 			if (cameraMode == "topdown") {
 				cameraMode = "firstperson";
 			} else {
 				cameraMode = "topdown";
 			}
 			
-			hold = false;
+			holdF1 = false;
 		}
 		
 		if (cameraMode == "firstperson") {
@@ -76,10 +77,16 @@ public class Main implements Runnable {
 			window.mouseState(false);
 		}
 		
-		if (cameraMode == "topdown" && Input.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
-			Vector3f position = screenToWorldSpace(Input.getClickX(), Input.getClickY());			
-			world.moveUser(position);
-			System.out.println(position.toString());
+		if (!Input.isButtonDown(GLFW_MOUSE_BUTTON_LEFT)) holdClick = false;
+		
+		if (cameraMode == "topdown" && Input.isButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !holdClick) {
+			double inputX = Input.getClickX();
+			double inputY = Input.getClickY();
+			Vector3f position = screenToWorldSpace(inputX, inputY);
+			if (position != null) {
+				world.moveUser(position);
+				holdClick = true;
+			}
 		}
 	}
 	
@@ -88,7 +95,6 @@ public class Main implements Runnable {
 		world.update(renderer, camera);
 		camera.update(cameraMode);
 	}
-
 	
 	private void render() {
 		world.render();
@@ -103,7 +109,7 @@ public class Main implements Runnable {
 	public Vector3f screenToWorldSpace(double x, double y) {		
 	    Matrix4f viewProjection = Matrix4f.multiply(window.getProjectionMatrix(), Matrix4f.view(camera.getPosition(), camera.getRotation()));
 	    MatrixXf viewProjectionInverse = MatrixXf.inverse(Matrix4f.toMatrixXf(viewProjection));
-
+	    
 	    float newX = (float) (2.0 * x / window.getWidth() - 1);
 	    float newZ = (float) (- 2.0 * y / window.getHeight() + 1);
 	    Vector3f vec3f = new Vector3f(newX, 1, newZ);
@@ -114,12 +120,17 @@ public class Main implements Runnable {
 	    vec4f.set(3, 1);
 	    
 	    VectorXf mul = MatrixXf.multiply(viewProjectionInverse, vec4f);
-		
-	    return new Vector3f(camera.getPosition().getX() + camera.getPosition().getY() * mul.get(0), 1, camera.getPosition().getZ() + camera.getPosition().getY() * mul.get(1));
+	    Vector3f result;
+	    if (viewProjectionInverse.equals(MatrixXf.zero(4))) {
+	    	result = null;
+	    } else {
+	    	result = new Vector3f(camera.getPosition().getX() + camera.getPosition().getY() * mul.get(0), 1, camera.getPosition().getZ() + camera.getPosition().getY() * mul.get(1));
+	    }
+	    
+	    return result;
 	}
 	
 	public static void main(String[] args) {
 		new Main().start();
 	}
 }
-
