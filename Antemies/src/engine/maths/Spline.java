@@ -19,6 +19,13 @@ public class Spline {
 	
 	public CubicPolynomial[] createSpline() {
 		CubicPolynomial[] result = new CubicPolynomial[n - 1];
+		
+		if (n == 2) {
+			CubicPolynomial function = new CubicPolynomial(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), Vector3f.subtract(controlPoints[1], controlPoints[0]), controlPoints[0]);
+			result[0] = function;
+			
+			return result;
+		}
 
 		setConstraints();
 		VectorXf xConstants = GaussJordanElimination.solve(constraints, xValues);
@@ -105,5 +112,9 @@ public class Spline {
 		xValues.set(row, point.getX());
 		yValues.set(row, point.getY());
 		zValues.set(row, point.getZ());
+	}
+	
+	public Vector3f[] getControlPoints() {
+		return controlPoints;
 	}
 }

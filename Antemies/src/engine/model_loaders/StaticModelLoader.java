@@ -28,8 +28,7 @@ public class StaticModelLoader extends ModelLoader {
 			Mesh mesh = processMesh(aiMesh, texturePath); // Error here
 			meshes[i] = mesh;
 		}
-		
-		System.out.println(meshes.length);
+
 
 		return meshes;
 	}

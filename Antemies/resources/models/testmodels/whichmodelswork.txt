@@ -1,0 +1,17 @@
+Keep in mind that obj models are for static models and fbx and dae can be used for both animated and static models
+
+Ant_anim_fbx.fbx	loads as static model		loads as animated model, although shader messed up
+Ant_fbx.fbx		same as above, think just same model without skeleton
+antfree.fbx		again same
+antmodelmilan.obj	gives null error when loading as static model
+eric.dae		works as both static and animated, although shader messed up
+eric.fbx		same as above but fbx model
+freemodel.dae		null error when loading
+freemodel2.dae		null error when loading
+freemodel3.dae		null error when loading
+monkey.obj		works as static model
+ourantmodeldifferentstructure.dae	null error when loading
+sturm.fbx		null error when loading
+
+
+		

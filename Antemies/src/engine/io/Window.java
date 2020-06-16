@@ -54,6 +54,7 @@ public class Window {
 		GLFW.glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+//		GL11.glPolygonMode( GL11.GL_FRONT_AND_BACK, GL11.GL_LINE ); // See meshes as polygons for debugging
 		
 		createCallbacks();
 		

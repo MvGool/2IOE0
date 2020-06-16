@@ -30,7 +30,7 @@ public class Astar {
 
         for (int i = 0; i < grid.getSize(); i++) {
             for (int j = 0; j < grid.getSize(); j++) {
-                grid.getTile(i, j).setHeuristic(Math.abs(i - goal.getX()) + Math.abs(j - goal.getY()));
+                grid.getTile(i-grid.getSize()/2, j-grid.getSize()/2).setHeuristic(Math.abs(i-grid.getSize()/2 - goal.getX()) + Math.abs(j-grid.getSize()/2 - goal.getY()));
             }
         }
 
@@ -52,7 +52,7 @@ public class Astar {
                 break;
             }
             
-            closedList[current.getX()][current.getY()] = true;
+            closedList[current.getX() + grid.getSize()/2][current.getY() + grid.getSize()/2] = true;
 
             if (current.equals(goal)) {
                 break;
@@ -61,6 +61,7 @@ public class Astar {
             Tile next;
             for (int[] neighbor : getNeighbors(current)) {
                 next = grid.getTile(neighbor[0], neighbor[1]);
+
                 if (neighbor[2] == 0) { //if neighbor is horizontal/vertical
                     updateCost(current, next, current.getFinal() + moveCost);
                 } else if (neighbor[2] == 1) { //if neighbor is diagonal
@@ -84,14 +85,14 @@ public class Astar {
 
         List<int[]> result = new ArrayList<int[]>();
         for (int[] dir : directions) {
-            if (current.getX() + dir[0] >= 0 && current.getY() + dir[1] >= 0
-                    && current.getX() + dir[0] < grid.getSize() && current.getY() + dir[1] < grid.getSize()) {
+            if (current.getX() + dir[0] >= -grid.getSize()/2 && current.getY() + dir[1] >= -grid.getSize()/2
+                    && current.getX() + dir[0] < grid.getSize()/2 && current.getY() + dir[1] < grid.getSize()/2) {
                 result.add(new int[] {current.getX() + dir[0], current.getY() + dir[1], 0});
             }
         }
         for (int[] dir : diagonalDirections) {
-            if (current.getX() + dir[0] >= 0 && current.getY() + dir[1] >= 0
-                    && current.getX() + dir[0] < grid.getSize() && current.getY() + dir[1] < grid.getSize()) {
+            if (current.getX() + dir[0] >= -grid.getSize()/2 && current.getY() + dir[1] >= -grid.getSize()/2
+                    && current.getX() + dir[0] < grid.getSize()/2 && current.getY() + dir[1] < grid.getSize()/2) {
                 result.add(new int[] {current.getX() + dir[0], current.getY() + dir[1], 1});
             }
         }
@@ -100,7 +101,7 @@ public class Astar {
 
     //calculate the final cost
     private void updateCost(Tile current, Tile next, int cost) {
-        if (next.isObstacle() || closedList[next.getX()][next.getY()]) {
+        if (next.isObstacle() || closedList[next.getX() + grid.getSize()/2][next.getY() + grid.getSize()/2]) {
             return;
         }
         int tFinalCost = next.getHeuristic() + cost;
@@ -118,7 +119,7 @@ public class Astar {
     private void computeSolution() {
     	ArrayList<Tile> listSolution = new ArrayList<>();
     	
-    	if (closedList[goal.getX()][goal.getY()]) {
+    	if (closedList[goal.getX() + grid.getSize()/2][goal.getY() + grid.getSize()/2]) {
             Tile current = goal;
         	listSolution.add(goal);
             
@@ -140,11 +141,11 @@ public class Astar {
 
         for (int i = 0; i < grid.getSize(); i++) {
             for (int j = 0; j < grid.getSize(); j++) {
-            	if (grid.getTile(i, j).isObstacle()) {
+            	if (grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2).isObstacle()) {
             		System.out.print("##  ");
-            	} else if (grid.getTile(i, j).equals(start)) {
+            	} else if (grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2).equals(start)) {
                     System.out.print("ST  ");
-                } else if (grid.getTile(i, j).equals(goal)) {
+                } else if (grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2).equals(goal)) {
                     System.out.print("FH  ");
                 } else {
                     System.out.printf("%-3d ", 0);
@@ -160,8 +161,8 @@ public class Astar {
         System.out.println("SCORES: ");
         for (int i = 0; i < grid.getSize(); i++) {
             for (int j = 0; j < grid.getSize(); j++) {
-                if (grid.getTile(i, j) != null) {
-                    System.out.printf("%-3d ", grid.getTile(i, j).getFinal());
+                if (grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2) != null) {
+                    System.out.printf("%-3d ", grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2).getFinal());
                 } else {
                     System.out.print("## ");
                 }
@@ -173,7 +174,7 @@ public class Astar {
 
     //display the shortest path
     public void displaySolution() {
-        if (closedList[goal.getX()][goal.getY()]) {
+        if (closedList[goal.getX() + grid.getSize()/2][goal.getY() + grid.getSize()/2]) {
             System.out.println("Path: ");
             Tile current = goal;
             System.out.println(current);
@@ -185,13 +186,13 @@ public class Astar {
             System.out.println("\n");
             for (int i = 0; i < grid.getSize(); i++) {
                 for (int j = 0; j < grid.getSize(); j++) {
-                	if (grid.getTile(i, j).isObstacle()) {
+                	if (grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2).isObstacle()) {
                 		System.out.print("##  ");
-                	} else if (grid.getTile(i, j).equals(start)) {
+                	} else if (grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2).equals(start)) {
                         System.out.print("ST  ");
-                    } else if (grid.getTile(i, j).equals(goal)) {
+                    } else if (grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2).equals(goal)) {
                         System.out.print("FH  ");
-                    } else if (Arrays.asList(solution).contains(grid.getTile(i, j))) {
+                    } else if (Arrays.asList(solution).contains(grid.getTile(i - grid.getSize()/2, j - grid.getSize()/2))) {
                     	System.out.print("X   ");
                     } else {
                     	System.out.print("0   ");
@@ -205,20 +206,20 @@ public class Astar {
         }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
     	Tile start = new Tile(0, 0);
     	Tile goal = new Tile(3, 2);
     	Grid2D grid = new Grid2D(5);
-    	grid.addObstacle(new Tile(0,4));
-    	grid.addObstacle(new Tile(2,2));
-    	grid.addObstacle(new Tile(3,1));
-    	grid.addObstacle(new Tile(3,3));
-    	grid.addObstacle(new Tile(2,1));
-    	grid.addObstacle(new Tile(2,3));
+    	grid.addObstacle(0,4);
+    	grid.addObstacle(2,2);
+    	grid.addObstacle(3,1);
+    	grid.addObstacle(3,3);
+    	grid.addObstacle(2,1);
+    	grid.addObstacle(2,3);
     	Astar aStar = new Astar(grid, start, goal);
         aStar.display();
         aStar.run();
         aStar.displayScores();
         aStar.displaySolution();
-    }
+    }*/
 }

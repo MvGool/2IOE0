@@ -4,6 +4,7 @@ import engine.maths.Vector2f;
 import engine.maths.Vector3f;
 
 public class Vertex {
+
 	private Vector3f position, normal;
 	private Vector2f textureCoord;
 	

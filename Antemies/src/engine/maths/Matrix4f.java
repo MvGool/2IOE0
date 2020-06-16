@@ -1,24 +1,23 @@
 package engine.maths;
 
+import java.nio.FloatBuffer;
 import java.util.Arrays;
 
 /* INDEX: (COLUMN, ROW) */
 public class Matrix4f {
 	public static final int SIZE = 4;
-	private float[] elements = new float[SIZE * SIZE];
+	private float 	m00, m01, m02, m03,
+					m10, m11, m12, m13,
+					m20, m21, m22, m23,
+					m30, m31, m32, m33;
 	
 	public static Matrix4f identity() {
 		Matrix4f result = new Matrix4f();
 		
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				if (i == j) {
-					result.set(j,  i, 1);
-				} else {
-					result.set(j,  i, 0);
-				}
-			}
-		}
+		result.m00 = 1.0f;
+		result.m11 = 1.0f;
+		result.m22 = 1.0f;
+		result.m33 = 1.0f;
 		
 		return result;
 	}
@@ -26,29 +25,85 @@ public class Matrix4f {
 	public static Matrix4f translate(Vector3f translation) {
 		Matrix4f result = Matrix4f.identity();
 		
-		result.set(3, 0, translation.getX());
-		result.set(3, 1, translation.getY());
-		result.set(3, 2, translation.getZ());
+		result.m30 = translation.getX();
+		result.m31 = translation.getY();
+		result.m32 = translation.getZ();
 		
 		return result;
 	}
 	
 	public static Matrix4f rotate(float angle, Vector3f axis) {
-		Matrix4f result = Matrix4f.identity();
+		float x = axis.getX();
+		float y = axis.getY();
+		float z = axis.getZ();
+		
+		if (y == 0.0f && z == 0.0f && Math.abs(x) == 1)
+            return rotationX(x * angle);
+        else if (x == 0.0f && z == 0.0f && Math.abs(y) == 1)
+            return rotationY(y * angle);
+        else if (x == 0.0f && y == 0.0f && Math.abs(z) == 1)
+            return rotationZ(z * angle);
+        return rotationInternal(angle, x, y, z);
+	}
+     
+	private static Matrix4f rotationInternal(float angle, float x, float y, float z) {
+        Matrix4f result = Matrix4f.identity();
 		
 		float cos = (float) Math.cos(Math.toRadians(angle));
 		float sin = (float) Math.sin(Math.toRadians(angle));
 		float invcos = 1 - cos;
 		
-		result.set(0, 0, cos + axis.getX() * axis.getX() * invcos);
-		result.set(1, 0, axis.getX() * axis.getY() * invcos - axis.getZ() * sin);
-		result.set(2, 0, axis.getX() * axis.getZ() * invcos + axis.getY() * sin);
-		result.set(0, 1, axis.getY() * axis.getX() * invcos + axis.getZ() * sin);
-		result.set(1, 1, cos + axis.getY() * axis.getY() * invcos);
-		result.set(2, 1, axis.getY() * axis.getZ() * invcos - axis.getX() * sin);
-		result.set(0, 2, axis.getZ() * axis.getX() * invcos - axis.getY() * sin);
-		result.set(1, 2, axis.getZ() * axis.getY() * invcos + axis.getX() * sin);
-		result.set(2, 2, cos + axis.getZ() * axis.getZ() * invcos);
+		result.m00 = cos + x * x * invcos;
+		result.m10 = x * y * invcos - z * sin;
+		result.m20 = x * z * invcos + y * sin;
+		result.m01 = x * y * invcos + z * sin;
+		result.m11 = cos + y * y * invcos;
+		result.m21 = y * z * invcos - x * sin;
+		result.m02 = z * x * invcos - y * sin;
+		result.m12 = z * y * invcos + x * sin;
+		result.m22 = cos + z * z * invcos;
+		
+		return result;
+	}
+	
+	private static Matrix4f rotationX(float angle) {
+		Matrix4f result = Matrix4f.identity();
+		
+		float cos = (float) Math.cos(Math.toRadians(angle));
+		float sin = (float) Math.sin(Math.toRadians(angle));
+
+		result.m11 = cos;
+		result.m12 = sin;
+		result.m21 = -sin;
+		result.m22 = cos;
+		
+		return result;
+	}
+	
+	private static Matrix4f rotationY(float angle) {
+		Matrix4f result = Matrix4f.identity();
+		
+		float cos = (float) Math.cos(Math.toRadians(angle));
+		float sin = (float) Math.sin(Math.toRadians(angle));
+
+		result.m00 = cos;
+		result.m02 = -sin;
+		result.m20 = sin;
+		result.m22 = cos;
+		
+		return result;
+	}
+	
+	private static Matrix4f rotationZ(float angle) {
+		Matrix4f result = Matrix4f.identity();
+		
+		float cos = (float) Math.cos(Math.toRadians(angle));
+		float sin = (float) Math.sin(Math.toRadians(angle));
+
+		result.m00 = cos;
+		result.m01 = sin;
+		result.m10 = -sin;
+		result.m11 = cos;
 		
 		return result;
 	}
@@ -56,9 +111,9 @@ public class Matrix4f {
 	public static Matrix4f scale(Vector3f scalar) {
 		Matrix4f result = Matrix4f.identity();
 		
-		result.set(0, 0, scalar.getX());
-		result.set(1, 1, scalar.getY());
-		result.set(2, 2, scalar.getZ());
+		result.m00 = scalar.getX();
+		result.m11 = scalar.getY();
+		result.m22 = scalar.getZ();
 		
 		return result;
 	}
@@ -67,12 +122,12 @@ public class Matrix4f {
 		Matrix4f result = Matrix4f.identity();
 		
 		Matrix4f translationMatrix = Matrix4f.translate(position);
-		Matrix4f XRotationMatrix = Matrix4f.rotate(rotation.getX(), new Vector3f(1, 0, 0));
-		Matrix4f YRotationMatrix = Matrix4f.rotate(rotation.getY(), new Vector3f(0, 1, 0));
-		Matrix4f ZRotationMatrix = Matrix4f.rotate(rotation.getZ(), new Vector3f(0, 0, 1));
+		Matrix4f xRotationMatrix = Matrix4f.rotate(rotation.getX(), new Vector3f(1, 0, 0));
+		Matrix4f yRotationMatrix = Matrix4f.rotate(rotation.getY(), new Vector3f(0, 1, 0));
+		Matrix4f zRotationMatrix = Matrix4f.rotate(rotation.getZ(), new Vector3f(0, 0, 1));
 		Matrix4f scalarMatrix = Matrix4f.scale(scalar);
 		
-		Matrix4f rotationMatrix = Matrix4f.multiply(XRotationMatrix, Matrix4f.multiply(YRotationMatrix, ZRotationMatrix));
+		Matrix4f rotationMatrix = Matrix4f.multiply(zRotationMatrix, Matrix4f.multiply(yRotationMatrix, xRotationMatrix));
 		
 		result = Matrix4f.multiply(translationMatrix, Matrix4f.multiply(rotationMatrix, scalarMatrix));
 				
@@ -83,14 +138,13 @@ public class Matrix4f {
 		Matrix4f result = Matrix4f.identity();
 		
 		float tanFOV = (float) Math.tan(Math.toRadians(fov/2));
-		float range = far - near;
 		
-		result.set(0, 0, 1.0f / (aspectRatio * tanFOV));
-		result.set(1, 1, 1.0f / tanFOV);
-		result.set(2, 2, -(far + near) / range);
-		result.set(2, 3, -1.0f);
-		result.set(3, 2, -(2*far*near) / range);
-		result.set(3, 3, 0.0f);
+		result.m00 = 1.0f / (aspectRatio * tanFOV);
+		result.m11 = 1.0f / tanFOV;
+		result.m22 = (far + near) / (near - far);
+		result.m23 = -1.0f;
+		result.m32 = (2*far*near) / (near - far);
+		result.m33 = 0.0f;
 		
 		return result;
 	}
@@ -99,13 +153,13 @@ public class Matrix4f {
 		Matrix4f result = Matrix4f.identity();
 				
 		Matrix4f translationMatrix = Matrix4f.translate(position.invert());
-		Matrix4f xRotationMatrix = Matrix4f.rotate(rotation.getX(), new Vector3f(1, 0, 0));
-		Matrix4f yRotationMatrix = Matrix4f.rotate(rotation.getY(), new Vector3f(0, 1, 0));
-		Matrix4f zRotationMatrix = Matrix4f.rotate(rotation.getZ(), new Vector3f(0, 0, 1));
+		Matrix4f xRotationMatrix = Matrix4f.rotationX(rotation.getX());
+		Matrix4f yRotationMatrix = Matrix4f.rotationY(rotation.getY());
+		Matrix4f zRotationMatrix = Matrix4f.rotationZ(rotation.getZ());
 		
-		Matrix4f rotationMatrix = Matrix4f.multiply(zRotationMatrix, Matrix4f.multiply(yRotationMatrix, xRotationMatrix));
+		Matrix4f rotationMatrix = Matrix4f.multiply(xRotationMatrix, Matrix4f.multiply(yRotationMatrix, zRotationMatrix));
 		
-		result = Matrix4f.multiply(translationMatrix, rotationMatrix);
+		result = Matrix4f.multiply(rotationMatrix, translationMatrix);
 				
 		return result;
 	}
@@ -113,23 +167,109 @@ public class Matrix4f {
 	public static Matrix4f multiply(Matrix4f matrix1, Matrix4f matrix2) {
 		Matrix4f result = Matrix4f.identity();
 		
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				result.set(j,  i, matrix1.get(0, i) * matrix2.get(j, 0) +
-								  matrix1.get(1, i) * matrix2.get(j, 1)	+
-								  matrix1.get(2, i) * matrix2.get(j, 2)	+
-								  matrix1.get(3, i) * matrix2.get(j, 3));
-			}
-		}
+		result.m00 = matrix1.m00*matrix2.m00 + matrix1.m10*matrix2.m01 + matrix1.m20*matrix2.m02 + matrix1.m30 * matrix2.m03;
+        result.m01 = matrix1.m01*matrix2.m00 + matrix1.m11*matrix2.m01 + matrix1.m21*matrix2.m02 + matrix1.m31 * matrix2.m03;
+        result.m02 = matrix1.m02*matrix2.m00 + matrix1.m12*matrix2.m01 + matrix1.m22*matrix2.m02 + matrix1.m32 * matrix2.m03;
+        result.m03 = matrix1.m03*matrix2.m00 + matrix1.m13*matrix2.m01 + matrix1.m23*matrix2.m02 + matrix1.m33 * matrix2.m03;
+        result.m10 = matrix1.m00*matrix2.m10 + matrix1.m10*matrix2.m11 + matrix1.m20*matrix2.m12 + matrix1.m30 * matrix2.m13;
+        result.m11 = matrix1.m01*matrix2.m10 + matrix1.m11*matrix2.m11 + matrix1.m21*matrix2.m12 + matrix1.m31 * matrix2.m13;
+        result.m12 = matrix1.m02*matrix2.m10 + matrix1.m12*matrix2.m11 + matrix1.m22*matrix2.m12 + matrix1.m32 * matrix2.m13;
+        result.m13 = matrix1.m03*matrix2.m10 + matrix1.m13*matrix2.m11 + matrix1.m23*matrix2.m12 + matrix1.m33 * matrix2.m13;
+        result.m20 = matrix1.m00*matrix2.m20 + matrix1.m10*matrix2.m21 + matrix1.m20*matrix2.m22 + matrix1.m30 * matrix2.m23;
+        result.m21 = matrix1.m01*matrix2.m20 + matrix1.m11*matrix2.m21 + matrix1.m21*matrix2.m22 + matrix1.m31 * matrix2.m23;
+        result.m22 = matrix1.m02*matrix2.m20 + matrix1.m12*matrix2.m21 + matrix1.m22*matrix2.m22 + matrix1.m32 * matrix2.m23;
+        result.m23 = matrix1.m03*matrix2.m20 + matrix1.m13*matrix2.m21 + matrix1.m23*matrix2.m22 + matrix1.m33 * matrix2.m23;
+        result.m30 = matrix1.m00*matrix2.m30 + matrix1.m10*matrix2.m31 + matrix1.m20*matrix2.m32 + matrix1.m30 * matrix2.m33;
+        result.m31 = matrix1.m01*matrix2.m30 + matrix1.m11*matrix2.m31 + matrix1.m21*matrix2.m32 + matrix1.m31 * matrix2.m33;
+        result.m32 = matrix1.m02*matrix2.m30 + matrix1.m12*matrix2.m31 + matrix1.m22*matrix2.m32 + matrix1.m32 * matrix2.m33;
+        result.m33 = matrix1.m03*matrix2.m30 + matrix1.m13*matrix2.m31 + matrix1.m23*matrix2.m32 + matrix1.m33 * matrix2.m33;
 		
 		return result;
 	}
 	
+	public void set(int column, int row, float value) {
+		switch (column) {
+        case 0:
+            switch (row) {
+            case 0:
+                m00 = value;
+            case 1:
+                m01 = value;
+            case 2:
+                m02 = value;
+            case 3:
+                m03 = value;
+            default:
+                break;
+            }
+            break;
+        case 1:
+            switch (row) {
+            case 0:
+                m10 = value;
+            case 1:
+                m11 = value;
+            case 2:
+                m12 = value;
+            case 3:
+                m13 = value;
+            default:
+                break;
+            }
+            break;
+        case 2:
+            switch (row) {
+            case 0:
+                m20 = value;
+            case 1:
+                m21 = value;
+            case 2:
+                m22 = value;
+            case 3:
+                m23 = value;
+            default:
+                break;
+            }
+            break;
+        case 3:
+            switch (row) {
+            case 0:
+                m30 = value;
+            case 1:
+                m31 = value;
+            case 2:
+                m32 = value;
+            case 3:
+                m33 = value;
+            default:
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.hashCode(elements);
+		result = prime * result + Float.floatToIntBits(m00);
+		result = prime * result + Float.floatToIntBits(m01);
+		result = prime * result + Float.floatToIntBits(m02);
+		result = prime * result + Float.floatToIntBits(m03);
+		result = prime * result + Float.floatToIntBits(m10);
+		result = prime * result + Float.floatToIntBits(m11);
+		result = prime * result + Float.floatToIntBits(m12);
+		result = prime * result + Float.floatToIntBits(m13);
+		result = prime * result + Float.floatToIntBits(m20);
+		result = prime * result + Float.floatToIntBits(m21);
+		result = prime * result + Float.floatToIntBits(m22);
+		result = prime * result + Float.floatToIntBits(m23);
+		result = prime * result + Float.floatToIntBits(m30);
+		result = prime * result + Float.floatToIntBits(m31);
+		result = prime * result + Float.floatToIntBits(m32);
+		result = prime * result + Float.floatToIntBits(m33);
 		return result;
 	}
 
@@ -142,38 +282,72 @@ public class Matrix4f {
 		if (getClass() != obj.getClass())
 			return false;
 		Matrix4f other = (Matrix4f) obj;
-		if (!Arrays.equals(elements, other.elements))
+		if (Float.floatToIntBits(m00) != Float.floatToIntBits(other.m00))
+			return false;
+		if (Float.floatToIntBits(m01) != Float.floatToIntBits(other.m01))
+			return false;
+		if (Float.floatToIntBits(m02) != Float.floatToIntBits(other.m02))
+			return false;
+		if (Float.floatToIntBits(m03) != Float.floatToIntBits(other.m03))
+			return false;
+		if (Float.floatToIntBits(m10) != Float.floatToIntBits(other.m10))
+			return false;
+		if (Float.floatToIntBits(m11) != Float.floatToIntBits(other.m11))
+			return false;
+		if (Float.floatToIntBits(m12) != Float.floatToIntBits(other.m12))
+			return false;
+		if (Float.floatToIntBits(m13) != Float.floatToIntBits(other.m13))
+			return false;
+		if (Float.floatToIntBits(m20) != Float.floatToIntBits(other.m20))
+			return false;
+		if (Float.floatToIntBits(m21) != Float.floatToIntBits(other.m21))
+			return false;
+		if (Float.floatToIntBits(m22) != Float.floatToIntBits(other.m22))
+			return false;
+		if (Float.floatToIntBits(m23) != Float.floatToIntBits(other.m23))
+			return false;
+		if (Float.floatToIntBits(m30) != Float.floatToIntBits(other.m30))
+			return false;
+		if (Float.floatToIntBits(m31) != Float.floatToIntBits(other.m31))
+			return false;
+		if (Float.floatToIntBits(m32) != Float.floatToIntBits(other.m32))
+			return false;
+		if (Float.floatToIntBits(m33) != Float.floatToIntBits(other.m33))
 			return false;
 		return true;
 	}
-
-	public float get(int x, int y) {
-		return elements[y * SIZE + x];
-	}
 	
-	public void set(int x, int y, float value) {
-		elements[y * SIZE + x] = value;
+	public FloatBuffer getMatrixFloatBuffer(FloatBuffer buffer) {
+		return getMatrixFloatBuffer(0, buffer);
 	}
-	
-	public float[] getMatrix() {
-		return elements;
+		
+	public FloatBuffer getMatrixFloatBuffer(int offset, FloatBuffer buffer) {
+		buffer.put(offset,    m00)
+        .put(offset+1,  m01)
+        .put(offset+2,  m02)
+        .put(offset+3,  m03)
+        .put(offset+4,  m10)
+        .put(offset+5,  m11)
+        .put(offset+6,  m12)
+        .put(offset+7,  m13)
+        .put(offset+8,  m20)
+        .put(offset+9,  m21)
+        .put(offset+10, m22)
+        .put(offset+11, m23)
+        .put(offset+12, m30)
+        .put(offset+13, m31)
+        .put(offset+14, m32)
+        .put(offset+15, m33);
+		
+		return buffer;
 	}
-	
+		
 	@Override
 	public String toString() {
-		String matrix = "";
-		for (int i = 0; i < SIZE; i++) {
-			matrix += "[";
-			for (int j = 0; j < SIZE; j++) {
-				if (j == SIZE - 1) {
-					matrix += this.get(j, i);
-				} else {
-					matrix += this.get(j, i) + " ";
-				}
-			}
-			matrix += "]\n";
-		}
-		
+		String matrix = "[" + m00 + ", " + m01 + ", " + m02 + ", " + m03 + "] \n" + 
+						"[" + m10 + ", " + m11 + ", " + m12 + ", " + m13 + "] \n" + 
+						"[" + m20 + ", " + m21 + ", " + m22 + ", " + m23 + "] \n" + 
+						"[" + m30 + ", " + m31 + ", " + m32 + ", " + m33 + "] \n";
 		return matrix;
 	}
 }

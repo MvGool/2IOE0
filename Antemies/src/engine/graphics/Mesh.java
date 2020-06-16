@@ -3,12 +3,14 @@ package engine.graphics;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 
-import org.lwjgl.opengl.GL30;
+import engine.model_loaders.Weight;
 import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
 
 public class Mesh {
 	private Vertex[] vertices;
@@ -31,8 +33,8 @@ public class Mesh {
 			material.create();
 		}
 
-		vao = GL30.glGenVertexArrays();
-		GL30.glBindVertexArray(vao);
+		vao = glGenVertexArrays();
+		glBindVertexArray(vao);
 
 		FloatBuffer positionBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
 		float[] positionData = new float[vertices.length * 3];
@@ -68,32 +70,95 @@ public class Mesh {
 			tbo = storeData(textureBuffer, 2, 2);
 		}
 
+		// If we have a bonemesh we also bind the weights per vertex
+		if (this instanceof  BoneMesh) {
+			FloatBuffer weightBuffer = MemoryUtil.memAllocFloat(vertices.length * 4);
+			float[] weightData = new float[vertices.length * 4];
+			System.out.println(vertices.length);
+			BoneMesh m = (BoneMesh)this;
+			System.out.println(m.getWeightsKeys().toString());
+			for (Integer i : m.getWeightsKeys()) {
+				System.out.println(i);
+				List<Weight> weights = m.getWeightsForVertex(i);
+				for (int j = 0; j < weights.size() && j < 4; j++) {
+					weightData[i * 4 + j] = weights.get(j).getWeight();
+				}
+				/*if (weights.size() < 4) {
+					for (int j = weights.size(); j < 4; j++) {
+						weightData[i * 4 + j] = 0;
+					}
+				}*/
+			}
+			System.out.println("weight list: " + m.getWeightsKeys().size() + " weight data: " + weightData.length);
+			weightBuffer.put(weightData).flip();
+			storeData(weightBuffer, 3, 4);
+		}
+
+		// if we have a bonemesh we also bind the bones corresponding to the weights
+		if (this instanceof BoneMesh) {
+			IntBuffer indexBuffer = MemoryUtil.memAllocInt(vertices.length * 4);
+			int[] indexData = new int[vertices.length * 4];
+			BoneMesh m = (BoneMesh)this;
+			for (Integer i : m.getWeightsKeys()) {
+				List<Weight> weights = m.getWeightsForVertex(i);
+				for (int j = 0; j < weights.size() && j < 4; j++) {
+					indexData[i * 4 + j] = weights.get(j).getBoneID();
+				}
+				if (weights.size() < 4) {
+					for (int j = weights.size(); j < 4; j++) {
+						indexData[i * 4 + j] = 0;
+					}
+				}
+			}
+			indexBuffer.put(indexData).flip();
+			storeData(indexBuffer, 4, 4);
+		}
+
 		IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
 		((Buffer)indicesBuffer.put(indices)).flip();
 
-		ibo = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ibo);
-		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL15.GL_STATIC_DRAW);
-		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
+		ibo = glGenBuffers();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	private int storeData(FloatBuffer buffer, int index, int size) {
-		int bufferID = GL15.glGenBuffers();
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, bufferID);
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-		GL20.glVertexAttribPointer(index, size, GL11.GL_FLOAT, false, 0, 0);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		int bufferID = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+		glVertexAttribPointer(index, size, GL_FLOAT, false, 0, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		return bufferID;
 	}
 
-	public void destroy() {
-		GL15.glDeleteBuffers(pbo);
-		GL15.glDeleteBuffers(cbo);
-		GL15.glDeleteBuffers(ibo);
-		GL15.glDeleteBuffers(tbo);
+	private int storeData(IntBuffer buffer, int index, int size) {
+		int bufferID = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+		glVertexAttribPointer(index, size, GL_FLOAT, false, 0, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		GL30.glDeleteVertexArrays(vao);
+		return bufferID;
+	}
+
+	
+	public void reset(Vertex[] vertices, int[] indices, boolean initTextureBuffer) {
+		this.vertices = vertices;
+		this.indices = indices;
+		create(initTextureBuffer);
+	}
+
+
+
+	public void destroy() {
+		glDeleteBuffers(pbo);
+		glDeleteBuffers(cbo);
+		glDeleteBuffers(ibo);
+		glDeleteBuffers(tbo);
+
+		glDeleteVertexArrays(vao);
 
 		if (material != null) {
 			material.destroy();
