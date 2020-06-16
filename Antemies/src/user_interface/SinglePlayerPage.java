@@ -32,7 +32,7 @@ public class SinglePlayerPage extends javax.swing.JFrame {
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        //getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         backButton.setBackground(new java.awt.Color(245, 245, 245));
         backButton.setFont(new java.awt.Font("Lato", 0, 30)); // NOI18N
@@ -52,15 +52,15 @@ public class SinglePlayerPage extends javax.swing.JFrame {
                 backButtonMouseExited(evt);
             }
         });
-        getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
+        //getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
 
         title.setFont(new java.awt.Font("Lato", 0, 100)); // NOI18N
         title.setForeground(new java.awt.Color(102, 102, 102));
         title.setText("Single player mode");
-        getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(548, 287, -1, -1));
+        //getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(548, 287, -1, -1));
 
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/background.jpg"))); // NOI18N
-        getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
+        //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
 
         setSize(new java.awt.Dimension(1938, 1127));
         setLocationRelativeTo(null);

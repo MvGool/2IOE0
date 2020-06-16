@@ -42,10 +42,10 @@ public class FrontPage extends javax.swing.JFrame {
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setName("frontPage"); // NOI18N
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        //getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         title.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/Antemies.png"))); // NOI18N
-        getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 100, -1, -1));
+        //getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 100, -1, -1));
 
         singlePlayerButton.setBackground(new java.awt.Color(245, 245, 245));
         singlePlayerButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -89,7 +89,7 @@ public class FrontPage extends javax.swing.JFrame {
                 .addGap(10, 10, 10))
         );
 
-        getContentPane().add(singlePlayerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 410, -1, -1));
+        //getContentPane().add(singlePlayerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 410, -1, -1));
 
         versusButton.setBackground(new java.awt.Color(245, 245, 245));
         versusButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -161,7 +161,7 @@ public class FrontPage extends javax.swing.JFrame {
                 .addGap(10, 10, 10))
         );
 
-        getContentPane().add(versusButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 547, -1, -1));
+        //getContentPane().add(versusButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 547, -1, -1));
 
         settingsButton.setBackground(new java.awt.Color(245, 245, 245));
         settingsButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -206,10 +206,10 @@ public class FrontPage extends javax.swing.JFrame {
                 .addGap(10, 10, 10))
         );
 
-        getContentPane().add(settingsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 681, -1, -1));
+        //getContentPane().add(settingsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 681, -1, -1));
 
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/background.jpg"))); // NOI18N
-        getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
+        //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
 
         setSize(new java.awt.Dimension(1938, 1127));
         setLocationRelativeTo(null);

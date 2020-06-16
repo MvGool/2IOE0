@@ -67,11 +67,11 @@ public class SettingsPage extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1920, 1080));
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        //getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         title.setBackground(new java.awt.Color(245, 245, 245));
         title.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/settingsTitle.png"))); // NOI18N
-        getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 100, -1, -1));
+        //getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 100, -1, -1));
 
         backButton.setBackground(new java.awt.Color(245, 245, 245));
         backButton.setFont(new java.awt.Font("Lato", 0, 30)); // NOI18N
@@ -91,7 +91,7 @@ public class SettingsPage extends javax.swing.JFrame {
                 backButtonMouseExited(evt);
             }
         });
-        getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
+        //getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
 
         musicPanel.setBackground(new java.awt.Color(245, 245, 245));
         musicPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 2, 2, new java.awt.Color(153, 153, 153)));
@@ -188,7 +188,7 @@ public class SettingsPage extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        getContentPane().add(musicPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 307, -1, -1));
+        //getContentPane().add(musicPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 307, -1, -1));
 
         audioPanel.setBackground(new java.awt.Color(245, 245, 245));
         audioPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 2, 2, new java.awt.Color(153, 153, 153)));
@@ -284,7 +284,7 @@ public class SettingsPage extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        getContentPane().add(audioPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 307, -1, -1));
+        //getContentPane().add(audioPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 307, -1, -1));
 
         keyPanel.setBackground(new java.awt.Color(245, 245, 245));
         keyPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 2, 2, new java.awt.Color(153, 153, 153)));
@@ -498,10 +498,10 @@ public class SettingsPage extends javax.swing.JFrame {
                 .addGap(20, 20, 20))
         );
 
-        getContentPane().add(keyPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 606, 1300, 189));
+        //getContentPane().add(keyPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 606, 1300, 189));
 
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/background.jpg"))); // NOI18N
-        getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
+        //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
 
         setSize(new java.awt.Dimension(1938, 1127));
         setLocationRelativeTo(null);
