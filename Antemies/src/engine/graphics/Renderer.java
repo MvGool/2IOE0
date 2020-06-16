@@ -17,6 +17,7 @@ public class Renderer {
 	private Window window;
 	private ShaderProgram objectShader;
 	private ShaderProgram terrainShader;
+	private ShaderProgram shadowShader;
 
 	public Renderer(Window window) {
 		this.window = window;
@@ -33,6 +34,11 @@ public class Renderer {
 		terrainShader.createVertexShader(FileUtils.loadAsString("/shaders/terrain/terrainVertex.vs"));
 		terrainShader.createFragmentShader(FileUtils.loadAsString("/shaders/terrain/terrainFragment.fs"));
 		terrainShader.link();
+		// Load and bind shadowShader
+		shadowShader = new ShaderProgram();
+		shadowShader.createVertexShader(FileUtils.loadAsString("/shaders/terrain/shadowVertex.vs"));
+		shadowShader.createFragmentShader(FileUtils.loadAsString("/shaders/terrain/shadowFragment.fs"));
+		shadowShader.link();
 		try {
 			createUniforms();
 		} catch (Exception e) {
@@ -101,6 +107,28 @@ public class Renderer {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
+	public void renderShadow(Mesh shadowMesh, Camera camera) {
+		glBindVertexArray(shadowMesh.getVAO());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shadowMesh.getIBO());
+		if (shadowMesh.getMaterial() != null) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, shadowMesh.getMaterial().getTextureID());
+		}
+		shadowShader.bind();
+		shadowShader.setUniform("model", Matrix4f.identity());
+		shadowShader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
+		shadowShader.setUniform("projection", window.getProjectionMatrix());
+		glDrawElements(GL_TRIANGLES, shadowMesh.getIndices().length, GL_UNSIGNED_INT, 0);
+		shadowShader.unbind();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(2);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
 	private void createUniforms() throws Exception {
 		objectShader.createUniform("model");
 		objectShader.createUniform("view");
@@ -109,5 +137,9 @@ public class Renderer {
 		terrainShader.createUniform("model");
 		terrainShader.createUniform("view");
 		terrainShader.createUniform("projection");
+
+		shadowShader.createUniform("model");
+		shadowShader.createUniform("view");
+		shadowShader.createUniform("projection");
 	}
 }

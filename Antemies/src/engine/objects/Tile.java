@@ -5,6 +5,7 @@ import engine.maths.Vector3f;
 public class Tile {
 	private int x, y;
 	private boolean obstacle;
+	private boolean discovered;
 	private int heuristic;
 	private int finalCost;
 	private Tile parent;
@@ -12,6 +13,7 @@ public class Tile {
 	public Tile(int x, int y) {
 		this.x = x;
 		this.y = y;
+		this.discovered = false;
 	}
 	
 	public int getX() {
@@ -30,6 +32,14 @@ public class Tile {
 		return obstacle;
 	}
 	
+	public boolean isDiscovered() {
+		return discovered;
+	}
+
+	public void setDiscovered(boolean discovered) {
+		this.discovered = discovered;
+	}
+
 	public int getHeuristic() {
 	    return heuristic;
 	}

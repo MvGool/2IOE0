@@ -61,7 +61,7 @@ public class Main implements Runnable {
 			holdF1 = true;
 		}
 		
-		if (!Input.isKeyDown(GLFW_KEY_F1) && holdF1 == true) {
+		if (!Input.isKeyDown(GLFW_KEY_F1) && holdF1) {
 			if (cameraMode == "topdown") {
 				cameraMode = "firstperson";
 			} else {
