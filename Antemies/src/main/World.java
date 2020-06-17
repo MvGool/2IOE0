@@ -10,7 +10,8 @@ import engine.model_loaders.StaticModelLoader;
 import engine.objects.*;
 import main.objects.AntObject;
 import main.objects.NestObject;
-import main.objects.ResourceObject;
+import main.objects.FoodObject;
+import main.objects.MaterialObject;
 
 public class World {
 	private Renderer renderer;
@@ -25,7 +26,8 @@ public class World {
 	private AntObject userAnt;
 
 	private NestObject nest;
-	private ResourceObject banana;
+	private FoodObject banana;
+	private MaterialObject nestMaterial;
 	private GameObject otherModel;
 	private AnimGameObject ericModel;
 
@@ -47,11 +49,12 @@ public class World {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		userAnt = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), antMesh);
+		userAnt = new AntObject(new Vector3f(0, 0.1f, 0), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
 		
 		try {
 		nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50);
-		banana = new ResourceObject(new Vector3f(10, 1, 0), new Vector3f(-90, 0, 0), new Vector3f(50f, 50f, 50f));
+		banana = new FoodObject(new Vector3f(10, 1, 0), new Vector3f(-90, 0, 0), new Vector3f(50f, 50f, 50f));
+		nestMaterial = new MaterialObject(new Vector3f(15, 1, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
