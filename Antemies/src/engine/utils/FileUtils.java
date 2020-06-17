@@ -13,8 +13,9 @@ public class FileUtils {
 			while ((line = reader.readLine()) != null) {
 				result.append(line).append("\n");
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println("Couldn't find the file at " + path);
+			e.printStackTrace();
 		}
 		
 		return result.toString();
