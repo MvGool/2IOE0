@@ -23,7 +23,7 @@ public class QLearning {
     Random ran = new Random();
 
 
-    public void execute(Node[][] grid) {
+    public Double[][] execute(Node[][] grid) {
         int states = grid.length * grid[0].length;
         final Double[][] Q = new Double[states][actions.length]; //Q-table
 
@@ -176,7 +176,10 @@ public class QLearning {
             }
             System.out.println();
         }
+        return Q;
     }
+    
+    
     public static void main(String args[]) throws InterruptedException {
 
         Node[][] grid = new Node[3][3];
