@@ -17,7 +17,7 @@ public class QLearning {
     private double gamma = 0.4d;
 
     private String[] actions = {
-            "left", "right", "up", "down" //TODO update for diagonal movement as well
+            "right", "left", "up", "down", "45", "-45", "135", "-135"
     };
 
     Random ran = new Random();
@@ -71,15 +71,57 @@ public class QLearning {
                     }else {
                         Q[s][a] = null;
                     }
+                } else if (a == 4) { //45 degrees diagonal movement
+                    if (!((s/grid.length)-1< 0) && !((s%grid.length)+1 >= grid.length)) {
+                        if (grid[(s / grid.length) - 1][s % grid.length + 1] == null) {
+                            Q[s][a] = null;
+                        } else {
+                            Q[s][a] = 0d;
+                        }
+                    }else {
+                        Q[s][a] = null;
+                    }
+                } else if (a == 5) { //-45 degrees diagonal movement
+                    if (!((s/grid.length)-1< 0) && !((s%grid.length)-1 < 0)) {
+                        if (grid[(s / grid.length) - 1][s % grid.length - 1] == null) {
+                            Q[s][a] = null;
+                        } else {
+                            Q[s][a] = 0d;
+                        }
+                    }else {
+                        Q[s][a] = null;
+                    }
+                } else if (a == 6) { //135 degrees diagonal movement
+                    if (!((s/grid.length)+1 >= grid.length) && !((s%grid.length)+1 >= grid.length)) {
+                        if (grid[(s / grid.length) + 1][s % grid.length + 1] == null) {
+                            Q[s][a] = null;
+                        } else {
+                            Q[s][a] = 0d;
+                        }
+                    }else {
+                        Q[s][a] = null;
+                    }
+                } else if (a == 7) { //-135 degrees diagonal movement
+                    if (!((s/grid.length)+1 >= grid.length) && !((s%grid.length)-1 <0)) {
+                        if (grid[(s / grid.length) + 1][s % grid.length - 1] == null) {
+                            Q[s][a] = null;
+                        } else {
+                            Q[s][a] = 0d;
+                        }
+                    }else {
+                        Q[s][a] = null;
+                    }
                 }
             }
         }
 
-        for (int k = 0; k<100; k++) { //outer loop
+        for (int k = 0; k<20; k++) { //outer loop
             int startState = ran.nextInt(states);
             int nextState = 0;
 
-            for (int i = 0; i < 7; i++) { // until end state is reached (time limit in our case)
+            long t = System.currentTimeMillis();
+            long end = t + 500;
+            while (System.currentTimeMillis() < end){
                 ArrayList<Integer> randomActions = new ArrayList<Integer>();
                 double maxQ = 0d;
                 int action = 0;
@@ -102,6 +144,14 @@ public class QLearning {
                     nextState = startState - grid.length;
                 } else if (action == 3) {
                     nextState = startState + grid.length;
+                } else if (action == 4) {
+                    nextState = (startState - grid.length) + 1;
+                } else if (action == 5){
+                    nextState = (startState - grid.length) - 1;
+                } else if (action == 6){
+                    nextState = (startState + grid.length) + 1;
+                } else if (action == 7){
+                    nextState = (startState + grid.length) -1;
                 }
 
                 maxQ = 0d; //reset maxQ in order to use for the formula below

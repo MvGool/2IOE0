@@ -1,100 +1,59 @@
 package main;
 
+import engine.graphics.Mesh;
+import engine.maths.Vector3f;
+import engine.objects.AntObject;
+import engine.objects.GameObject;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AntBehavior implements Runnable {
 
     private Thread t;
 
-    public static boolean foodSource = false;
-    int baseX;
-    int baseY;
-    int playerX;
-    int playerY;
+    public ArrayList<AntObject> ants;
+//    public ArrayList<FoodSource> sources;
+    public GameObject base;
+
+
 
     public enum LeaveRequestState {
-
         Idle {
-            @Override
-
-            public LeaveRequestState nextState() {
-
-                if (foodSource ) {
-                    return goToSource;
-                } else {
-                    return Following;
-                }
-            }
-
-            @Override
-            public void runTask() {
-                System.out.println("IDLE STATE");
-                state = this.nextState();
-            }
-        },
-        Following {
-            @Override
-            public LeaveRequestState nextState() {
-                if(foodSource){
-                    return Idle;
-                } else return this;
-
-            }
-
-            @Override
-            public void runTask() {
-                System.out.println("Following");
-                //TODO Implement Following activity
-                //NOTE: How will following be implemented? Go to neighbor square of player if its free?
-                state = this.nextState();
-            }
         },
         goToSource {
-            @Override
-            public LeaveRequestState nextState() {
-                return goToBase;
-            }
-
-            @Override
-            public void runTask() {
-                System.out.println("Going to source");
-                //moveTo(sourceX,sourceY);
-                //if (antX == sourceX && antY == sourceY){
-                state = this.nextState();
-                //}
-            }
         },
         goToBase {
-            @Override
-            public LeaveRequestState nextState() {
-                return Idle;
-            }
-
-            @Override
-            public void runTask() {
-                System.out.println("Going to base");
-                //moveto(baseX, baseY);
-                //if (antX == baseX && antY == base Y) {
-                state = this.nextState();
-                //}
-            }
         };
-
-        public abstract LeaveRequestState nextState();
-        public abstract void runTask();
-
     }
     static LeaveRequestState state = LeaveRequestState.Idle;
 
+
+
     public void run() {
         while (true) {
-            state.runTask();
+            /**
+            for (AntObject ant : ants){
+                if (!sources.isEmpty()){
+                    if (ant.state == LeaveRequestState.Idle && !ant.move ){
+                        ant.moveTo(sources.get(0));
+                        ant.state = LeaveRequestState.goToSource;
+                    } else if (ant.state == LeaveRequestState.goToSource && !ant.move){
+                        ant.moveTo(base);
+                        ant.state = LeaveRequestState.goToBase;
+                    } else if (ant.state == LeaveRequestState.goToBase && !ant.move){
+                        ant.state = LeaveRequestState.Idle;
+                    }
+                }
+            }
+             */
         }
-
     }
-
     public void start(){
         System.out.println("starting");
+        t = new Thread (this);
         if (t == null) {
             t = new Thread (this);
             t.start ();
@@ -105,11 +64,6 @@ public class AntBehavior implements Runnable {
 class TestThread {
 
     public static void main(String args[]) throws InterruptedException {
-        AntBehavior R1 = new AntBehavior();
-        R1.start();
-        TimeUnit.SECONDS.sleep(4);
-        R1.foodSource = true;
-
 
 
     }
