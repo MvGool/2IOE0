@@ -4,10 +4,12 @@ import engine.maths.Vector3f;
 
 public class Tile {
 	private int x, y;
-	private boolean obstacle;
+	private boolean obstacle = false;
 	private boolean discovered;
 	private int heuristic;
 	private int finalCost;
+	private int food = 0;
+	private int material = 0;
 	private Tile parent;
 	
 	public Tile(int x, int y) {
@@ -56,6 +58,22 @@ public class Tile {
 	    finalCost = value;
 	}
 	
+	public int getFood() {
+		return food;
+	}
+
+	public void setFood(int food) {
+		this.food = food;
+	}
+
+	public int getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(int material) {
+		this.material = material;
+	}
+
 	public Tile getParent() {
 		return parent;
 	}

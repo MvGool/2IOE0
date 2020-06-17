@@ -1,6 +1,7 @@
 package engine.objects;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class Grid2D {
 				}
 			}
 		}
+		
+		setResources(size/2);
 	}
 	
 	// Creates a copy of otherGrid
@@ -52,6 +55,22 @@ public class Grid2D {
 			System.err.println("Tile not found");
 		}
 		
+		return tile;
+	}
+	
+	public Collection<Tile> getTiles() {
+		return grid.values();
+	}
+	
+	public Tile getRandomTile() {
+		int x = (int) (Math.random()*size - size/2);
+		int y = (int) (Math.random()*size - size/2);
+		
+		Tile tile = getTile(x, y);
+		if (tile.isObstacle() || tile.getFood() != 0 || tile.getMaterial() != 0) {
+			System.out.println("Tile at " + tile.toString() + " is already occupied");
+			return getRandomTile();
+		}
 		return tile;
 	}
 	
@@ -107,10 +126,10 @@ public class Grid2D {
 				int y = tile.getY();
 				
 				// Add 4 corners
-				vertices.add(new Vertex(new Vector3f(x, 0.1f, y), new Vector3f(0, 1, 0), new Vector2f(x, y)));
-				vertices.add(new Vertex(new Vector3f(x, 0.1f, y + 1), new Vector3f(0, 1, 0), new Vector2f(x, y + 1)));
-				vertices.add(new Vertex(new Vector3f(x + 1, 0.1f, y), new Vector3f(0, 1, 0), new Vector2f(x + 1, y)));
-				vertices.add(new Vertex(new Vector3f(x + 1, 0.1f, y + 1), new Vector3f(0, 1, 0), new Vector2f(x + 1, y + 1)));
+				vertices.add(new Vertex(new Vector3f(x, 1f, y), new Vector3f(0, 1, 0), new Vector2f(x, y)));
+				vertices.add(new Vertex(new Vector3f(x, 1f, y + 1), new Vector3f(0, 1, 0), new Vector2f(x, y + 1)));
+				vertices.add(new Vertex(new Vector3f(x + 1, 1f, y), new Vector3f(0, 1, 0), new Vector2f(x + 1, y)));
+				vertices.add(new Vertex(new Vector3f(x + 1, 1f, y + 1), new Vector3f(0, 1, 0), new Vector2f(x + 1, y + 1)));
 			
 				// Draw triangles for that tile
 				indices.add(4*iter);
@@ -132,5 +151,12 @@ public class Grid2D {
 	
 	public int getSize() {
 		return size;
+	}
+	
+	public void setResources(int amount) {
+		for (int i = 0; i < amount; i++) {
+			getRandomTile().setFood((int) (Math.random()*10 + 10));
+			getRandomTile().setMaterial((int) (Math.random()*10 + 10));
+		}
 	}
 }
