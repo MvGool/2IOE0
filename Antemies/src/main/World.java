@@ -55,7 +55,6 @@ public class World {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		antModel = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), antMesh);
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 		
 		gridMesh = grid.getMesh();
@@ -72,7 +71,7 @@ public class World {
 		gridMesh.create(true);
 		userAnt.create(false);
 		shadowMesh.create(false);
-		antModel.create(false);
+		userAnt.create(false);
 //		antModel.moveTo(grid, new Vector3f(3000, 800, 2000));
 //		ericModel.create(false);
 //		for (int i = 0; i < objects.length; i++) {
@@ -84,6 +83,7 @@ public class World {
 		this.renderer = renderer;
 		this.camera = camera;
 		updateGrid();
+		updateShadow();
 		updateObjects();
 	}
 	
@@ -95,7 +95,7 @@ public class World {
 		renderer.renderShadow(shadowMesh, camera);
 		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(banana, camera);
-		renderer.renderMesh(antModel, camera);
+		renderer.renderMesh(userAnt, camera);
 //		renderer.renderMesh(ericModel, camera);
 	}
 	
@@ -120,6 +120,23 @@ public class World {
 			Mesh newMesh = grid.getMesh();
 			gridMesh.reset(newMesh.getVertices(), newMesh.getIndices(), true);
 		}
+	}
+	
+	private void updateShadow() {
+		Tile tile = userAnt.getTile();
+		int range = 6;
+		for (int i = -range; i <= range; i++) {
+			for (int j = -range; j <= range; j++) {
+				if (grid.hasTile(tile.getX() + i, tile.getY() + j) && !grid.getTile(tile.getX() + i, tile.getY() + j).isDiscovered()) {
+					if (Math.abs(i) < range + 2 - Math.abs(j)) {
+						grid.getTile(tile.getX() + i, tile.getY() + j).setDiscovered(true);
+					}
+				}
+			}
+		}
+			
+		Mesh newMesh = grid.getShadowMesh();
+		shadowMesh.reset(newMesh.getVertices(), newMesh.getIndices(), true);
 	}
 
 	private void updateObjects() {
