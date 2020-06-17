@@ -82,7 +82,6 @@ public class World {
 	public void update(Renderer renderer, Camera camera) {
 		this.renderer = renderer;
 		this.camera = camera;
-		updateGrid();
 		updateShadow();
 		updateObjects();
 	}
@@ -108,17 +107,6 @@ public class World {
 		
 		if (grid.hasTile(tile.getX(), tile.getY()) && !userAnt.getTile().equals(tile)) {
 			userAnt.moveTo(grid, tile);
-		}
-	}
-	
-	private void updateGrid() {
-		int x = (int) camera.getPosition().getX() + 1/2;
-		int z = (int) camera.getPosition().getZ() + 1/2;
-		
-		if (!grid.hasTile(x, z)) {
-			grid.setTile(new Tile(x, z));
-			Mesh newMesh = grid.getMesh();
-			gridMesh.reset(newMesh.getVertices(), newMesh.getIndices(), true);
 		}
 	}
 	
