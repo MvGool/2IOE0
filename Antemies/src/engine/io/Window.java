@@ -86,6 +86,7 @@ public class Window {
 		if (isResized) {
 			GL11.glViewport(0, 0, width, height);
 			isResized = false;
+			projection = Matrix4f.projection(70, (float) width / (float) height, 0.1f, 1000.0f);
 		}
 		GL11.glClearColor(background.getX(), background.getY(), background.getZ(), 1.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

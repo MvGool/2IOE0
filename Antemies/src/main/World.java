@@ -54,7 +54,7 @@ public class World {
 		try {
 		nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50);
 		banana = new FoodObject(new Vector3f(10, 1, 0), new Vector3f(-90, 0, 0), new Vector3f(50f, 50f, 50f));
-		nestMaterial = new MaterialObject(new Vector3f(15, 1, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f));
+		nestMaterial = new MaterialObject(new Vector3f(15, 1, 0), new Vector3f(-90, 0, 0), new Vector3f(.02f, .02f, .02f));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -71,6 +71,7 @@ public class World {
 		//ant.create(false);
 		nest.create(false);
 		banana.create(false);
+		nestMaterial.create(false);
 		gridMesh.create(true);
 		userAnt.create(false);
 		shadowMesh.create(false);
@@ -97,6 +98,7 @@ public class World {
 		renderer.renderShadow(shadowMesh, camera);
 		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(banana, camera);
+		renderer.renderMesh(nestMaterial, camera);
 		renderer.renderMesh(userAnt, camera);
 //		renderer.renderMesh(ericModel, camera);
 	}

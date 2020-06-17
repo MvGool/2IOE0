@@ -12,6 +12,6 @@ public class MaterialObject extends GameObject {
 	}
 	
 	public MaterialObject(Vector3f position, Vector3f rotation, Vector3f scalar) throws Exception {
-		this(position, rotation, scalar, StaticModelLoader.load("resources/models/nest_material.obj", "/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));
+		this(position, rotation, scalar, StaticModelLoader.load("resources/models/nest_material.obj", "/models/forrest_ground_03_diff_1k.jpg"));
 	}
 }
