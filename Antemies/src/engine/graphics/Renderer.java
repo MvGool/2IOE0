@@ -7,11 +7,15 @@ import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import java.util.ArrayList;
+
 import engine.io.Window;
 import engine.maths.Matrix4f;
+import engine.maths.Vector3f;
 import engine.objects.Camera;
 import engine.objects.GameObject;
 import engine.utils.FileUtils;
+import main.objects.FoodObject;
 
 public class Renderer {
 	private Window window;
@@ -125,6 +129,35 @@ public class Renderer {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(2);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
+	public void renderResources(Mesh m, Camera camera) {
+		glBindVertexArray(m.getVAO());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
+		glEnableVertexAttribArray(4);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.getIBO());
+		if (m.getMaterial() != null) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, m.getMaterial().getTextureID());
+		}
+		objectShader.bind();
+		objectShader.setUniform("model", Matrix4f.identity());
+		objectShader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
+		objectShader.setUniform("projection", window.getProjectionMatrix());
+		objectShader.setUniform("useSkeleton", false);
+		glDrawElements(GL_TRIANGLES, m.getIndices().length, GL_UNSIGNED_INT, 0);
+		objectShader.unbind();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(3);
+		glDisableVertexAttribArray(4);
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

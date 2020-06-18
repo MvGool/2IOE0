@@ -18,7 +18,7 @@ import main.objects.MaterialObject;
 public class World {
 	private Renderer renderer;
 	private Camera camera;
-	private Grid2D grid = new Grid2D(50);
+	private Grid2D grid = new Grid2D(200);
 	
 	private Mesh[] antMesh;	
 	private GameObject cube;
@@ -33,8 +33,13 @@ public class World {
 	private GameObject otherModel;
 	private AnimGameObject ericModel;
 	
-	private ArrayList<FoodObject> foodSources = new ArrayList<>();
-	private ArrayList<MaterialObject> materialSources = new ArrayList<>();
+	private float scaleFood = 50, scaleMaterial = 0.02f;
+	private ArrayList<Mesh> foodSources = new ArrayList<>();
+	private ArrayList<Mesh> materialSources = new ArrayList<>();
+	private Mesh foodMesh;
+	private Mesh materialMesh;
+//	private ArrayList<GameObject> foodSources = new ArrayList<>();
+//	private ArrayList<GameObject> materialSources = new ArrayList<>();
 
 	
 	public World(Renderer renderer, Camera camera) {
@@ -55,11 +60,26 @@ public class World {
 			
 			for (Tile tile : grid.getTiles()) {
 				if (tile.getFood() > 0) {
-					foodSources.add(new FoodObject(new Vector3f(tile.getX(), 0, tile.getY()), new Vector3f(-90, 0, 0), new Vector3f(50f, 50f, 50f), grid));
+					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/watermelonSlice.obj", "/textures/antskin.jpg");
+					for (Mesh mesh : foodMeshes) {
+						mesh.rotateScale(scaleFood);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						foodSources.add(mesh);
+					}
 				} else if (tile.getMaterial() > 0) {
-					materialSources.add(new MaterialObject(new Vector3f(tile.getX(), 0, tile.getY()), new Vector3f(-90, 0, 0), new Vector3f(0.02f, 0.02f, 0.02f), grid));
+					Mesh[] materialMeshes = StaticModelLoader.load("resources/models/nest_material.obj", "/models/forrest_ground_03_diff_1k.jpg");
+					for (Mesh mesh : materialMeshes) {
+						mesh.rotateScale(scaleMaterial);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						materialSources.add(mesh);
+					}
 				}
 			}
+			foodMesh = Mesh.merge(foodSources);
+			foodMesh.setMaterial(new Material( "/textures/antskin.jpg"));
+			materialMesh = Mesh.merge(materialSources);
+			materialMesh.setMaterial(new Material("/models/forrest_ground_03_diff_1k.jpg"));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
@@ -78,15 +98,8 @@ public class World {
 		gridMesh.create(true);
 		userAnt.create(false);
 		shadowMesh.create(false);
-		userAnt.create(false);
-		
-		for (FoodObject foodSource : foodSources) {
-			foodSource.create(false);
-		}
-		
-		for (MaterialObject materialSource : materialSources) {
-			materialSource.create(false);
-		}
+		foodMesh.create(false);
+		materialMesh.create(false);
 	}
 	
 	public void update(Renderer renderer, Camera camera) {
@@ -101,14 +114,8 @@ public class World {
 		renderer.renderShadow(shadowMesh, camera);
 		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
-		
-		for (FoodObject foodSource : foodSources) {
-			renderer.renderMesh(foodSource, camera);
-		}
-		
-		for (MaterialObject materialSource : materialSources) {
-			renderer.renderMesh(materialSource, camera);
-		}
+		renderer.renderResources(foodMesh, camera);
+		renderer.renderResources(materialMesh, camera);
 	}
 	
 	public void destroy() {

@@ -3,8 +3,11 @@ package engine.graphics;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import engine.maths.Vector3f;
 import engine.model_loaders.Weight;
 import org.lwjgl.system.MemoryUtil;
 import static org.lwjgl.opengl.GL30.*;
@@ -143,14 +146,46 @@ public class Mesh {
 		return bufferID;
 	}
 
+	public void move(Vector3f position) {
+		for (Vertex vertex : vertices) {
+			Vector3f cur = vertex.getPostion();
+			vertex.setPosition(Vector3f.add(cur, position));
+		}
+	}
+	
+	public void rotateScale(float scale) {
+		for (Vertex vertex : vertices) {
+			Vector3f cur = vertex.getPostion();
+			Vector3f out = Vector3f.multiply(new Vector3f(cur.getX(), cur.getZ(), -cur.getY()), scale);
+			vertex.setPosition(out);
+		}
+	}
+	
+	public static Mesh merge(ArrayList<Mesh> meshes) {
+		ArrayList<Vertex> vertices = new ArrayList<>();
+		ArrayList<Integer> indices = new ArrayList<>();
+		
+		for (Mesh mesh : meshes) {
+			for (int index : mesh.getIndices()) {
+				indices.add(index + vertices.size());
+			}
+			vertices.addAll(Arrays.asList(mesh.getVertices()));
+		}
+		
+		Vertex[] verticesOut = vertices.toArray(new Vertex[vertices.size()]);
+		int[] indicesOut = new int[indices.size()];
+		for (int i = 0; i < indices.size(); i++) {
+			indicesOut[i] = indices.get(i);
+		}
+		
+		return new Mesh(verticesOut, indicesOut);
+	}
 	
 	public void reset(Vertex[] vertices, int[] indices, boolean initTextureBuffer) {
 		this.vertices = vertices;
 		this.indices = indices;
 		create(initTextureBuffer);
 	}
-
-
 
 	public void destroy() {
 		glDeleteBuffers(pbo);
