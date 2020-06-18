@@ -130,7 +130,7 @@ public class World {
 	}
 	
 	public void moveUser(Vector3f position) {
-		Tile tile = new Tile(Math.round(position.getX()), Math.round(position.getZ()));
+		Tile tile = new Tile((int) Math.floor(position.getX()), (int) Math.ceil(position.getZ()));
 		
 		if (grid.hasTile(tile.getX(), tile.getY()) && !userAnt.getTile().equals(tile)) {
 			userAnt.moveTo(grid, tile);

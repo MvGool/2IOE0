@@ -10,7 +10,7 @@ import engine.objects.Tile;
 import main.Astar;
 
 public class AntObject extends GameObject {
-	float speed = 0.1f; // probably within [0, 2]
+	float speed = 0.5f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;
@@ -119,7 +119,7 @@ public class AntObject extends GameObject {
 		
 		if (shortestPath.length == 1) {
 			controlPointsList.add(this.getPosition());
-			controlPointsList.add(new Vector3f(goal.getX() + 0.4999f, 0.1f, goal.getY() + 0.4999f));
+			controlPointsList.add(new Vector3f(goal.getX() + 0.5f, 0.1f, goal.getY() - 0.5f));
 		} else {
 			int[] currentDirection = getDirection(shortestPath[0], shortestPath[1]);
 			
@@ -127,13 +127,13 @@ public class AntObject extends GameObject {
 				if (i == 0) {
 					controlPointsList.add(this.getPosition());
 				} else if (i == shortestPath.length - 1) {
-					controlPointsList.add(new Vector3f(goal.getX() + 0.4999f, 0.1f, goal.getY() + 0.4999f));
+					controlPointsList.add(new Vector3f(goal.getX() + 0.5f, 0.1f, goal.getY() - 0.5f));
 				} else {
 					int[] direction = getDirection(shortestPath[i - 1], shortestPath[i]);
 					
 					if (direction[0] != currentDirection[0] || direction[1] != currentDirection[1]) {
 						currentDirection = direction;
-						controlPointsList.add(new Vector3f(shortestPath[i - 1].getX() + 0.4999f, 0.1f, shortestPath[i - 1].getY() + 0.4999f));
+						controlPointsList.add(new Vector3f(shortestPath[i - 1].getX() + 0.5f, 0.1f, shortestPath[i - 1].getY() - 0.5f));
 					}
 				}
 			}
