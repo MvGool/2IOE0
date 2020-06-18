@@ -12,13 +12,11 @@ import engine.model_loaders.StaticModelLoader;
 import engine.objects.*;
 import main.objects.AntObject;
 import main.objects.NestObject;
-import main.objects.FoodObject;
-import main.objects.MaterialObject;
 
 public class World {
 	private Renderer renderer;
 	private Camera camera;
-	private Grid2D grid = new Grid2D(200);
+	private Grid2D grid = new Grid2D(50);
 	
 	private Mesh[] antMesh;	
 	private GameObject cube;
@@ -28,18 +26,16 @@ public class World {
 	private AntObject userAnt;
 
 	private NestObject nest;
-	private FoodObject banana;
-	private MaterialObject nestMaterial;
 	private GameObject otherModel;
 	private AnimGameObject ericModel;
 	
-	private float scaleFood = 50, scaleMaterial = 0.02f;
+	private float scaleFood = 50, scaleMaterial = 0.02f, scaleRock = 0.005f;
 	private ArrayList<Mesh> foodSources = new ArrayList<>();
 	private ArrayList<Mesh> materialSources = new ArrayList<>();
+	private ArrayList<Mesh> stoneSources = new ArrayList<>();
 	private Mesh foodMesh;
 	private Mesh materialMesh;
-//	private ArrayList<GameObject> foodSources = new ArrayList<>();
-//	private ArrayList<GameObject> materialSources = new ArrayList<>();
+	private Mesh stoneMesh;
 
 	
 	public World(Renderer renderer, Camera camera) {
@@ -73,12 +69,21 @@ public class World {
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
 						materialSources.add(mesh);
 					}
+				} else if (tile.isObstacle()) {
+					Mesh[] stoneMeshes = StaticModelLoader.load("resources/models/rock.obj", "/models/rock_01_AO_1k.jpg");
+					for (Mesh mesh : stoneMeshes) {
+						mesh.rotateScale(scaleRock);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						stoneSources.add(mesh);
+					}
 				}
 			}
 			foodMesh = Mesh.merge(foodSources);
 			foodMesh.setMaterial(new Material( "/textures/antskin.jpg"));
 			materialMesh = Mesh.merge(materialSources);
 			materialMesh.setMaterial(new Material("/models/forrest_ground_03_diff_1k.jpg"));
+			stoneMesh = Mesh.merge(stoneSources);
+			stoneMesh.setMaterial(new Material("/models/rock_01_AO_1k.jpg"));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,7 +94,7 @@ public class World {
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 		
 		gridMesh = grid.getMesh();
-		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));	
+		gridMesh.setMaterial(new Material("/textures/tileTest.jpg")); //"/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));	
 		shadowMesh = grid.getShadowMesh();
 	}
 
@@ -100,6 +105,7 @@ public class World {
 		shadowMesh.create(false);
 		foodMesh.create(false);
 		materialMesh.create(false);
+		stoneMesh.create(false);
 	}
 	
 	public void update(Renderer renderer, Camera camera) {
@@ -116,6 +122,7 @@ public class World {
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderResources(foodMesh, camera);
 		renderer.renderResources(materialMesh, camera);
+		renderer.renderResources(stoneMesh, camera);
 	}
 	
 	public void destroy() {

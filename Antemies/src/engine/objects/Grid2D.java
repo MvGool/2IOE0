@@ -157,6 +157,10 @@ public class Grid2D {
 		for (int i = 0; i < amount; i++) {
 			getRandomTile().setFood((int) (Math.random()*10 + 10));
 			getRandomTile().setMaterial((int) (Math.random()*10 + 10));
+			getRandomTile().setObstacle(true);
+			getRandomTile().setObstacle(true);
+			getRandomTile().setObstacle(true);
+			getRandomTile().setObstacle(true);
 		}
 	}
 }
