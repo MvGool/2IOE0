@@ -126,14 +126,16 @@ public class AntObject extends GameObject {
 			for (int i = 0; i < shortestPath.length; i++) {
 				if (i == 0) {
 					controlPointsList.add(this.getPosition());
-				} else if (i == shortestPath.length - 1) {
-					controlPointsList.add(new Vector3f(goal.getX() + 0.5f, 0.1f, goal.getY() - 0.5f));
 				} else {
 					int[] direction = getDirection(shortestPath[i - 1], shortestPath[i]);
 					
 					if (direction[0] != currentDirection[0] || direction[1] != currentDirection[1]) {
 						currentDirection = direction;
 						controlPointsList.add(new Vector3f(shortestPath[i - 1].getX() + 0.5f, 0.1f, shortestPath[i - 1].getY() - 0.5f));
+					}
+					
+					if (i == shortestPath.length - 1) {
+						controlPointsList.add(new Vector3f(goal.getX() + 0.5f, 0.1f, goal.getY() - 0.5f));
 					}
 				}
 			}
