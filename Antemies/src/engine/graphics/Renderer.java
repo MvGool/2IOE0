@@ -146,7 +146,7 @@ public class Renderer {
 			glBindTexture(GL_TEXTURE_2D, m.getMaterial().getTextureID());
 		}
 		objectShader.bind();
-		objectShader.setUniform("model", Matrix4f.translate(new Vector3f(0.5f, 0, 0.5f)));
+		objectShader.setUniform("model", Matrix4f.translate(new Vector3f(0.5f, 0, -0.5f)));
 		objectShader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
 		objectShader.setUniform("projection", window.getProjectionMatrix());
 		objectShader.setUniform("useSkeleton", false);

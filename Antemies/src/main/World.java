@@ -26,10 +26,9 @@ public class World {
 	private AntObject userAnt;
 
 	private NestObject nest;
-	private GameObject otherModel;
 	private AnimGameObject ericModel;
 	
-	private float scaleFood = 50, scaleMaterial = 0.02f, scaleRock = 0.005f;
+	private float scaleFood = 0.01f, scaleMaterial = 0.02f, scaleRock = 1f;
 	private ArrayList<Mesh> foodSources = new ArrayList<>();
 	private ArrayList<Mesh> materialSources = new ArrayList<>();
 	private ArrayList<Mesh> stoneSources = new ArrayList<>();
@@ -56,7 +55,7 @@ public class World {
 			
 			for (Tile tile : grid.getTiles()) {
 				if (tile.getFood() > 0) {
-					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/watermelonSlice.obj", "/textures/antskin.jpg");
+					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/banana.obj", "/textures/antskin.jpg");
 					for (Mesh mesh : foodMeshes) {
 						mesh.rotateScale(scaleFood);
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
@@ -70,7 +69,7 @@ public class World {
 						materialSources.add(mesh);
 					}
 				} else if (tile.isObstacle()) {
-					Mesh[] stoneMeshes = StaticModelLoader.load("resources/models/rock.obj", "/models/rock_01_AO_1k.jpg");
+					Mesh[] stoneMeshes = StaticModelLoader.load("resources/models/rock_large.obj", "/models/rock_large_texture_001.png");
 					for (Mesh mesh : stoneMeshes) {
 						mesh.rotateScale(scaleRock);
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
@@ -83,8 +82,7 @@ public class World {
 			materialMesh = Mesh.merge(materialSources);
 			materialMesh.setMaterial(new Material("/models/forrest_ground_03_diff_1k.jpg"));
 			stoneMesh = Mesh.merge(stoneSources);
-			stoneMesh.setMaterial(new Material("/models/rock_01_AO_1k.jpg"));
-
+			stoneMesh.setMaterial(new Material("/models/rock_large_texture_001.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
@@ -118,7 +116,7 @@ public class World {
 	public void render() {
 		renderer.renderTerrain(gridMesh, camera);
 		renderer.renderShadow(shadowMesh, camera);
-		renderer.renderMesh(nest, camera);
+//		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderResources(foodMesh, camera);
 		renderer.renderResources(materialMesh, camera);

@@ -1,0 +1,14 @@
+# Blender MTL File: 'rock large 003.blend'
+# Material Count: 1
+
+newmtl rock_large_material
+Ns 37.254902
+Ka 0.013440 0.013440 0.013440
+Kd 0.254837 0.254837 0.254837
+Ks 0.044799 0.044799 0.044799
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 5
+map_Kd rock large texture 001.png
+map_Bump rock large normal 001.png
