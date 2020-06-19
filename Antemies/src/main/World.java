@@ -38,16 +38,25 @@ public class World {
 		BoneMesh[] eric = null;
 		
 		try {
-			antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
+			antMesh = StaticModelLoader.load("resources/models/banana.obj", "/textures/antskin.jpg");
 //			eric = AnimModelLoader.load("resources/models/eric.fbx");
-			eric = AnimModelLoader.load("resources/models/testmodels/eric.fbx");
+			//eric = AnimModelLoader.load("resources/models/eric.fbx");
+			eric = AnimModelLoader.load("resources/models/testmodels/eric.dae");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		antModel = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), antMesh);
-		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
-		antModel.moveTo(grid, new Tile(15, 20));
+		antModel = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.01f, .01f, .01f), antMesh);
+		//ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
+		//antModel.moveTo(grid, new Tile(15, 20));
+
+
+		System.out.println("eric size: " + eric.length);
+		//otherModel = new GameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(.001f, .001f, .001f), other);
+		ericModel = new AnimGameObject(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
+		
+		//ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
+		//ant.moveTo(grid, new Vector3f(3, 1, 2));
 		
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));
@@ -62,7 +71,7 @@ public class World {
 		gridMesh.create(true);
 		antModel.create(false);
 //		antModel.moveTo(grid, new Vector3f(3000, 800, 2000));
-//		ericModel.create(false);
+		ericModel.create(false);
 //		for (int i = 0; i < objects.length; i++) {
 //			objects[i] = new GameObject(new Vector3f((float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25), (float) (Math.random() * 50 - 25)), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), ant);
 //		}
@@ -83,7 +92,7 @@ public class World {
 //		renderer.renderMesh(ant, camera);
 		renderer.renderTerrain(gridMesh, camera);
 		renderer.renderMesh(antModel, camera);
-//		renderer.renderMesh(ericModel, camera);
+		renderer.renderMesh(ericModel, camera);
 	}
 	
 	public void destroy() {
