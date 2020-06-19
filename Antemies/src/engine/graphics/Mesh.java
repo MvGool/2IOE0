@@ -184,6 +184,7 @@ public class Mesh {
 	public void reset(Vertex[] vertices, int[] indices, boolean initTextureBuffer) {
 		this.vertices = vertices;
 		this.indices = indices;
+		destroy();
 		create(initTextureBuffer);
 	}
 
