@@ -38,15 +38,18 @@ public class World {
 		BoneMesh[] eric = null;
 		
 		try {
-			antMesh = StaticModelLoader.load("resources/models/banana.obj", "/textures/antskin.jpg");
+//			antMesh = StaticModelLoader.load("resources/models/banana.obj", "/textures/antskin.jpg");
 //			eric = AnimModelLoader.load("resources/models/eric.fbx");
 			//eric = AnimModelLoader.load("resources/models/eric.fbx");
 			eric = AnimModelLoader.load("resources/models/testmodels/eric.dae");
+			for (Mesh m : eric) {
+				m.setMaterial(new Material("/models/grey.jpg"));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		antModel = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.01f, .01f, .01f), antMesh);
+//		antModel = new AntObject(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(.01f, .01f, .01f), antMesh);
 		//ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 		//antModel.moveTo(grid, new Tile(15, 20));
 
@@ -69,7 +72,7 @@ public class World {
 //		antModel.create(false);
 		//ant.create(false);
 		gridMesh.create(true);
-		antModel.create(false);
+//		antModel.create(false);
 //		antModel.moveTo(grid, new Vector3f(3000, 800, 2000));
 		ericModel.create(false);
 //		for (int i = 0; i < objects.length; i++) {
@@ -91,7 +94,7 @@ public class World {
 //		renderer.renderMesh(cube, camera);
 //		renderer.renderMesh(ant, camera);
 		renderer.renderTerrain(gridMesh, camera);
-		renderer.renderMesh(antModel, camera);
+//		renderer.renderMesh(antModel, camera);
 		renderer.renderMesh(ericModel, camera);
 	}
 	
@@ -111,6 +114,6 @@ public class World {
 	}
 
 	private void updateObjects() {
-		antModel.update();
+//		antModel.update();
 	}
 }
