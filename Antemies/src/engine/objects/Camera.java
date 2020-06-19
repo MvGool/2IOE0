@@ -30,8 +30,8 @@ public class Camera {
 		newMouseX = Input.getMouseX();
 		newMouseY = Input.getMouseY();
 		
-		float rotCos = (float) Math.cos(Math.toRadians(rotation.getY())) * moveSpeed;
-		float rotSin = (float) Math.sin(Math.toRadians(rotation.getY())) * moveSpeed;
+		float rotCos = (float) Math.cos(Math.toRadians(-rotation.getY())) * moveSpeed;
+		float rotSin = (float) Math.sin(Math.toRadians(-rotation.getY())) * moveSpeed;
 		
 		if (Input.isKeyDown(GLFW.GLFW_KEY_A)) position = Vector3f.add(position, new Vector3f(-rotCos, 0, rotSin));
 		if (Input.isKeyDown(GLFW.GLFW_KEY_D)) position = Vector3f.add(position, new Vector3f(rotCos, 0, -rotSin));
@@ -46,7 +46,7 @@ public class Camera {
 		oldMouseX = newMouseX;
 		oldMouseY = newMouseY;
 		
-		rotation = Vector3f.add(rotation, new Vector3f(-dy * mouseSensitivity, -dx * mouseSensitivity, 0));
+		rotation = Vector3f.add(rotation, new Vector3f(dy * mouseSensitivity, dx * mouseSensitivity, 0));
 	}
 	
 	private void topDown() {	

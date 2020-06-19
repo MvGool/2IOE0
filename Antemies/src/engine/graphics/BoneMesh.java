@@ -44,23 +44,23 @@ public class BoneMesh extends Mesh
 
 			Matrix4f transform = AnimModelLoader.AIMatrixToMatrix(boneNode.getTransformation());
 
-			/*if (boneList.get(i).name().equals("rp_eric_rigged_001_lowerarm_l")) {
+			if (boneList.get(i).name().equals("rp_eric_rigged_001_lowerarm_l")) {
 				Matrix4f rot = (new Matrix4f()).identity();
 				rot = rot.rotateZ(1.5708f);
 				transform = transform.mul(rot);
-			}*/
+			}
 
 			while (temp.getParent() != null) {
 				//Matrix4f matrix = AnimModelLoader.AIMatrixToMatrix(temp.getTransformation());
 				Matrix4f matrix;
 
-				/*if (temp.getName().equals("rp_eric_rigged_001_lowerarm_l")) {
+				if (temp.getName().equals("rp_eric_rigged_001_lowerarm_l")) {
 					Matrix4f rot = (new Matrix4f()).identity();
 					rot = rot.rotateZ(1.5708f);
 					matrix = AnimModelLoader.AIMatrixToMatrix(temp.getTransformation()).mul(rot);
-				}*/ // else {
+				} else {
 					matrix = AnimModelLoader.AIMatrixToMatrix(temp.getTransformation());
-				//}
+				}
 
 				transform = transform.mul(matrix);
 				temp = temp.getParent();
