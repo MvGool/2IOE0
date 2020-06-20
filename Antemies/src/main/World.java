@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import engine.graphics.BoneMesh;
 import engine.graphics.Material;
@@ -22,6 +23,8 @@ public class World {
 	private GameObject cube;
 	private Mesh gridMesh;	
 	private Mesh shadowMesh;	
+	private Mesh trailMesh;
+	private Tile previousTile;
 
 	private AntObject userAnt;
 
@@ -87,13 +90,15 @@ public class World {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		userAnt = new AntObject(new Vector3f(0, 0.1f, 0), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
+		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
 		
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 		
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/tileTest.jpg")); //"/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));	
 		shadowMesh = grid.getShadowMesh();
+		trailMesh = grid.getTrailMesh();
+		previousTile = userAnt.getTile();
 	}
 
 	public void create() {
@@ -101,6 +106,7 @@ public class World {
 		gridMesh.create(true);
 		userAnt.create(false);
 		shadowMesh.create(false);
+		trailMesh.create(false);
 		foodMesh.create(false);
 		materialMesh.create(false);
 		stoneMesh.create(false);
@@ -111,11 +117,13 @@ public class World {
 		this.camera = camera;
 		updateShadow();
 		updateObjects();
+		updateTrail();
 	}
 	
 	public void render() {
 		renderer.renderTerrain(gridMesh, camera);
 		renderer.renderShadow(shadowMesh, camera);
+		renderer.renderTrail(trailMesh, camera);
 //		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderResources(foodMesh, camera);
@@ -130,7 +138,7 @@ public class World {
 	public void moveUser(Vector3f position) {
 		Tile tile = new Tile((int) Math.floor(position.getX()), (int) Math.ceil(position.getZ()));
 		
-		if (grid.hasTile(tile.getX(), tile.getY()) && !userAnt.getTile().equals(tile)) {
+		if (grid.hasTile(tile.getX(), tile.getY()) && !userAnt.getTile().equals(tile) && grid.getTile(tile.getX(), tile.getY()).isDiscovered()) {
 			userAnt.moveTo(grid, tile);
 		}
 	}
@@ -154,5 +162,27 @@ public class World {
 
 	private void updateObjects() {
 		userAnt.update();
+		grid.setUserTile(userAnt.getTile());
+	}
+	
+	private void updateTrail() {
+		Tile currentTile = userAnt.getTile();		
+		if (!currentTile.equals(previousTile) && !grid.getTile(currentTile.getX(), currentTile.getY()).isObstacle()) {
+			grid.addToTrail(previousTile);
+			previousTile = currentTile;
+		}
+		
+		ArrayList<Tile> trail = grid.getTrail();
+		List<Tile> toRemove = new ArrayList<>();
+		for (Tile tile : trail) {
+			grid.getTile(tile.getX(), tile.getY()).setTrailValue(grid.getTile(tile.getX(), tile.getY()).getTrailValue() - 0.01f);
+			if (grid.getTile(tile.getX(), tile.getY()).getTrailValue() <= 0) {
+				toRemove.add(tile);
+			}
+		}
+		grid.removeFromTrail(toRemove);
+
+		Mesh newMesh = grid.getTrailMesh();
+		trailMesh.reset(newMesh.getVertices(), newMesh.getIndices(), false);
 	}
 }

@@ -5,13 +5,27 @@ import engine.maths.Vector3f;
 
 public class Vertex {
 
-	private Vector3f position, normal;
+	private Vector3f position, normal, color = new Vector3f(0, 0, 0);
 	private Vector2f textureCoord;
+	private float transparency = 1.0f;
 	
 	public Vertex(Vector3f position, Vector3f normal, Vector2f textureCoord) {
 		this.position = position;
 		this.normal = normal;
 		this.textureCoord = textureCoord;
+	}
+	
+	public Vertex(Vector3f position, Vector3f normal, Vector3f color) {
+		this.position = position;
+		this.normal = normal;
+		this.color = color;
+	}
+	
+	public Vertex(Vector3f position, Vector3f normal, Vector3f color, float transparency) {
+		this.position = position;
+		this.normal = normal;
+		this.color = color;
+		this.transparency = transparency;
 	}
 
 	public Vertex(float x, float y, float z) {
@@ -32,5 +46,13 @@ public class Vertex {
 
 	public Vector2f getTextureCoord() {
 		return textureCoord;
+	}
+	
+	public Vector3f getColor() {
+		return color;
+	}
+	
+	public float getTransparency() {
+		return transparency;
 	}
 }

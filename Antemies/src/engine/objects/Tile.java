@@ -4,12 +4,13 @@ import engine.maths.Vector3f;
 
 public class Tile {
 	private int x, y;
-	private boolean obstacle = false;
+	private boolean obstacle;
 	private boolean discovered;
+	private float trailValue;
 	private int heuristic;
 	private int finalCost;
-	private int food = 0;
-	private int material = 0;
+	private int food;
+	private int material;
 	private Tile parent;
 	
 	public Tile(int x, int y) {
@@ -40,6 +41,14 @@ public class Tile {
 
 	public void setDiscovered(boolean discovered) {
 		this.discovered = discovered;
+	}
+	
+	public float getTrailValue() {
+		return trailValue;
+	}
+
+	public void setTrailValue(float value) {
+		trailValue = value;
 	}
 
 	public int getHeuristic() {

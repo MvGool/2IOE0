@@ -22,7 +22,8 @@ public class Renderer {
 	private ShaderProgram objectShader;
 	private ShaderProgram terrainShader;
 	private ShaderProgram shadowShader;
-
+	private ShaderProgram trailShader;
+	
 	public Renderer(Window window) {
 		this.window = window;
 	}
@@ -43,6 +44,11 @@ public class Renderer {
 		shadowShader.createVertexShader(FileUtils.loadAsString("/shaders/terrain/shadowVertex.vs"));
 		shadowShader.createFragmentShader(FileUtils.loadAsString("/shaders/terrain/shadowFragment.fs"));
 		shadowShader.link();
+		// Load and bind trailShader
+		trailShader = new ShaderProgram();
+		trailShader.createVertexShader(FileUtils.loadAsString("/shaders/terrain/trailVertex.vs"));
+		trailShader.createFragmentShader(FileUtils.loadAsString("/shaders/terrain/trailFragment.fs"));
+		trailShader.link();
 		try {
 			createUniforms();
 		} catch (Exception e) {
@@ -133,6 +139,33 @@ public class Renderer {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
+	public void renderTrail(Mesh trailMesh, Camera camera) {
+		glBindVertexArray(trailMesh.getVAO());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(5);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, trailMesh.getIBO());
+		if (trailMesh.getMaterial() != null) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, trailMesh.getMaterial().getTextureID());
+		}
+		trailShader.bind();
+		trailShader.setUniform("model", Matrix4f.identity());
+		trailShader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
+		trailShader.setUniform("projection", window.getProjectionMatrix());
+		glDrawElements(GL_TRIANGLES, trailMesh.getIndices().length, GL_UNSIGNED_INT, 0);
+		trailShader.unbind();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(5);
+		glDisable(GL_BLEND);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
 	public void renderResources(Mesh m, Camera camera) {
 		glBindVertexArray(m.getVAO());
 		glEnableVertexAttribArray(0);
@@ -174,5 +207,9 @@ public class Renderer {
 		shadowShader.createUniform("model");
 		shadowShader.createUniform("view");
 		shadowShader.createUniform("projection");
+		
+		trailShader.createUniform("model");
+		trailShader.createUniform("view");
+		trailShader.createUniform("projection");
 	}
 }

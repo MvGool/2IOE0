@@ -10,7 +10,7 @@ import engine.objects.Tile;
 import main.Astar;
 
 public class AntObject extends GameObject {
-	float speed = 0.5f; // probably within [0, 2]
+	float speed = 1f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;

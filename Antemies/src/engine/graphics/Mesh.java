@@ -19,7 +19,7 @@ public class Mesh {
 	private Vertex[] vertices;
 	private int[] indices;
 	private Material material;
-	private int vao, pbo, ibo, cbo, tbo;
+	private int vao, pbo, ibo, cbo, tbo, transbo;
 
 	public Mesh(Vertex[] vertices, int[] indices, Material material) {
 		this.vertices = vertices;
@@ -50,17 +50,6 @@ public class Mesh {
 
 		pbo = storeData(positionBuffer, 0, 3);
 
-//		FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
-//		float[] colorData = new float[vertices.length * 3];
-//		for (int i = 0; i < vertices.length; i++) {
-//			colorData[i * 3] = vertices[i].getColor().getX();
-//			colorData[i * 3 + 1] = vertices[i].getColor().getY();
-//			colorData[i * 3 + 2] = vertices[i].getColor().getZ();
-//		}
-//		colorBuffer.put(colorData).flip();
-//
-//		cbo = storeData(colorBuffer, 1, 3);
-
 		if (initTextureBuffer) {
 			FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
 			float[] textureData = new float[vertices.length * 2];
@@ -71,8 +60,30 @@ public class Mesh {
 			((Buffer)textureBuffer.put(textureData)).flip();
 
 			tbo = storeData(textureBuffer, 2, 2);
+		} else {
+			FloatBuffer colorBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+			float[] colorData = new float[vertices.length * 3];
+			for (int i = 0; i < vertices.length; i++) {
+				colorData[i * 3] = vertices[i].getColor().getX();
+				colorData[i * 3 + 1] = vertices[i].getColor().getY();
+				colorData[i * 3 + 2] = vertices[i].getColor().getZ();
+			}
+			colorBuffer.put(colorData).flip();
+			
+			cbo = storeData(colorBuffer, 1, 3);
+			
+			FloatBuffer transparencyBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+			float[] transparencyData = new float[vertices.length * 3];
+			for (int i = 0; i < vertices.length; i++) {
+				transparencyData[i * 3] = vertices[i].getTransparency();
+				transparencyData[i * 3 + 1] = vertices[i].getTransparency();
+				transparencyData[i * 3 + 2] = vertices[i].getTransparency();
+			}
+			transparencyBuffer.put(transparencyData).flip();
+			
+			transbo = storeData(transparencyBuffer, 5, 3);
 		}
-
+			
 		// If we have a bonemesh we also bind the weights per vertex
 		if (this instanceof  BoneMesh) {
 			FloatBuffer weightBuffer = MemoryUtil.memAllocFloat(vertices.length * 4);
@@ -235,5 +246,9 @@ public class Mesh {
 
 	public int getTBO() {
 		return tbo;
+	}
+	
+	public int getTRANSBO() {
+		return transbo;
 	}
 }
