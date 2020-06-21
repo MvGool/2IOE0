@@ -106,8 +106,8 @@ public class Main implements Runnable {
 		world.destroy();
 	}
 	
-	public Vector3f screenToWorldSpace(double x, double y) {		
-	    Matrix4f viewProjection = Matrix4f.multiply(window.getProjectionMatrix(), Matrix4f.view(camera.getPosition(), camera.getRotation()));
+	public Vector3f screenToWorldSpace(double x, double y) {
+		Matrix4f viewProjection = Matrix4f.multiply(window.getProjectionMatrix(), Matrix4f.view(new Vector3f(0, camera.getPosition().getY(), 0), camera.getRotation()));
 	    MatrixXf viewProjectionInverse = MatrixXf.inverse(Matrix4f.toMatrixXf(viewProjection));
 	    
 	    float newX = (float) (2.0 * x / window.getWidth() - 1);
