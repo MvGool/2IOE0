@@ -12,29 +12,30 @@ public class Tile {
 	private int food;
 	private int material;
 	private Tile parent;
-	
+	private int reward;
+
 	public Tile(int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.discovered = false;
 	}
-	
+
 	public int getX() {
 		return x;
 	}
-	
+
 	public int getY() {
 		return y;
 	}
-	
+
 	public void setObstacle(boolean bool) {
 		obstacle = bool;
 	}
-	
+
 	public boolean isObstacle() {
 		return obstacle;
 	}
-	
+
 	public boolean isDiscovered() {
 		return discovered;
 	}
@@ -42,7 +43,7 @@ public class Tile {
 	public void setDiscovered(boolean discovered) {
 		this.discovered = discovered;
 	}
-	
+
 	public float getTrailValue() {
 		return trailValue;
 	}
@@ -52,21 +53,21 @@ public class Tile {
 	}
 
 	public int getHeuristic() {
-	    return heuristic;
+		return heuristic;
 	}
-	
+
 	public void setHeuristic(int value) {
-	    heuristic = value;
+		heuristic = value;
 	}
-	
+
 	public int getFinal() {
-	    return finalCost;
+		return finalCost;
 	}
-	
+
 	public void setFinal(int value) {
-	    finalCost = value;
+		finalCost = value;
 	}
-	
+
 	public int getFood() {
 		return food;
 	}
@@ -86,16 +87,22 @@ public class Tile {
 	public Tile getParent() {
 		return parent;
 	}
-	
+
 	public void setParent(Tile par) {
 		parent = par;
 	}
-	
+	public void setReward(int reward) {
+		this.reward = reward;
+	}
+	public int getReward() {
+		return this.reward;
+	}
+
 	@Override
 	public String toString() {
-	    return "[" + x + ", " + y + "]";
+		return "[" + x + ", " + y + "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
