@@ -8,7 +8,7 @@ import engine.maths.Vector3f;
 
 public class Camera {
 	private Vector3f position, rotation;
-	private float moveSpeed = 0.05f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, viewAngle = 0, 
+	private float moveSpeed = 0.2f, mouseSensitivity = 0.15f, scrollSpeed = 50, distance = 2.0f, viewAngle = 0, 
 			horizontalAngle = 0, verticalAngle = 0, zoomLowerBound = 1, zoomUpperBound = 20;
 	private double oldMouseX, oldMouseY, oldScroll, currentZoom = 10, newMouseX, newMouseY, newScroll, newZoom = 10;
 
