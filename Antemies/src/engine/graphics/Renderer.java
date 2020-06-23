@@ -18,7 +18,7 @@ public class Renderer {
 	private Window window;
 	private ShaderProgram objectShader;
 	private ShaderProgram terrainShader;
-	private Vector3f lightPosition = new Vector3f(1, 1, 2);
+	private Vector3f lightPosition = new Vector3f(1000, -2000, 2000);
 
 	public Renderer(Window window) {
 		this.window = window;
