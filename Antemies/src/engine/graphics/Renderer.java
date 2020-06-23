@@ -32,8 +32,8 @@ public class Renderer {
 	public void init() throws Exception {
 		// Load and bind objectShader
 		objectShader = new ShaderProgram();
-		objectShader.createVertexShader(FileUtils.loadAsString("/shaders/mainVertex.glsl"));
-		objectShader.createFragmentShader(FileUtils.loadAsString("/shaders/mainFragment.glsl"));
+		objectShader.createVertexShader(FileUtils.loadAsString("/shaders/mainVertex.vs"));
+		objectShader.createFragmentShader(FileUtils.loadAsString("/shaders/mainFragment.fs"));
 		objectShader.link();
 		// Load and bind terrainShader
 		terrainShader = new ShaderProgram();
@@ -84,6 +84,12 @@ public class Renderer {
 				objectShader.setUniform("boneMatrix", transforms);
 			} else {
 				objectShader.setUniform("useSkeleton", false);
+			}
+			// Check if normalMap should be used
+			if (m.getMaterial().hasNormalMap()) {
+				objectShader.setUniform("useNormalMap", true);
+			} else {
+				objectShader.setUniform("useNormalMap", true);
 			}
 			glDrawElements(GL_TRIANGLES, m.getIndices().length, GL_UNSIGNED_INT, 0);
 			objectShader.unbind();
@@ -145,7 +151,7 @@ public class Renderer {
 	public void renderTrail(Mesh trailMesh, Camera camera) {
 		glBindVertexArray(trailMesh.getVAO());
 		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 		glEnableVertexAttribArray(5);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -162,7 +168,7 @@ public class Renderer {
 		trailShader.unbind();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(5);
 		glDisable(GL_BLEND);
 		glBindVertexArray(0);
@@ -178,8 +184,14 @@ public class Renderer {
 		glEnableVertexAttribArray(4);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.getIBO());
 		if (m.getMaterial() != null) {
+			// Bind texture
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, m.getMaterial().getTextureID());
+			// Bind normalMap
+			if (m.getMaterial().hasNormalMap()) {
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, m.getMaterial().getNormalMapID());
+			}
 		}
 		objectShader.bind();
 		objectShader.setUniform("model", Matrix4f.translate(new Vector3f(0.5f, 0, -0.5f)));
@@ -204,6 +216,7 @@ public class Renderer {
 		objectShader.createUniform("projection");
 		objectShader.createUniform("lightPos");
 		objectShader.createUniform("viewPos");
+		objectShader.createUniform("useNormalMap");
 		
 		terrainShader.createUniform("model");
 		terrainShader.createUniform("view");

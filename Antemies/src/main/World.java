@@ -31,7 +31,7 @@ public class World {
 	private NestObject nest;
 	private AnimGameObject ericModel;
 	
-	private float scaleFood = 0.01f, scaleMaterial = 0.02f, scaleRock = 1f;
+	private float scaleFood = 0.1f, scaleMaterial = 0.08f, scaleRock = 1f;
 	private ArrayList<Mesh> foodSources = new ArrayList<>();
 	private ArrayList<Mesh> materialSources = new ArrayList<>();
 	private ArrayList<Mesh> stoneSources = new ArrayList<>();
@@ -58,32 +58,33 @@ public class World {
 			
 			for (Tile tile : grid.getTiles()) {
 				if (tile.getFood() > 0) {
-					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/banana.obj", "/textures/antskin.jpg");
+					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
 					for (Mesh mesh : foodMeshes) {
-						mesh.rotateScale(scaleFood);
+						mesh.rotateScale(scaleFood, true);
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
 						foodSources.add(mesh);
 					}
 				} else if (tile.getMaterial() > 0) {
-					Mesh[] materialMeshes = StaticModelLoader.load("resources/models/nest_material.obj", "/models/forrest_ground_03_diff_1k.jpg");
+					Mesh[] materialMeshes = StaticModelLoader.load("resources/models/sticks.obj", "/textures/stick/Bark_Pine_baseColor.jpg");
 					for (Mesh mesh : materialMeshes) {
-						mesh.rotateScale(scaleMaterial);
+						mesh.rotateScale(scaleMaterial, false);
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
 						materialSources.add(mesh);
 					}
 				} else if (tile.isObstacle()) {
 					Mesh[] stoneMeshes = StaticModelLoader.load("resources/models/rock_large.obj", "/models/rock_large_texture_001.png");
 					for (Mesh mesh : stoneMeshes) {
-						mesh.rotateScale(scaleRock);
+						mesh.rotateScale(scaleRock, true);
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
 						stoneSources.add(mesh);
 					}
 				}
 			}
 			foodMesh = Mesh.merge(foodSources);
-			foodMesh.setMaterial(new Material( "/textures/antskin.jpg"));
+			foodMesh.setMaterial(new Material( "/models/textures/Apricot_02_diffuse.png"));
 			materialMesh = Mesh.merge(materialSources);
-			materialMesh.setMaterial(new Material("/models/forrest_ground_03_diff_1k.jpg"));
+			materialMesh.setMaterial(new Material("/textures/stick/Bark_Pine_baseColor.jpg"));
+			materialMesh.getMaterial().setNormalMap("/textures/stick/Bark_Pine_normal.jpg");
 			stoneMesh = Mesh.merge(stoneSources);
 			stoneMesh.setMaterial(new Material("/models/rock_large_texture_001.png"));
 		} catch (Exception e) {
@@ -105,14 +106,14 @@ public class World {
 	}
 
 	public void create() {
-		nest.create(false);
+		nest.create(true);
 		gridMesh.create(true);
-		userAnt.create(false);
+		userAnt.create(true);
 		shadowMesh.create(false);
 		trailMesh.create(false);
-		foodMesh.create(false);
-		materialMesh.create(false);
-		stoneMesh.create(false);
+		foodMesh.create(true);
+		materialMesh.create(true);
+		stoneMesh.create(true);
 	}
 	
 	public void update(Renderer renderer, Camera camera) {

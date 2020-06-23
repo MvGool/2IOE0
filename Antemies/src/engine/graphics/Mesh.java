@@ -81,7 +81,7 @@ public class Mesh {
 			}
 			colorBuffer.put(colorData).flip();
 			
-			cbo = storeData(colorBuffer, 1, 3);
+			cbo = storeData(colorBuffer, 2, 3);
 			
 			FloatBuffer transparencyBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
 			float[] transparencyData = new float[vertices.length * 3];
@@ -175,10 +175,15 @@ public class Mesh {
 		}
 	}
 	
-	public void rotateScale(float scale) {
+	public void rotateScale(float scale, boolean rotate) {
 		for (Vertex vertex : vertices) {
 			Vector3f cur = vertex.getPostion();
-			Vector3f out = Vector3f.multiply(new Vector3f(cur.getX(), cur.getZ(), -cur.getY()), scale);
+			Vector3f out;
+			if (rotate) {
+				out = Vector3f.multiply(new Vector3f(cur.getX(), cur.getZ(), -cur.getY()), scale);
+			} else {
+				out = Vector3f.multiply(cur, scale);
+			}
 			vertex.setPosition(out);
 		}
 	}

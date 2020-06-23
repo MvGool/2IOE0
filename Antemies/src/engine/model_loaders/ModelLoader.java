@@ -54,6 +54,7 @@ public class ModelLoader
 			}
 
 			if (aiTextCoords == null) {
+				System.out.println("no texCoords");
 				texV = null;
 			} else {
 				AIVector3D textCoords = aiTextCoords.get();
