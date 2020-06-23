@@ -19,7 +19,7 @@ public class Mesh {
 	private Vertex[] vertices;
 	private int[] indices;
 	private Material material;
-	private int vao, pbo, ibo, nbo, tbo, transbo;
+	private int vao, pbo, ibo, nbo, cbo, tbo, transbo;
 
 	public Mesh(Vertex[] vertices, int[] indices, Material material) {
 		this.vertices = vertices;

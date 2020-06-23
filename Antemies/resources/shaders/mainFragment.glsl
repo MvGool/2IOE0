@@ -12,7 +12,7 @@ uniform vec3 viewPos;
 
 void main() {
 	vec3 lightColor = vec3(1);
-	float ambientStrength = 0.1;
+	float ambientStrength = 0.8;
 	vec3 ambient = ambientStrength * lightColor;
 
 	vec3 norm = normalize(passNormal);
@@ -26,7 +26,7 @@ void main() {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 	vec3 specular = specularStrength * spec * lightColor;
 
-	vec4 textureColor = texture(tex, vec2(0.5, 0.5));
+	vec4 textureColor = texture(tex, passTextureCoord);
 
 	outColor = vec4(ambient + diffuse + specular, 1.0) * textureColor;
 	//outColor = vec4(passColor, 1.0);
