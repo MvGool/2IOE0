@@ -94,6 +94,9 @@ public class World {
 		
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 		
+		//ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
+		//ant.moveTo(grid, new Vector3f(3, 1, 2));
+		
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg")); // Test texture: "textures/tileTest.jpg"	
 		shadowMesh = grid.getShadowMesh();

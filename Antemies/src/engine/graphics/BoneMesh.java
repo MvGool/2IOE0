@@ -5,6 +5,9 @@ import engine.model_loaders.Bone;
 import engine.model_loaders.Node;
 import engine.model_loaders.Weight;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.assimp.AIMatrix4x4;
+import org.lwjgl.assimp.Assimp;
 
 import java.util.List;
 import java.util.Map;
@@ -37,15 +40,35 @@ public class BoneMesh extends Mesh
 			Node boneNode = root.findNode(boneList.get(i).name());
 			Node temp = boneNode.getParent();
 			Matrix4f offset = boneList.get(i).getOffsetMatrix();
-			Matrix4f transform = new org.joml.Matrix4f();
+			//Matrix4f transform = new org.joml.Matrix4f();
+
+			Matrix4f transform = AnimModelLoader.AIMatrixToMatrix(boneNode.getTransformation());
+
+			if (boneList.get(i).name().equals("rp_eric_rigged_001_lowerarm_l")) {
+				Matrix4f rot = (new Matrix4f()).identity();
+				rot = rot.rotateZ(1.5708f);
+				transform = transform.mul(rot);
+			}
+
 			while (temp.getParent() != null) {
-				Matrix4f matrix = AnimModelLoader.AIMatrixToMatrix(temp.getTransformation());
+				//Matrix4f matrix = AnimModelLoader.AIMatrixToMatrix(temp.getTransformation());
+				Matrix4f matrix;
+
+				if (temp.getName().equals("rp_eric_rigged_001_lowerarm_l")) {
+					Matrix4f rot = (new Matrix4f()).identity();
+					rot = rot.rotateZ(1.5708f);
+					matrix = AnimModelLoader.AIMatrixToMatrix(temp.getTransformation()).mul(rot);
+				} else {
+					matrix = AnimModelLoader.AIMatrixToMatrix(temp.getTransformation());
+				}
+
 				transform = transform.mul(matrix);
 				temp = temp.getParent();
 			}
-			transform = AnimModelLoader.AIMatrixToMatrix(boneNode.getTransformation()).mul(transform);
+
 			transform = transform.mul(offset);
-			transform = AnimModelLoader.AIMatrixToMatrix(root.getTransformation()).invert().mul(transform);
+			transform = AnimModelLoader.AIMatrixToMatrix(root.getTransformation()).mul(transform);
+
 			matrices[i] = transform;
 		}
 		return matrices;

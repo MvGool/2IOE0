@@ -23,7 +23,8 @@ public class Renderer {
 	private ShaderProgram terrainShader;
 	private ShaderProgram shadowShader;
 	private ShaderProgram trailShader;
-	
+	private Vector3f lightPosition = new Vector3f(1000, -2000, 2000);
+
 	public Renderer(Window window) {
 		this.window = window;
 	}
@@ -73,6 +74,8 @@ public class Renderer {
 			objectShader.setUniform("model", Matrix4f.transform(object.getPosition(), object.getRotation(), object.getScalar()));
 			objectShader.setUniform("view", Matrix4f.view(camera.getPosition(), camera.getRotation()));
 			objectShader.setUniform("projection", window.getProjectionMatrix());
+			objectShader.setUniform("lightPos", lightPosition);
+			objectShader.setUniform("viewPos", camera.getPosition());
 			// If it is an AnimGameObject we make the shader use the skeleton
 			// for vertex deformation
 			if (object instanceof AnimGameObject) {
@@ -199,6 +202,8 @@ public class Renderer {
 		objectShader.createUniform("model");
 		objectShader.createUniform("view");
 		objectShader.createUniform("projection");
+		objectShader.createUniform("lightPos");
+		objectShader.createUniform("viewPos");
 		
 		terrainShader.createUniform("model");
 		terrainShader.createUniform("view");

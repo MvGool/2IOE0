@@ -50,4 +50,9 @@ public class Node
 	public AIMatrix4x4 getTransformation() {
 		return transformation;
 	}
+
+	public void setTransformation(AIMatrix4x4 matrix) {
+		transformation = matrix;
+	}
+
 }
