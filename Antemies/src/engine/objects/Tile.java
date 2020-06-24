@@ -6,6 +6,7 @@ public class Tile {
 	private int x, y;
 	private boolean obstacle;
 	private boolean discovered;
+	private boolean nest;
 	private float trailValue;
 	private int heuristic;
 	private int finalCost;
@@ -42,6 +43,14 @@ public class Tile {
 
 	public void setDiscovered(boolean discovered) {
 		this.discovered = discovered;
+	}
+
+	public boolean isNest() {
+		return nest;
+	}
+
+	public void setNest(boolean nest) {
+		this.nest = nest;
 	}
 
 	public float getTrailValue() {

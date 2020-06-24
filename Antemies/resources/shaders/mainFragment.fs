@@ -27,15 +27,15 @@ vec3 calcNormal(vec3 normal, vec2 text_coord, mat4 modelViewMatrix)
 
 void main() {
 	vec3 lightColor = vec3(1);
-	float ambientStrength = 0.8;
+	float ambientStrength = 0.5;
 	vec3 ambient = ambientStrength * lightColor;
 
-	vec3 norm = calcNormal(passNormal, passTextureCoord, passModelViewMatrix);
+	vec3 norm = passNormal;//calcNormal(passNormal, passTextureCoord, passModelViewMatrix);
 	vec3 lightDir = normalize(lightPos - passPos);
 	float diff = max(dot(norm, lightDir), 0.0);
 	vec3 diffuse = diff * lightColor;
 
-	float specularStrength = 0.5;
+	float specularStrength = 0.3;
 	vec3 viewDir = normalize(viewPos - passPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);

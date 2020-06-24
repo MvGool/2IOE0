@@ -216,7 +216,7 @@ public class Renderer {
 		objectShader.createUniform("projection");
 		objectShader.createUniform("lightPos");
 		objectShader.createUniform("viewPos");
-		objectShader.createUniform("useNormalMap");
+//		objectShader.createUniform("useNormalMap");
 		
 		terrainShader.createUniform("model");
 		terrainShader.createUniform("view");

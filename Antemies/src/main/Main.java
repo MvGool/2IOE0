@@ -21,7 +21,7 @@ public class Main implements Runnable {
 	public World world;
 	public boolean holdF1;
 	public boolean holdClick;
-	public boolean holdP;
+	public boolean holdPause;
 	public final int WIDTH = UI.width, HEIGHT = UI.height;
 	
 	public static Clip clip;
@@ -63,7 +63,7 @@ public class Main implements Runnable {
 	
 	private void gameLoop() {
 		if (!UI.close) {
-			while (!window.shouldClose() && !Input.isKeyDown(GLFW_KEY_ESCAPE) && !UI.close) {
+			while (!window.shouldClose() && !UI.close) {
 				handleInputs();
 				update();
 				render(); 
@@ -107,15 +107,15 @@ public class Main implements Runnable {
 			}
 		}
 		
-		if (!Input.isKeyDown(GLFW_KEY_P)) {
-			holdP = false;
+		if (!Input.isKeyDown(GLFW_KEY_P) && !Input.isKeyDown(GLFW_KEY_ESCAPE)) {
+			holdPause = false;
 		}
 		
-		if (Input.isKeyDown(GLFW_KEY_P) && !holdP) {
+		if ((Input.isKeyDown(GLFW_KEY_P) || Input.isKeyDown(GLFW_KEY_ESCAPE)) && !holdPause) {
 			window.hide();
 			UI.run();
 			window.show();
-			holdP = true;
+			holdPause = true;
 		}
 	}
 	

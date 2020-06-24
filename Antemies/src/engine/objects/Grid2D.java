@@ -69,6 +69,11 @@ public class Grid2D {
 		int x = (int) (Math.random()*size - size/2);
 		int y = (int) (Math.random()*size - size/2);
 		
+		if (Math.abs(x) < 5 || Math.abs(y) < 5) {
+			System.out.println("Tile at " + x + ", " + y + " is too close to the nest");
+			return getRandomTile();			
+		}
+		
 		Tile tile = getTile(x, y);
 		if (tile.isObstacle() || tile.getFood() != 0 || tile.getMaterial() != 0 || tile.equals(userTile)) {
 			System.out.println("Tile at " + tile.toString() + " is already occupied");
@@ -217,6 +222,12 @@ public class Grid2D {
 	}
 	
 	public void setResources(int amount) {
+		for (int i = -2; i < 2; i++) {
+			for (int j = -2; j < 2; j++) {
+				getTile(i, j).setNest(true);			
+			}
+		}	
+		
 		for (int i = 0; i < amount; i++) {
 			getRandomTile().setFood((int) (Math.random()*10 + 10));
 			getRandomTile().setMaterial((int) (Math.random()*10 + 10));

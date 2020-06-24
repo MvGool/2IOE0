@@ -52,7 +52,6 @@ public class World {
 
 		try {
 			antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
-			eric = AnimModelLoader.load("resources/models/testmodels/eric.fbx");
 
 			nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50);
 
@@ -128,7 +127,7 @@ public class World {
 		renderer.renderTerrain(gridMesh, camera);
 		renderer.renderShadow(shadowMesh, camera);
 		renderer.renderTrail(trailMesh, camera);
-//		renderer.renderMesh(nest, camera);
+		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderResources(foodMesh, camera);
 		renderer.renderResources(materialMesh, camera);
