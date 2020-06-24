@@ -101,9 +101,11 @@ public class Window {
 	
 	public void show() {
 		GLFW.glfwShowWindow(window);
+		setFullscreen(true);
 	}
 	
 	public void hide() {
+		setFullscreen(false);
 		GLFW.glfwHideWindow(window);
 	}
 	
@@ -116,8 +118,12 @@ public class Window {
 	}
 	
 	public void destroy() {
-		input.destroy();
-		sizeCallback.free();
+		if (input != null) {
+			input.destroy();
+		}
+		if (sizeCallback != null) {
+			sizeCallback.free();
+		}
 		GLFW.glfwWindowShouldClose(window);
 		GLFW.glfwDestroyWindow(window);
 		GLFW.glfwTerminate();

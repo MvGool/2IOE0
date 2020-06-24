@@ -21,7 +21,6 @@ public class World {
 	private Grid2D grid = new Grid2D(GRIDSIZE);
 
 	private Mesh[] antMesh;
-	private GameObject cube;
 	private Mesh gridMesh;
 	private Mesh shadowMesh;
 	private Mesh trailMesh;
@@ -165,7 +164,6 @@ public class World {
 
 	private void updateObjects() {
 		userAnt.update();
-		grid.setUserTile(userAnt.getTile());
 	}
 
 	private void updateTrail() {

@@ -16,7 +16,6 @@ public class Grid2D {
 	private int size;
 	private Map<Coordinate, Tile> grid = new HashMap<>();
 	private ArrayList<Tile> trail;
-	private Tile userTile;
 	
 	public Grid2D(int size) {
 		this.size = size;
@@ -75,7 +74,7 @@ public class Grid2D {
 		}
 		
 		Tile tile = getTile(x, y);
-		if (tile.isObstacle() || tile.getFood() != 0 || tile.getMaterial() != 0 || tile.equals(userTile)) {
+		if (tile.isObstacle() || tile.getFood() != 0 || tile.getMaterial() != 0) {
 			System.out.println("Tile at " + tile.toString() + " is already occupied");
 			return getRandomTile();
 		}
@@ -86,10 +85,6 @@ public class Grid2D {
 		if (grid.replace(new Coordinate(tile.getX(), tile.getY()), tile) == null) {
 			grid.put(new Coordinate(tile.getX(), tile.getY()), tile);
 		}
-	}
-	
-	public void setUserTile (Tile tile) {
-		userTile = getTile(tile.getX(), tile.getY());
 	}
 	
 	public ArrayList getTrail() {
