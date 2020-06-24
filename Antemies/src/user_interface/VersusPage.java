@@ -9,7 +9,7 @@ package user_interface;
  *
  * @author 20168341
  */
-public class VersusPage extends javax.swing.JFrame {
+public class VersusPage extends javax.swing.JPanel {
 
     /**
      * Creates new form VersusMode
@@ -31,7 +31,7 @@ public class VersusPage extends javax.swing.JFrame {
         title = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        //setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         //getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         backButton.setBackground(new java.awt.Color(245, 245, 245));
@@ -63,13 +63,13 @@ public class VersusPage extends javax.swing.JFrame {
         //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
 
         setSize(new java.awt.Dimension(1938, 1127));
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
     }// </editor-fold>                        
 
     private void backButtonMouseClicked(java.awt.event.MouseEvent evt) {                                        
-        FrontPage frontPage = new FrontPage();
+        /*FrontPage frontPage = new FrontPage();
         frontPage.setVisible(true);
-        this.setVisible(false);
+        this.setVisible(false);*/
     }                                       
 
     private void backButtonMouseEntered(java.awt.event.MouseEvent evt) {                                        

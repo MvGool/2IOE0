@@ -11,15 +11,23 @@ import java.awt.event.KeyEvent;
  *
  * @author 20168341
  */
-public class SettingsPage extends javax.swing.JFrame {
-    
-    private boolean musicToggleON = true;
-    private boolean audioToggleON = true;
+public class SettingsPage extends javax.swing.JPanel {
+	public int width;
+	public int height;
+	
+	public volatile boolean close;
+    public volatile boolean frontPage;
+    public volatile boolean volumeChange;
+    public volatile boolean musicToggleON = true;
+    public volatile boolean audioToggleON = true;
 
     /**
      * Creates new form SettingsPage
      */
-    public SettingsPage() {
+    public SettingsPage(int width, int height) {
+    	this.width = width;
+    	this.height = height;
+    	
         initComponents();
         musicValue.setText(String.valueOf(musicSlider.getValue()));
     }
@@ -65,13 +73,17 @@ public class SettingsPage extends javax.swing.JFrame {
         dDirection = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1920, 1080));
+        //setUndecorated(true);
+        //setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setName("frontPage"); // NOI18N
+        setSize(new java.awt.Dimension(width, height));
+        //setSize(new java.awt.Dimension(1938, 1127));
+        setLayout(null);
         //getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         title.setBackground(new java.awt.Color(245, 245, 245));
         title.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/settingsTitle.png"))); // NOI18N
-        //getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 100, -1, -1));
 
         backButton.setBackground(new java.awt.Color(245, 245, 245));
         backButton.setFont(new java.awt.Font("Lato", 0, 30)); // NOI18N
@@ -80,6 +92,7 @@ public class SettingsPage extends javax.swing.JFrame {
         backButton.setText("Front page");
         backButton.setIconTextGap(10);
         backButton.setPreferredSize(new java.awt.Dimension(210, 37));
+        backButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         backButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 backButtonMouseClicked(evt);
@@ -91,7 +104,6 @@ public class SettingsPage extends javax.swing.JFrame {
                 backButtonMouseExited(evt);
             }
         });
-        //getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
 
         musicPanel.setBackground(new java.awt.Color(245, 245, 245));
         musicPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 2, 2, new java.awt.Color(153, 153, 153)));
@@ -139,6 +151,7 @@ public class SettingsPage extends javax.swing.JFrame {
 
         musicSlider.setToolTipText("");
         musicSlider.setPreferredSize(new java.awt.Dimension(200, 43));
+        musicSlider.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         musicSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 musicSliderStateChanged(evt);
@@ -187,8 +200,6 @@ public class SettingsPage extends javax.swing.JFrame {
                         .addComponent(musicSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
-
-        //getContentPane().add(musicPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 307, -1, -1));
 
         audioPanel.setBackground(new java.awt.Color(245, 245, 245));
         audioPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 2, 2, new java.awt.Color(153, 153, 153)));
@@ -283,9 +294,7 @@ public class SettingsPage extends javax.swing.JFrame {
                     .addComponent(audioSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
-
-        //getContentPane().add(audioPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 307, -1, -1));
-
+        
         keyPanel.setBackground(new java.awt.Color(245, 245, 245));
         keyPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 2, 2, new java.awt.Color(153, 153, 153)));
         keyPanel.setPreferredSize(new java.awt.Dimension(600, 199));
@@ -355,6 +364,43 @@ public class SettingsPage extends javax.swing.JFrame {
                 .addGap(0, 0, 0))
         );
 
+        aKey.setBackground(new java.awt.Color(245, 245, 245));
+        aKey.setPreferredSize(new java.awt.Dimension(108, 146));
+
+        aLetter.setBackground(new java.awt.Color(245, 245, 245));
+        aLetter.setFont(new java.awt.Font("Lato", 1, 100)); // NOI18N
+        aLetter.setForeground(new java.awt.Color(102, 102, 102));
+        aLetter.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        aLetter.setText("A");
+        aLetter.setIconTextGap(10);
+
+        aDirection.setBackground(new java.awt.Color(245, 245, 245));
+        aDirection.setFont(new java.awt.Font("Lato", 0, 30)); // NOI18N
+        aDirection.setForeground(new java.awt.Color(102, 102, 102));
+        aDirection.setText("Left");
+
+        javax.swing.GroupLayout aKeyLayout = new javax.swing.GroupLayout(aKey);
+        aKey.setLayout(aKeyLayout);
+        aKeyLayout.setHorizontalGroup(
+            aKeyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(aKeyLayout.createSequentialGroup()
+                .addGroup(aKeyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(aLetter, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(aKeyLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(aDirection)))
+                .addGap(0, 0, 0))
+        );
+        aKeyLayout.setVerticalGroup(
+            aKeyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(aKeyLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(aLetter, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(aDirection)
+                .addGap(0, 0, 0))
+        );
+
         sKey.setBackground(new java.awt.Color(245, 245, 245));
         sKey.setPreferredSize(new java.awt.Dimension(108, 146));
 
@@ -382,6 +428,7 @@ public class SettingsPage extends javax.swing.JFrame {
                         .addComponent(sDirection)))
                 .addGap(0, 0, 0))
         );
+        
         sKeyLayout.setVerticalGroup(
             sKeyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sKeyLayout.createSequentialGroup()
@@ -391,44 +438,7 @@ public class SettingsPage extends javax.swing.JFrame {
                 .addComponent(sDirection)
                 .addGap(0, 0, 0))
         );
-
-        aKey.setBackground(new java.awt.Color(245, 245, 245));
-        aKey.setPreferredSize(new java.awt.Dimension(108, 146));
-
-        aLetter.setBackground(new java.awt.Color(245, 245, 245));
-        aLetter.setFont(new java.awt.Font("Lato", 1, 100)); // NOI18N
-        aLetter.setForeground(new java.awt.Color(102, 102, 102));
-        aLetter.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        aLetter.setText("A");
-        aLetter.setIconTextGap(10);
-
-        aDirection.setBackground(new java.awt.Color(245, 245, 245));
-        aDirection.setFont(new java.awt.Font("Lato", 0, 30)); // NOI18N
-        aDirection.setForeground(new java.awt.Color(102, 102, 102));
-        aDirection.setText("Right");
-
-        javax.swing.GroupLayout aKeyLayout = new javax.swing.GroupLayout(aKey);
-        aKey.setLayout(aKeyLayout);
-        aKeyLayout.setHorizontalGroup(
-            aKeyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(aKeyLayout.createSequentialGroup()
-                .addGroup(aKeyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(aLetter, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(aKeyLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(aDirection)))
-                .addGap(0, 0, 0))
-        );
-        aKeyLayout.setVerticalGroup(
-            aKeyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(aKeyLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(aLetter, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(aDirection)
-                .addGap(0, 0, 0))
-        );
-
+        
         dKey.setBackground(new java.awt.Color(245, 245, 245));
         dKey.setPreferredSize(new java.awt.Dimension(108, 146));
 
@@ -442,7 +452,7 @@ public class SettingsPage extends javax.swing.JFrame {
         dDirection.setBackground(new java.awt.Color(245, 245, 245));
         dDirection.setFont(new java.awt.Font("Lato", 0, 30)); // NOI18N
         dDirection.setForeground(new java.awt.Color(102, 102, 102));
-        dDirection.setText("Left");
+        dDirection.setText("Right");
 
         javax.swing.GroupLayout dKeyLayout = new javax.swing.GroupLayout(dKey);
         dKey.setLayout(dKeyLayout);
@@ -476,9 +486,9 @@ public class SettingsPage extends javax.swing.JFrame {
                 .addGap(150, 150, 150)
                 .addComponent(wKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(125, 125, 125)
-                .addComponent(sKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(125, 125, 125)
                 .addComponent(aKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(125, 125, 125)
+                .addComponent(sKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(125, 125, 125)
                 .addComponent(dKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(150, 150, 150))
@@ -498,19 +508,42 @@ public class SettingsPage extends javax.swing.JFrame {
                 .addGap(20, 20, 20))
         );
 
-        //getContentPane().add(keyPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 606, 1300, 189));
-
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/background.jpg"))); // NOI18N
-        //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
+       
+        //title.setBounds(760, 100, title.getPreferredSize().width, 160);
+        title.setBounds((int) (width * 760f / 1920f), (int) (height * 100f / 1080f), (int) (width * 600f / 1920f), (int) (height * 160f / 1080f));
+        add(title);
+        //getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 100, -1, -1));
+        
+        //backButton.setBounds(50, 50, backButton.getPreferredSize().width, backButton.getPreferredSize().height);
+        backButton.setBounds((int) (width * 50f / 1920f), (int) (height * 50f / 1080f), (int) (width * (float) backButton.getPreferredSize().width / 1920f), (int) (height * (float) backButton.getPreferredSize().height / 1080f));
+        add(backButton);
+        //getContentPane().add(backButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 50, -1, -1));
+        
+        //musicPanel.setBounds(310, 307, musicPanel.getPreferredSize().width, musicPanel.getPreferredSize().height);
+        musicPanel.setBounds((int) (width * 660f / 1920f), (int) (height * 400f / 1080f), (int) (width * (float) musicPanel.getPreferredSize().width / 1920f), (int) (height * (float) musicPanel.getPreferredSize().height / 1080f));
+        add(musicPanel);
+        //getContentPane().add(musicPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 307, -1, -1));
+        
+        //audioPanel.setBounds(1010, 307, audioPanel.getPreferredSize().width, audioPanel.getPreferredSize().height);
+        //musicPanel.setBounds((int) (width * 1010f / 1920f), (int) (height * 307f / 1080f), (int) (width * (float) audioPanel.getPreferredSize().width / 1920f), (int) (height * (float) audioPanel.getPreferredSize().height / 1080f));
+        //add(audioPanel);
+        //getContentPane().add(audioPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 307, -1, -1));
 
-        setSize(new java.awt.Dimension(1938, 1127));
-        setLocationRelativeTo(null);
+        //keyPanel.setBounds(310, 606, 1300, 189);
+        keyPanel.setBounds((int) (width * 310f / 1920f), (int) (height * 700f / 1080f), (int) (width * 1300f / 1920f), (int) (height * 189f / 1080f));
+        add(keyPanel);
+        //getContentPane().add(keyPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 606, 1300, 189));
+        
+        background.setBounds(0, 0, width, height);
+        add(background);
+        //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
+        
+        //setLocationRelativeTo(null);
     }// </editor-fold>                        
 
     private void backButtonMouseClicked(java.awt.event.MouseEvent evt) {                                        
-        FrontPage frontPage = new FrontPage();
-        frontPage.setVisible(true);
-        this.setVisible(false);
+        frontPage = true;
     }                                       
 
     private void backButtonMouseEntered(java.awt.event.MouseEvent evt) {                                        
@@ -550,6 +583,7 @@ public class SettingsPage extends javax.swing.JFrame {
 
     private void musicSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                         
         musicValue.setText(String.valueOf(musicSlider.getValue()));
+        volumeChange = true;
     }                                        
 
     private void audioSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                         
@@ -566,41 +600,10 @@ public class SettingsPage extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             audioSlider.setValue(Integer.parseInt(audioValue.getText()));
         }
-    }                                     
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SettingsPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SettingsPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SettingsPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SettingsPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SettingsPage().setVisible(true);
-            }
-        });
+    }
+    
+    public int getVolume() {
+    	return musicSlider.getValue();
     }
 
     // Variables declaration - do not modify                     

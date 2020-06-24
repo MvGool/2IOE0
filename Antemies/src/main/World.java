@@ -95,7 +95,7 @@ public class World {
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 		
 		gridMesh = grid.getMesh();
-		gridMesh.setMaterial(new Material("/textures/tileTest.jpg")); //"/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg"));	
+		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg")); // Test texture: "/textures/tileTest.jpg"	
 		shadowMesh = grid.getShadowMesh();
 		trailMesh = grid.getTrailMesh();
 		previousTile = userAnt.getTile();

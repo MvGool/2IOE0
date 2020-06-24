@@ -99,6 +99,14 @@ public class Window {
 		}
 	}
 	
+	public void show() {
+		GLFW.glfwShowWindow(window);
+	}
+	
+	public void hide() {
+		GLFW.glfwHideWindow(window);
+	}
+	
 	public void swapBuffers() {
 		GLFW.glfwSwapBuffers(window);
 	}

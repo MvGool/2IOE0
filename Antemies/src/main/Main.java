@@ -5,10 +5,21 @@ import engine.io.Input;
 import engine.io.Window;
 import engine.maths.*;
 import engine.objects.Camera;
+import engine.utils.FileUtils;
+import user_interface.FrontPage;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.awt.Toolkit;
+import java.io.File;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+
 public class Main implements Runnable {
+	public UserInterface UI = new UserInterface();
 	public String cameraMode = "topdown"; // Options: firstperson, topdown
 	public Thread game;
 	public Window window;
@@ -16,17 +27,24 @@ public class Main implements Runnable {
 	public World world;
 	public boolean holdF1;
 	public boolean holdClick;
-	public final int WIDTH = 1280, HEIGHT = 760;
-
+	public boolean holdP;
+	public final int WIDTH = UI.width, HEIGHT = UI.height;
+	
+	public static Clip clip;
+	
 	public Camera camera = new Camera(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0));
 	
 	public void start() {
-		game = new Thread(this, "game");
+		game = new Thread(this, "Antemies");
 		game.start();
 	}
 	
 	public void init() throws Exception {
-		window = new Window(WIDTH, HEIGHT, "Game");
+		UI.run();
+		if (UI.close) {
+			return;
+		}
+		window = new Window(WIDTH, HEIGHT, "Antemies");
 		renderer = new Renderer(window);
 		world = new World(renderer, camera);
 		window.setBackgroundColor(0.56f, 0.92f, 0.75f);
@@ -34,6 +52,7 @@ public class Main implements Runnable {
 		renderer.init();
 		world.load();
 		world.create();
+		playSound("forest_background");
 	}
 	
 	public void run() {
@@ -43,16 +62,20 @@ public class Main implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-//			cleanup();
+			cleanup();
 		}
 	}
 	
 	private void gameLoop() {
-		while (!window.shouldClose() && !Input.isKeyDown(GLFW_KEY_ESCAPE)) {
-			handleInputs();
-			update();
-			render(); 
+		if (!UI.close) {
+			while (!window.shouldClose() && !Input.isKeyDown(GLFW_KEY_ESCAPE) && !UI.close) {
+				handleInputs();
+				update();
+				render(); 
+			}
 		}
+		
+		cleanup();
 	}
 	
 	private void handleInputs() {
@@ -88,6 +111,17 @@ public class Main implements Runnable {
 				holdClick = true;
 			}
 		}
+		
+		if (!Input.isKeyDown(GLFW_KEY_P)) {
+			holdP = false;
+		}
+		
+		if (Input.isKeyDown(GLFW_KEY_P) && !holdP) {
+			window.hide();
+			UI.run();
+			window.show();
+			holdP = true;
+		}
 	}
 	
 	private void update() {
@@ -102,8 +136,20 @@ public class Main implements Runnable {
 	}
 	
 	private void cleanup() {
-		window.destroy();
-		world.destroy();
+		if (clip != null) {
+			clip.stop();
+			clip.close();
+		}
+		
+		UI.destroy();
+		
+		if (window != null) {
+			window.destroy();
+		}
+		
+		if (world != null) {
+			world.destroy();
+		}
 	}
 	
 	public Vector3f screenToWorldSpace(double x, double y) {
@@ -128,6 +174,25 @@ public class Main implements Runnable {
 	    }
 	    
 	    return result;
+	}
+	
+	// Plays a .wav audio file
+	public void playSound(String audio) {
+		try {
+		    if (clip != null && clip.isOpen()) {
+		    	clip.close();
+		    }
+		    
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("resources/audio/" + audio + ".wav").getAbsoluteFile());
+	        clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+	        control.setValue(20f * (float) Math.log10(0.5f));
+	
+	        clip.loop(Clip.LOOP_CONTINUOUSLY);
+		} catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 	
 	public static void main(String[] args) {
