@@ -5,18 +5,12 @@ import engine.io.Input;
 import engine.io.Window;
 import engine.maths.*;
 import engine.objects.Camera;
-import engine.utils.FileUtils;
-import user_interface.FrontPage;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import java.awt.Toolkit;
 import java.io.File;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.*;
 
 public class Main implements Runnable {
 	public UserInterface UI = new UserInterface();
@@ -31,6 +25,7 @@ public class Main implements Runnable {
 	public final int WIDTH = UI.width, HEIGHT = UI.height;
 	
 	public static Clip clip;
+	public static boolean playSound;
 	
 	public Camera camera = new Camera(new Vector3f(0, 1, 0), new Vector3f(0, 0, 0));
 	
@@ -183,13 +178,15 @@ public class Main implements Runnable {
 		    	clip.close();
 		    }
 		    
-	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("resources/audio/" + audio + ".wav").getAbsoluteFile());
+		    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("resources/audio/" + audio + ".wav").getAbsoluteFile());
 	        clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 	        control.setValue(20f * (float) Math.log10(0.5f));
-	
-	        clip.loop(Clip.LOOP_CONTINUOUSLY);
+	        
+	        if (playSound) {
+	        	clip.loop(Clip.LOOP_CONTINUOUSLY);
+	        }
 		} catch (Exception e) {
             e.printStackTrace();
         }

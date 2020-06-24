@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyListener;
 
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -71,12 +72,10 @@ public class UserInterface {
 					settingsPage.frontPage = !settingsPage.frontPage;
 				}
 				
-				if (Main.clip != null) {
-					if (settingsPage.musicToggleON) {
-						Main.clip.start();
-					} else {
-						Main.clip.stop();
-					}
+				if (settingsPage.musicToggleON) {
+					Main.playSound = true;
+				} else {
+					Main.playSound = false;
 				}
 				
 				if (settingsPage.volumeChange) {
@@ -125,7 +124,7 @@ public class UserInterface {
 				
 				if (Main.clip != null) {
 					if (settingsPage.musicToggleON) {
-						Main.clip.start();
+						Main.clip.loop(Clip.LOOP_CONTINUOUSLY);
 					} else {
 						Main.clip.stop();
 					}

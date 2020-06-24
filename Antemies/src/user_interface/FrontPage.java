@@ -54,7 +54,7 @@ public class FrontPage extends javax.swing.JPanel {
         exitButton = new javax.swing.JPanel();
         exitText = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
-        System.out.println(width + ", " + height);
+
         //setUndecorated(true);
         //setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
