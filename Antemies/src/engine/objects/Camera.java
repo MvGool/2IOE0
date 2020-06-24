@@ -52,6 +52,14 @@ public class Camera {
 	}
 	
 	private void topDown() {	
+		Vector3f topLeftCorner = screenToWorldSpace(0, 0, Main.window, this);
+		Vector3f bottomRightCorner = screenToWorldSpace(Main.window.getWidth(), Main.window.getHeight(), Main.window, this);
+		int gridSize = World.getGridSize();
+		float xLowerBound = - gridSize/2 + (moveSpeed + 0.05f);
+		float xUpperBound = gridSize/2 - (moveSpeed + 0.05f);
+		float zLowerBound = gridSize/2 - 1f - (moveSpeed + 0.05f);
+		float zUpperBound = - gridSize/2 - 1f + (moveSpeed + 0.05f);
+		
 		newScroll = Input.getScrollY();
 		
 		float dScroll = (float) (newScroll - oldScroll);
@@ -67,25 +75,26 @@ public class Camera {
 		
 		if (position.getY() + dZoom/scrollSpeed >= zoomLowerBound && position.getY() + dZoom/scrollSpeed <= zoomUpperBound) {
 			position = Vector3f.add(position, new Vector3f(0, dZoom/scrollSpeed, 0));		
-		}
-		
-		Vector3f topLeftCorner = screenToWorldSpace(0, 0, Main.window, this);
-		Vector3f bottomRightCorner = screenToWorldSpace(Main.window.getWidth(), Main.window.getHeight(), Main.window, this);
-		int gridSize = World.getGridSize();
-		int xLowerBound = - gridSize/2;
-		int xUpperBound = gridSize/2;
-		int zLowerBound = gridSize/2 - 1;
-		int zUpperBound = - gridSize/2 - 1;
-		
-		if (topLeftCorner.getX() < xLowerBound) {
-			position.setX(position.getX() + 0.1f);
-		} else if (bottomRightCorner.getX() > xUpperBound) {
-			position.setX(position.getX() - 0.1f);
-		}
-		if (topLeftCorner.getZ() < zUpperBound) {
-			position.setZ(position.getZ() + 0.1f);
-		} else if (bottomRightCorner.getZ() > zLowerBound) {
-			position.setZ(position.getZ() - 0.1f);
+			
+			while (topLeftCorner.getX() < xLowerBound) {
+				position.setX(position.getX() + 0.01f);
+				topLeftCorner.setX(topLeftCorner.getX() + 0.01f);
+			} 
+			
+			while (bottomRightCorner.getX() > xUpperBound) {
+				position.setX(position.getX() - 0.01f);
+				bottomRightCorner.setX(bottomRightCorner.getX() - 0.01f);
+			}
+			
+			while (topLeftCorner.getZ() < zUpperBound) {
+				position.setZ(position.getZ() + 0.01f);
+				topLeftCorner.setZ(topLeftCorner.getZ() + 0.01f);
+			}
+			
+			while (bottomRightCorner.getZ() > zLowerBound) {
+				position.setZ(position.getZ() - 0.01f);
+				bottomRightCorner.setZ(bottomRightCorner.getZ() - 0.01f);
+			}
 		}
 		
 		if (Input.isKeyDown(GLFW.GLFW_KEY_A) && topLeftCorner.getX() >= xLowerBound) {
