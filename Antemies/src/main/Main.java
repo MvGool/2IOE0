@@ -16,7 +16,7 @@ public class Main implements Runnable {
 	public UserInterface UI = new UserInterface();
 	public String cameraMode = "topdown"; // Options: firstperson, topdown
 	public Thread game;
-	public Window window;
+	public static Window window;
 	public Renderer renderer;
 	public World world;
 	public boolean holdF1;
@@ -100,7 +100,7 @@ public class Main implements Runnable {
 		if (cameraMode == "topdown" && Input.isButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !holdClick) {
 			double inputX = Input.getClickX();
 			double inputY = Input.getClickY();
-			Vector3f position = screenToWorldSpace(inputX, inputY);
+			Vector3f position = Camera.screenToWorldSpace(inputX, inputY, window, camera);
 			if (position != null) {
 				world.moveUser(position);
 				holdClick = true;
@@ -145,30 +145,6 @@ public class Main implements Runnable {
 		if (world != null) {
 			world.destroy();
 		}
-	}
-	
-	public Vector3f screenToWorldSpace(double x, double y) {
-		Matrix4f viewProjection = Matrix4f.multiply(window.getProjectionMatrix(), Matrix4f.view(new Vector3f(0, camera.getPosition().getY(), 0), camera.getRotation()));
-	    MatrixXf viewProjectionInverse = MatrixXf.inverse(Matrix4f.toMatrixXf(viewProjection));
-	    
-	    float newX = (float) (2.0 * x / window.getWidth() - 1);
-	    float newZ = (float) (- 2.0 * y / window.getHeight() + 1);
-	    Vector3f vec3f = new Vector3f(newX, 1, newZ);
-	    VectorXf vec4f = new VectorXf(4);
-	    vec4f.set(0, vec3f.getX());
-	    vec4f.set(1, vec3f.getY());
-	    vec4f.set(2, vec3f.getZ());
-	    vec4f.set(3, 1);
-	    
-	    VectorXf mul = MatrixXf.multiply(viewProjectionInverse, vec4f);
-	    Vector3f result;
-	    if (viewProjectionInverse.equals(MatrixXf.zero(4))) {
-	    	result = null;
-	    } else {
-	    	result = new Vector3f(camera.getPosition().getX() + camera.getPosition().getY() * mul.get(0), 1, camera.getPosition().getZ() + camera.getPosition().getY() * mul.get(1));
-	    }
-	    
-	    return result;
 	}
 	
 	// Plays a .wav audio file
