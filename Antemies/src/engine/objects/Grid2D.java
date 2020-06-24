@@ -151,10 +151,10 @@ public class Grid2D {
 				int y = tile.getY();
 				
 				// Add 4 corners
-				vertices.add(new Vertex(new Vector3f(x, 0.01f, y), new Vector3f(0, 1, 0), new Vector2f(x, y)));
-				vertices.add(new Vertex(new Vector3f(x, 0.01f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x, y + 1)));
-				vertices.add(new Vertex(new Vector3f(x + 1, 0.01f, y), new Vector3f(0, 1, 0), new Vector2f(x + 1, y)));
-				vertices.add(new Vertex(new Vector3f(x + 1, 0.01f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x + 1, y + 1)));
+				vertices.add(new Vertex(new Vector3f(x, 1f, y), new Vector3f(0, 1, 0), new Vector2f(x, y)));
+				vertices.add(new Vertex(new Vector3f(x, 1f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x, y + 1)));
+				vertices.add(new Vertex(new Vector3f(x + 1, 1f, y), new Vector3f(0, 1, 0), new Vector2f(x + 1, y)));
+				vertices.add(new Vertex(new Vector3f(x + 1, 1f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x + 1, y + 1)));
 			
 				// Draw triangles for that tile
 				indices.add(4*iter);
