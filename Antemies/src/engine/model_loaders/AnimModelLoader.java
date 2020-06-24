@@ -104,22 +104,6 @@ public class AnimModelLoader extends ModelLoader
 	// Transform an AIMatrix to a Joml matrix
 	public static Matrix4f AIMatrixToMatrix(AIMatrix4x4 matrix) {
 		org.joml.Matrix4f result = new org.joml.Matrix4f();
-		/*result.set(0, 0, matrix.a1());
-		result.set(0, 1, matrix.a2());
-		result.set(0, 2, matrix.a3());
-		result.set(0, 3, matrix.a4());
-		result.set(1, 0, matrix.b1());
-		result.set(1, 1, matrix.b2());
-		result.set(1, 2, matrix.b3());
-		result.set(1, 3, matrix.b4());
-		result.set(2, 0, matrix.c1());
-		result.set(2, 1, matrix.c2());
-		result.set(2, 2, matrix.c3());
-		result.set(2, 3, matrix.c4());
-		result.set(3, 0, matrix.d1());
-		result.set(3, 1, matrix.d2());
-		result.set(3, 2, matrix.d3());
-		result.set(3, 3, matrix.d4());*/
 
 		result.m00(matrix.a1());
 		result.m10(matrix.a2());

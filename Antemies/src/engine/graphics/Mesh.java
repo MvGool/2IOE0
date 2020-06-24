@@ -19,7 +19,7 @@ public class Mesh {
 	private Vertex[] vertices;
 	private int[] indices;
 	private Material material;
-	private int vao, pbo, ibo, cbo, tbo, transbo;
+	private int vao, pbo, ibo, nbo, cbo, tbo, transbo;
 
 	public Mesh(Vertex[] vertices, int[] indices, Material material) {
 		this.vertices = vertices;
@@ -50,6 +50,17 @@ public class Mesh {
 
 		pbo = storeData(positionBuffer, 0, 3);
 
+		FloatBuffer normalBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
+		float[] normalData = new float[vertices.length * 3];
+		for (int i = 0; i < vertices.length; i++) {
+			normalData[i * 3] = vertices[i].getNormal().getX();
+			normalData[i * 3 + 1] = vertices[i].getNormal().getY();
+			normalData[i * 3 + 2] = vertices[i].getNormal().getZ();
+		}
+		normalBuffer.put(normalData).flip();
+
+		nbo = storeData(normalBuffer, 1, 3);
+
 		if (initTextureBuffer) {
 			FloatBuffer textureBuffer = MemoryUtil.memAllocFloat(vertices.length * 2);
 			float[] textureData = new float[vertices.length * 2];
@@ -70,7 +81,7 @@ public class Mesh {
 			}
 			colorBuffer.put(colorData).flip();
 			
-			cbo = storeData(colorBuffer, 1, 3);
+			cbo = storeData(colorBuffer, 2, 3);
 			
 			FloatBuffer transparencyBuffer = MemoryUtil.memAllocFloat(vertices.length * 3);
 			float[] transparencyData = new float[vertices.length * 3];
@@ -164,10 +175,15 @@ public class Mesh {
 		}
 	}
 	
-	public void rotateScale(float scale) {
+	public void rotateScale(float scale, boolean rotate) {
 		for (Vertex vertex : vertices) {
 			Vector3f cur = vertex.getPostion();
-			Vector3f out = Vector3f.multiply(new Vector3f(cur.getX(), cur.getZ(), -cur.getY()), scale);
+			Vector3f out;
+			if (rotate) {
+				out = Vector3f.multiply(new Vector3f(cur.getX(), cur.getZ(), -cur.getY()), scale);
+			} else {
+				out = Vector3f.multiply(cur, scale);
+			}
 			vertex.setPosition(out);
 		}
 	}
@@ -201,7 +217,7 @@ public class Mesh {
 
 	public void destroy() {
 		glDeleteBuffers(pbo);
-		glDeleteBuffers(cbo);
+		glDeleteBuffers(nbo);
 		glDeleteBuffers(ibo);
 		glDeleteBuffers(tbo);
 
@@ -240,8 +256,8 @@ public class Mesh {
 		return ibo;
 	}
 
-	public int getCBO() {
-		return cbo;
+	public int getNBO() {
+		return nbo;
 	}
 
 	public int getTBO() {

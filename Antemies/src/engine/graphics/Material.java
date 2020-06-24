@@ -10,8 +10,9 @@ import org.newdawn.slick.opengl.TextureLoader;
 public class Material {
 	private String path;
 	private Texture texture;
+	private Texture normalMap;
 	private float width, height;
-	private int textureID;
+	private int textureID, normalMapID;
 	
 	public Material(String path) {
 		this.path = path;
@@ -42,5 +43,25 @@ public class Material {
 
 	public int getTextureID() {
 		return textureID;
+	}
+
+	public int getNormalMapID() {
+		return normalMapID;
+	}
+
+	public void setNormalMap(String normalMapPath) {
+		Texture normalMap = null;
+		try {
+			normalMap = TextureLoader.getTexture("jpg", Material.class.getResourceAsStream(normalMapPath), GL11.GL_LINEAR);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.normalMap = normalMap;
+		this.normalMapID = normalMap.getTextureID();
+	}
+	
+	public boolean hasNormalMap() {
+		return this.normalMap != null;
 	}
 }
