@@ -30,10 +30,6 @@ public class Mesh {
 	public Mesh(Vertex[] vertices, int[] indices) {
 		this(vertices, indices, null);
 	}
-	
-	public Mesh(Mesh mesh) {
-		this(mesh.getVertices(), mesh.getIndices(), mesh.getMaterial());
-	}
 
 	public void create(boolean initTextureBuffer) {
 		if (material != null) {
@@ -209,11 +205,7 @@ public class Mesh {
 			indicesOut[i] = indices.get(i);
 		}
 		
-		return new Mesh(verticesOut, indicesOut, meshes.get(0).getMaterial());
-	}
-	
-	public Mesh copy() {
-		return this;
+		return new Mesh(verticesOut, indicesOut);
 	}
 	
 	public void reset(Vertex[] vertices, int[] indices, boolean initTextureBuffer) {

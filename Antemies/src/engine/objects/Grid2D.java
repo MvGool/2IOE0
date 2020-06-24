@@ -68,7 +68,7 @@ public class Grid2D {
 		int x = (int) (Math.random()*size - size/2);
 		int y = (int) (Math.random()*size - size/2);
 		
-		if (Math.abs(x) + Math.abs(y) < 8) {
+		if (Math.abs(x) < 5 || Math.abs(y) < 5) {
 			System.out.println("Tile at " + x + ", " + y + " is too close to the nest");
 			return getRandomTile();			
 		}
@@ -219,8 +219,7 @@ public class Grid2D {
 	public void setResources(int amount) {
 		for (int i = -2; i < 2; i++) {
 			for (int j = -2; j < 2; j++) {
-				getTile(i, j).setNest(true);
-				System.out.println("Tile " + i + ", " + j + " is now a nest");
+				getTile(i, j).setNest(true);			
 			}
 		}	
 		

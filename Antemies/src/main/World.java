@@ -1,7 +1,6 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import engine.graphics.BoneMesh;
@@ -39,9 +38,6 @@ public class World {
 	private Mesh foodMesh;
 	private Mesh materialMesh;
 	private Mesh stoneMesh;
-	private Mesh foodObjectMesh;
-	private Mesh materialObjectMesh;
-	private Mesh stoneObjectMesh;
 
 	public World(Renderer renderer, Camera camera) {
 		this.renderer = renderer;
@@ -58,46 +54,37 @@ public class World {
 
 			nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50);
 
-			Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
-			foodObjectMesh = foodMeshes[0];
-			foodObjectMesh.rotateScale(scaleFood, true);
-			
-			ArrayList<Mesh> materialMeshes = new ArrayList<>();
-			materialMeshes.addAll(Arrays.asList(StaticModelLoader.load("resources/models/sticks.obj", "/textures/stick/Bark_Pine_baseColor.jpg")));
-			for (Mesh mesh : materialMeshes) {
-				mesh.rotateScale(scaleMaterial, false);
-			}
-			materialObjectMesh = Mesh.merge(materialMeshes); 
-			
-			ArrayList<Mesh> stoneMeshes = new ArrayList<>();
-			stoneMeshes.addAll(Arrays.asList(StaticModelLoader.load("resources/models/rock_large.obj", "/models/rock_large_texture_001.png")));
-			for (Mesh mesh : stoneMeshes) {
-				mesh.rotateScale(scaleRock, true);
-			}
-			stoneObjectMesh = Mesh.merge(stoneMeshes); 
-			
 			for (Tile tile : grid.getTiles()) {
-//				if (tile.isDiscovered()) {
-					if (tile.getFood() > 0) {
-						Mesh newFoodMesh = new Mesh(foodObjectMesh);
-						newFoodMesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-						foodSources.add(newFoodMesh);
-					} else if (tile.getMaterial() > 0) {
-						Mesh newMaterialMesh = materialObjectMesh.copy();
-						newMaterialMesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-						materialSources.add(newMaterialMesh);
-					} else if (tile.isObstacle()) {
-						Mesh newStoneMesh = stoneObjectMesh.copy();
-						newStoneMesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-						stoneSources.add(newStoneMesh);
+				if (tile.getFood() > 0) {
+					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
+					for (Mesh mesh : foodMeshes) {
+						mesh.rotateScale(scaleFood, true);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						foodSources.add(mesh);
 					}
-//				}
+				} else if (tile.getMaterial() > 0) {
+					Mesh[] materialMeshes = StaticModelLoader.load("resources/models/sticks.obj", "/textures/stick/Bark_Pine_baseColor.jpg");
+					for (Mesh mesh : materialMeshes) {
+						mesh.rotateScale(scaleMaterial, false);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						materialSources.add(mesh);
+					}
+				} else if (tile.isObstacle()) {
+					Mesh[] stoneMeshes = StaticModelLoader.load("resources/models/rock_large.obj", "/models/rock_large_texture_001.png");
+					for (Mesh mesh : stoneMeshes) {
+						mesh.rotateScale(scaleRock, true);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						stoneSources.add(mesh);
+					}
+				}
 			}
-			
 			foodMesh = Mesh.merge(foodSources);
+			foodMesh.setMaterial(new Material( "/models/textures/Apricot_02_diffuse.png"));
 			materialMesh = Mesh.merge(materialSources);
+			materialMesh.setMaterial(new Material("/textures/stick/Bark_Pine_baseColor.jpg"));
 			materialMesh.getMaterial().setNormalMap("/textures/stick/Bark_Pine_normal.jpg");
 			stoneMesh = Mesh.merge(stoneSources);
+			stoneMesh.setMaterial(new Material("/models/rock_large_texture_001.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
@@ -122,7 +109,7 @@ public class World {
 		userAnt.create(true);
 		shadowMesh.create(false);
 		trailMesh.create(false);
-		foodObjectMesh.create(true);
+		foodMesh.create(true);
 		materialMesh.create(true);
 		stoneMesh.create(true);
 	}
@@ -141,7 +128,7 @@ public class World {
 		renderer.renderTrail(trailMesh, camera);
 		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
-		renderer.renderResources(foodObjectMesh, camera);
+		renderer.renderResources(foodMesh, camera);
 		renderer.renderResources(materialMesh, camera);
 		renderer.renderResources(stoneMesh, camera);
 	}
@@ -165,7 +152,7 @@ public class World {
 			for (int j = -range; j <= range; j++) {
 				if (grid.hasTile(tile.getX() + i, tile.getY() + j) && !grid.getTile(tile.getX() + i, tile.getY() + j).isDiscovered()) {
 					if (Math.abs(i) < range + 2 - Math.abs(j)) {
-						updateTile(grid.getTile(tile.getX() + i, tile.getY() + j));
+						grid.getTile(tile.getX() + i, tile.getY() + j).setDiscovered(true);
 					}
 				}
 			}
@@ -173,38 +160,6 @@ public class World {
 
 		Mesh newMesh = grid.getShadowMesh();
 		shadowMesh.reset(newMesh.getVertices(), newMesh.getIndices(), true);
-	}
-	
-	private void createObjectMeshes() throws Exception {
-	}
-	
-	private void updateTile(Tile tile) {
-		tile.setDiscovered(true);
-//		if (tile.getFood() > 0) {
-//			Mesh newFoodMesh = foodMesh.copy();
-//			newFoodMesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-//			foodSources.add(newFoodMesh);
-//			foodMesh.destroy();
-//			foodMesh = Mesh.merge(foodSources);
-//			foodMesh.create(true);
-//			System.out.println("food added " + foodSources.size());
-//		} else if (tile.getMaterial() > 0) {
-//			Mesh newMaterialMesh = materialMesh.copy();
-//			newMaterialMesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-//			materialSources.add(newMaterialMesh);
-//			materialMesh.destroy();
-//			materialMesh = Mesh.merge(materialSources);
-//			materialMesh.create(true);
-//			System.out.println("material added");
-//		} else if (tile.isObstacle()) {
-//			Mesh newStoneMesh = stoneMesh.copy();
-//			newStoneMesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-//			stoneSources.add(newStoneMesh);
-//			stoneMesh.destroy();
-//			stoneMesh = Mesh.merge(stoneSources);
-//			stoneMesh.create(true);
-//			System.out.println("stone added");
-//		}
 	}
 
 	private void updateObjects() {
