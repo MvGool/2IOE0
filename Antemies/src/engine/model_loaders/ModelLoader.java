@@ -46,7 +46,6 @@ public class ModelLoader
 			// we check if there are normal and/or texture present, if so we load that information
 			// if not we give null. If there are errors with models it is likely that they don't have texture coordinates
 			if (aiNormals == null) {
-				System.out.println("non existing normals");
 				normalV = new Vector3f(0, 1, 0);
 			} else {
 				AIVector3D aiNormal = aiNormals.get();
@@ -54,7 +53,6 @@ public class ModelLoader
 			}
 
 			if (aiTextCoords == null) {
-				System.out.println("no texCoords");
 				texV = null;
 			} else {
 				AIVector3D textCoords = aiTextCoords.get();
