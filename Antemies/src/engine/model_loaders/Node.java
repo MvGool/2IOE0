@@ -6,18 +6,26 @@ import org.lwjgl.assimp.AIMatrix4x4;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that represents a node as given by the Assimp model loader
+ */
 public class Node
 {
+	// all the children of the node
 	private List<Node> children;
+	// the parent of the node
 	private Node parent;
+	// the name
 	private String name;
-	private AIMatrix4x4 transformation;
+	// the transformation matrix of the node, also called
+	// the local transform
+	private Matrix4f transformation;
 
 	public Node(Node parent, String name, AIMatrix4x4 matrix) {
 		this.name = name;
 		this.parent = parent;
 		this.children = new ArrayList<>();
-		this.transformation = matrix;
+		this.transformation = AnimModelLoader.AIMatrixToMatrix(matrix);
 	}
 
 	public void addChild(Node child) {
@@ -47,11 +55,11 @@ public class Node
 		return name;
 	}
 
-	public AIMatrix4x4 getTransformation() {
-		return transformation;
+	public Matrix4f getTransformation() {
+		return new Matrix4f(transformation);
 	}
 
-	public void setTransformation(AIMatrix4x4 matrix) {
+	public void setTransformation(Matrix4f matrix) {
 		transformation = matrix;
 	}
 
