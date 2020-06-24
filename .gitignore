@@ -4,3 +4,4 @@
 .idea/modules.xml
 .idea/vcs.xml
 Antemies/Antemies.iml
+*.log

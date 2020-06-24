@@ -21,7 +21,7 @@ public class Window {
 	private Vector3f background = new Vector3f(0, 0, 0);
 	private GLFWWindowSizeCallback sizeCallback;
 	private boolean isResized;
-	private boolean isFullscreen;
+	private boolean isFullscreen = true;
 	private int[] windowPosX = new int[1], windowPosY = new int[1];
 	private Matrix4f projection;
 	

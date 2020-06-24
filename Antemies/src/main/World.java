@@ -17,7 +17,8 @@ import main.objects.NestObject;
 public class World {
 	private Renderer renderer;
 	private Camera camera;
-	private Grid2D grid = new Grid2D(50);
+	private static final int GRIDSIZE = 50;
+	private Grid2D grid = new Grid2D(GRIDSIZE);
 
 	private Mesh[] antMesh;
 	private GameObject cube;
@@ -39,7 +40,6 @@ public class World {
 	private Mesh materialMesh;
 	private Mesh stoneMesh;
 
-
 	public World(Renderer renderer, Camera camera) {
 		this.renderer = renderer;
 		this.camera = camera;
@@ -52,7 +52,7 @@ public class World {
 
 		try {
 			antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
-			eric = AnimModelLoader.load("resources/models/testmodels/eric.fbx");
+			eric = AnimModelLoader.load("resources/models/testmodels/eric.fbx", null);
 
 			nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50);
 
@@ -188,5 +188,9 @@ public class World {
 
 		Mesh newMesh = grid.getTrailMesh();
 		trailMesh.reset(newMesh.getVertices(), newMesh.getIndices(), false);
+	}
+	
+	public static int getGridSize() {
+		return GRIDSIZE;
 	}
 }
