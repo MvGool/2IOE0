@@ -27,6 +27,8 @@ public class World {
 	private Tile previousTile;
 
 	private AntObject userAnt;
+	private AntObject enemyAnt;
+	private EnemyAI enemyAI;
 
 	private NestObject nest;
 	private AnimGameObject ericModel;
@@ -90,7 +92,8 @@ public class World {
 			System.out.println(e.getMessage());
 		}
 		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
-
+		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
+		enemyAI = new EnemyAI(grid);
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 
 		//ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
@@ -107,6 +110,7 @@ public class World {
 		nest.create(true);
 		gridMesh.create(true);
 		userAnt.create(true);
+		enemyAnt.create(true);
 		shadowMesh.create(false);
 		trailMesh.create(false);
 		foodMesh.create(true);
@@ -120,6 +124,7 @@ public class World {
 		updateShadow();
 		updateObjects();
 		updateTrail();
+		enemyAI.behave(enemyAnt);
 	}
 
 	public void render() {
@@ -128,6 +133,7 @@ public class World {
 		renderer.renderTrail(trailMesh, camera);
 		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
+		renderer.renderMesh(enemyAnt, camera);
 		renderer.renderResources(foodMesh, camera);
 		renderer.renderResources(materialMesh, camera);
 		renderer.renderResources(stoneMesh, camera);

@@ -7,10 +7,12 @@ import engine.maths.*;
 import engine.objects.GameObject;
 import engine.objects.Grid2D;
 import engine.objects.Tile;
+import main.AntBehavior;
 import main.Astar;
+import main.AntBehavior.LeaveRequestState;
 
 public class AntObject extends GameObject {
-	float speed = 1f; // probably within [0, 2]
+	private float speed = 1f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;
@@ -18,6 +20,8 @@ public class AntObject extends GameObject {
 	private int functionNumber;
 	private float t;
 	private float dt;
+	
+	private AntBehavior.LeaveRequestState state = LeaveRequestState.Idle;
 	
 	public int health = 100;
 	public void addHealth(int added_value) {
@@ -208,5 +212,17 @@ public class AntObject extends GameObject {
 		}
 		
 		t += dt;
+	}
+	
+	public boolean isMoving() {
+		return move;
+	}
+	
+	public AntBehavior.LeaveRequestState getState() {
+		return state;
+	}
+	
+	public void setState(AntBehavior.LeaveRequestState state) {
+		this.state = state;
 	}
 }

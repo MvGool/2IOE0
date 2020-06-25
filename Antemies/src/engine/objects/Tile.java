@@ -100,9 +100,11 @@ public class Tile {
 	public void setParent(Tile par) {
 		parent = par;
 	}
+	
 	public void setReward(int reward) {
 		this.reward = reward;
 	}
+	
 	public int getReward() {
 		return this.reward;
 	}

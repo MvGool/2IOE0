@@ -23,14 +23,12 @@ public class QLearning {
 
     Random ran = new Random();
 
-
     public HashMap<Tile, Double[]> execute(Grid2D grid) {
         int states = grid.getSize() * grid.getSize();
         //final Double[][] Q = new Double[states][actions.length]; //Q-table
 
         HashMap<Tile, Double[]> Q
                 = new HashMap<>();
-
 
         // Initialize Q
         for (int x = -grid.getSize()/2; x <= grid.getSize()/2; x++) {
@@ -40,7 +38,7 @@ public class QLearning {
                 for (int a = 0; a < actions.length; a++) {
                     if (a == 0) { // right movement
                         if (grid.hasTile(x, y+1)) {
-                            if ( grid.getTile(x, y+1).isObstacle()) {
+                            if (grid.getTile(x, y+1).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -115,7 +113,7 @@ public class QLearning {
                             } else {
                                 legalMoves[a] = 0d;
                             }
-                        }else {
+                        } else {
                             legalMoves[a] = null;
                         }
                     }
@@ -124,7 +122,7 @@ public class QLearning {
             }
         }
 
-        for (int k = 0; k<100; k++) { //outer loop
+        for (int k = 0; k < 100; k++) { //outer loop
             int startStateX = ran.nextInt(grid.getSize()/2 + grid.getSize()/2) - grid.getSize()/2;
             int startStateY = ran.nextInt(grid.getSize()/2 + grid.getSize()/2) - grid.getSize()/2;
             int nextStateX = 0;
@@ -180,7 +178,7 @@ public class QLearning {
                     }
                 }
 
-                //compute Q-value for (s,a) where s = startState and a = action by usinng the immediate reward of nextState
+                //compute Q-value for (s,a) where s = startState and a = action by using the immediate reward of nextState
                 // and gamma * Q(s',a') where s' = nextState and a' = best action in nextState
                 Q.get(grid.getTile(startStateX, startStateY))[action] = grid.getTile(nextStateX, nextStateY).getReward() + gamma * maxQ;
 
@@ -189,20 +187,15 @@ public class QLearning {
                 startStateY = nextStateY;
             }
         }
-        /**
-         for (int i=0;i<Q.length;i++){
-         for (int j=0;j<Q[0].length;j++){
-         System.out.printf("%.3f", Q[i][j]);
-         System.out.print(" | ");
-         }
-         System.out.println();
-         }
-         */
+        
+		/*for (int i = 0; i < Q.size(); i++){
+			for (int j = 0; j < Q.get(grid.getTile(0, 0)).length; j++){
+				System.out.printf("%.3f", Q.get(i)[j]);
+		        System.out.print(" | ");
+		    }
+		    System.out.println();
+		}*/
+         
         return Q;
     }
-
-
 }
-
-
-
