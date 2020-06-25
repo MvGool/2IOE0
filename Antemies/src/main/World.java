@@ -37,7 +37,8 @@ public class World {
 
 	private AntObject follower;
 	
-	private NestObject nest;
+	private NestObject userNest;
+	private NestObject enemyNest;
 	private AnimGameObject ericModel;
 
 	private static float scaleFood = 0.1f, scaleMaterial = 0.08f, scaleRock = 1f;
@@ -61,7 +62,8 @@ public class World {
 		try {
 			antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
 
-			nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50, 50);
+			userNest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f));
+			enemyNest = new NestObject(new Vector3f(-20, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f));
 
 			for (Tile tile : grid.getTiles()) {
 				if (tile.getFood() > 0) {
@@ -98,14 +100,14 @@ public class World {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
-		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
+		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest);
+		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest);
 		
-		userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh));
-		enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh));
+		userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest));
+		enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest));
 		
-		userColonyBehavior = new AntBehavior(grid, userColony, userAnt, nest);
-		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, nest);
+		userColonyBehavior = new AntBehavior(grid, userColony, userAnt, userNest);
+		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, enemyNest);
 		enemyAI = new EnemyAI(grid);
 		
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
@@ -118,7 +120,8 @@ public class World {
 	}
 
 	public void create() {
-		nest.create(true);
+		userNest.create(true);
+		enemyNest.create(true);
 		gridMesh.create(true);
 		userAnt.create(true);
 		enemyAnt.create(true);
@@ -156,7 +159,8 @@ public class World {
 		renderer.renderTerrain(gridMesh, camera);
 		//renderer.renderShadow(shadowMesh, camera);
 		renderer.renderTrail(trailMesh, camera);
-		renderer.renderMesh(nest, camera);
+		renderer.renderMesh(userNest, camera);
+		renderer.renderMesh(enemyNest, camera);
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderMesh(enemyAnt, camera);
 		for (AntObject ant : userColony) {
