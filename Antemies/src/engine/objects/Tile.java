@@ -12,8 +12,8 @@ public class Tile {
 	private int finalCost;
 	private int food;
 	private int material;
-	private Tile parent;
 	private int reward;
+	private Tile parent;
 
 	public Tile(int x, int y) {
 		this.x = x;
@@ -83,6 +83,7 @@ public class Tile {
 
 	public void setFood(int food) {
 		this.food = food;
+		this.reward = food;
 	}
 
 	public int getMaterial() {
@@ -91,6 +92,7 @@ public class Tile {
 
 	public void setMaterial(int material) {
 		this.material = material;
+		this.reward = material;
 	}
 
 	public Tile getParent() {

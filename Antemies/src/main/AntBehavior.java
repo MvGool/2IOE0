@@ -16,30 +16,32 @@ public class AntBehavior implements Runnable {
 
     private Grid2D grid;
     private ArrayList<AntObject> ants;
-    private ArrayList<Tile> foodSources;
-    private ArrayList<Tile> materialSources;
+    //private ArrayList<Tile> foodSources;
+    //private ArrayList<Tile> materialSources;
+    private AntObject foragerAnt;
     private Tile base;
 
-    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, ArrayList<Tile> foodSources, ArrayList<Tile> materialSources, Tile base) {
+    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, AntObject foragerAnt, Tile base) {
     	this.grid = grid;
     	this.ants = ants;
-    	this.foodSources = foodSources;
-    	this.materialSources = materialSources;
+    	this.foragerAnt = foragerAnt;
     	this.base = base;
     }
     
     public enum LeaveRequestState {
-        Idle {
+        //Idle {
+        //},
+        followForager {
         },
-        goToFoodSource {
+        goToSource {
         },
         goToBase {
         };
     }
 
     public void run() {
-        while (true) {
-            for (AntObject ant : ants){
+        /*while (true) {
+            for (AntObject ant : ants) {
                 if (!foodSources.isEmpty()){
                     if (ant.getState() == LeaveRequestState.Idle && !ant.isMoving()) {
                         ant.moveTo(grid, foodSources.get(0));
@@ -50,6 +52,39 @@ public class AntBehavior implements Runnable {
                     } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
                         ant.setState(LeaveRequestState.Idle);
                     }
+                }
+            }
+        }*/
+    	
+        ArrayList<Tile> foundSources = new ArrayList<>();
+        while (true) {
+        	if (grid.containsResource(foragerAnt.getTile())) {
+        		Tile tile = grid.getTile(foragerAnt.getTile().getX(), foragerAnt.getTile().getY());
+        		if (!foundSources.contains(tile)) {
+        			foundSources.add(tile);
+        		}
+        	}
+        	
+            for (AntObject ant : ants){
+                if (ant.getState() == LeaveRequestState.followForager && !ant.isMoving()) {
+                	if (!foundSources.isEmpty()) {
+                		ant.moveTo(grid, foundSources.get(0));
+                        ant.setState(LeaveRequestState.goToSource);
+                	} else {
+                		ant.moveTo(grid, foragerAnt.getTile());
+                	}
+                } else if (ant.getState() == LeaveRequestState.goToSource && !ant.isMoving()) {
+                	if (grid.containsResource(ant.getTile())) {
+                		Tile source = grid.getTile(ant.getTile().getX(), ant.getTile().getY());
+                		int overload = ant.addFood(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getFood());
+                		
+	                    ant.addMaterial(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getMaterial());
+	                    ant.moveTo(grid, base);
+                	}
+                	ant.setState(LeaveRequestState.goToBase);
+                } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
+                	// add food/material to nest
+                    ant.setState(LeaveRequestState.followForager);
                 }
             }
         }

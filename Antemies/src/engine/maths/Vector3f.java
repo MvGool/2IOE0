@@ -26,10 +26,6 @@ public class Vector3f {
 		return new Vector3f(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY(), vec1.getZ() - vec2.getZ());
 	}
 	
-	public static Vector3f add(Vector3f vec, float num) {
-		return new Vector3f(vec.getX() + num, vec.getY() + num, vec.getZ() + num);
-	}
-	
 	public static Vector3f multiply(Vector3f vec, float num) {
 		return new Vector3f(vec.getX() * num, vec.getY() * num, vec.getZ() * num);
 	}

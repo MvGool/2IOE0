@@ -27,7 +27,10 @@ public class World {
 	private Tile previousTile;
 
 	private AntObject userAnt;
+	private ArrayList<AntObject> userColony = new ArrayList<>();
+	
 	private AntObject enemyAnt;
+	private ArrayList<AntObject> enemyColony = new ArrayList<>();
 	private EnemyAI enemyAI;
 
 	private NestObject nest;
@@ -93,7 +96,9 @@ public class World {
 		}
 		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
 		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
+		
 		enemyAI = new EnemyAI(grid);
+		
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
 
 		//ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
@@ -124,7 +129,14 @@ public class World {
 		updateShadow();
 		updateObjects();
 		updateTrail();
-		enemyAI.behave(enemyAnt);
+		for (AntObject ant : userColony) {
+			if (!ant.isMoving()) {
+				enemyAI.behave(enemyAnt);
+			}
+		}
+		if (!enemyAnt.isMoving()) {
+			enemyAI.behave(enemyAnt);
+		}
 	}
 
 	public void render() {
@@ -170,6 +182,7 @@ public class World {
 
 	private void updateObjects() {
 		userAnt.update();
+		enemyAnt.update();
 	}
 
 	private void updateTrail() {

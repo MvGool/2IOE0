@@ -21,7 +21,7 @@ public class AntObject extends GameObject {
 	private float t;
 	private float dt;
 	
-	private AntBehavior.LeaveRequestState state = LeaveRequestState.Idle;
+	private AntBehavior.LeaveRequestState state = LeaveRequestState.followForager;
 	
 	public int health = 100;
 	public void addHealth(int added_value) {
@@ -71,7 +71,7 @@ public class AntObject extends GameObject {
 		
 		Tile[] shortestPath;
 		if (goal.equals(this.getTile())) {
-			shortestPath = new Tile[] {goal};
+			return;
 		} else {
 			Grid2D astarGrid = new Grid2D(grid);
 			Astar astar = new Astar(astarGrid, this.getTile(), goal);

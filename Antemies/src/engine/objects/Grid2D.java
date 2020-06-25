@@ -216,6 +216,10 @@ public class Grid2D {
 		return size;
 	}
 	
+	public boolean containsResource(Tile tile) {
+		return (getTile(tile.getX(), tile.getY()).getFood() > 0) || ((getTile(tile.getX(), tile.getY()).getMaterial() > 0));
+	}
+	
 	public void setResources(int amount) {
 		for (int i = -2; i < 2; i++) {
 			for (int j = -2; j < 2; j++) {

@@ -188,13 +188,13 @@ public class QLearning {
             }
         }
         
-		/*for (int i = 0; i < Q.size(); i++){
-			for (int j = 0; j < Q.get(grid.getTile(0, 0)).length; j++){
-				System.out.printf("%.3f", Q.get(i)[j]);
+        for (Tile tile : grid.getTiles()) {
+        	for (int i = 0; i < Q.get(tile).length; i++) {
+	        	System.out.printf("%.3f", Q.get(tile)[i]);
 		        System.out.print(" | ");
-		    }
-		    System.out.println();
-		}*/
+        	}
+        	System.out.println();
+        }
          
         return Q;
     }
