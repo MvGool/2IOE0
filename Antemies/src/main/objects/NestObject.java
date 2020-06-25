@@ -77,7 +77,14 @@ public class NestObject extends GameObject {
 	}
 	
 	private void removeDeadAnts() {
-		// TODO
+		sort();
+		remove();
+	}
+	
+	private void remove() {
+		while (ants.get(0).getHealth() == 0) {
+			ants.remove(0);
+		}
 	}
 	
 	public void depositFood(int food) {
@@ -87,4 +94,31 @@ public class NestObject extends GameObject {
 	public void depositMaterial(int material) {
 		this.material += material;
 	}
+	
+//	public static void main(String[] args) {
+//		Vector3f vector = new Vector3f(0, 0, 0);
+//		Mesh[] meshes = new Mesh[1];
+//		NestObject nest = new NestObject(vector, vector, vector, meshes);
+//		for (int i = 0; i < nest.ants.size(); i++) {
+//			nest.ants.get(i).updateHealth(-10*i);
+//			System.out.println(i + ": " + nest.ants.get(i).getHealth());
+//		}
+//		nest.food += 5;
+//		System.out.println(nest.food);
+//		nest.feedAnts();
+//		System.out.println(nest.food);
+//		for (int i = 0; i < nest.ants.size(); i++) {
+//			System.out.println(i + ": " + nest.ants.get(i).getHealth());
+//		}
+//		nest.feedAnts();
+//		System.out.println(nest.food);
+//		for (int i = 0; i < nest.ants.size(); i++) {
+//			System.out.println(i + ": " + nest.ants.get(i).getHealth());
+//		}
+//		System.out.println("AAAAAA");
+//		nest.removeDeadAnts();
+//		for (int i = 0; i < nest.ants.size(); i++) {
+//			System.out.println(i + ": " + nest.ants.get(i).getHealth());
+//		}
+//	}
 }
