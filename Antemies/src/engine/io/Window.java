@@ -21,7 +21,7 @@ public class Window {
 	private Vector3f background = new Vector3f(0, 0, 0);
 	private GLFWWindowSizeCallback sizeCallback;
 	private boolean isResized;
-	private boolean isFullscreen;
+	private boolean isFullscreen = true;
 	private int[] windowPosX = new int[1], windowPosY = new int[1];
 	private Matrix4f projection;
 	
@@ -99,6 +99,16 @@ public class Window {
 		}
 	}
 	
+	public void show() {
+		GLFW.glfwShowWindow(window);
+		setFullscreen(true);
+	}
+	
+	public void hide() {
+		setFullscreen(false);
+		GLFW.glfwHideWindow(window);
+	}
+	
 	public void swapBuffers() {
 		GLFW.glfwSwapBuffers(window);
 	}
@@ -108,8 +118,12 @@ public class Window {
 	}
 	
 	public void destroy() {
-		input.destroy();
-		sizeCallback.free();
+		if (input != null) {
+			input.destroy();
+		}
+		if (sizeCallback != null) {
+			sizeCallback.free();
+		}
 		GLFW.glfwWindowShouldClose(window);
 		GLFW.glfwDestroyWindow(window);
 		GLFW.glfwTerminate();

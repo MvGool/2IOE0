@@ -16,7 +16,6 @@ public class Grid2D {
 	private int size;
 	private Map<Coordinate, Tile> grid = new HashMap<>();
 	private ArrayList<Tile> trail;
-	private Tile userTile;
 	
 	public Grid2D(int size) {
 		this.size = size;
@@ -69,8 +68,13 @@ public class Grid2D {
 		int x = (int) (Math.random()*size - size/2);
 		int y = (int) (Math.random()*size - size/2);
 		
+		if (Math.abs(x) < 5 || Math.abs(y) < 5) {
+			System.out.println("Tile at " + x + ", " + y + " is too close to the nest");
+			return getRandomTile();			
+		}
+		
 		Tile tile = getTile(x, y);
-		if (tile.isObstacle() || tile.getFood() != 0 || tile.getMaterial() != 0 || tile.equals(userTile)) {
+		if (tile.isObstacle() || tile.getFood() != 0 || tile.getMaterial() != 0) {
 			System.out.println("Tile at " + tile.toString() + " is already occupied");
 			return getRandomTile();
 		}
@@ -81,10 +85,6 @@ public class Grid2D {
 		if (grid.replace(new Coordinate(tile.getX(), tile.getY()), tile) == null) {
 			grid.put(new Coordinate(tile.getX(), tile.getY()), tile);
 		}
-	}
-	
-	public void setUserTile (Tile tile) {
-		userTile = getTile(tile.getX(), tile.getY());
 	}
 	
 	public ArrayList getTrail() {
@@ -151,10 +151,10 @@ public class Grid2D {
 				int y = tile.getY();
 				
 				// Add 4 corners
-				vertices.add(new Vertex(new Vector3f(x, 0.01f, y), new Vector3f(0, 1, 0), new Vector2f(x, y)));
-				vertices.add(new Vertex(new Vector3f(x, 0.01f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x, y + 1)));
-				vertices.add(new Vertex(new Vector3f(x + 1, 0.01f, y), new Vector3f(0, 1, 0), new Vector2f(x + 1, y)));
-				vertices.add(new Vertex(new Vector3f(x + 1, 0.01f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x + 1, y + 1)));
+				vertices.add(new Vertex(new Vector3f(x, 1f, y), new Vector3f(0, 1, 0), new Vector2f(x, y)));
+				vertices.add(new Vertex(new Vector3f(x, 1f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x, y + 1)));
+				vertices.add(new Vertex(new Vector3f(x + 1, 1f, y), new Vector3f(0, 1, 0), new Vector2f(x + 1, y)));
+				vertices.add(new Vertex(new Vector3f(x + 1, 1f, y - 1), new Vector3f(0, 1, 0), new Vector2f(x + 1, y + 1)));
 			
 				// Draw triangles for that tile
 				indices.add(4*iter);
@@ -217,6 +217,12 @@ public class Grid2D {
 	}
 	
 	public void setResources(int amount) {
+		for (int i = -2; i < 2; i++) {
+			for (int j = -2; j < 2; j++) {
+				getTile(i, j).setNest(true);			
+			}
+		}	
+		
 		for (int i = 0; i < amount; i++) {
 			getRandomTile().setFood((int) (Math.random()*10 + 10));
 			getRandomTile().setMaterial((int) (Math.random()*10 + 10));

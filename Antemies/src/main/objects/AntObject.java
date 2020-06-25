@@ -7,10 +7,12 @@ import engine.maths.*;
 import engine.objects.GameObject;
 import engine.objects.Grid2D;
 import engine.objects.Tile;
+import main.AntBehavior;
 import main.Astar;
+import main.AntBehavior.LeaveRequestState;
 
 public class AntObject extends GameObject implements Comparable<AntObject> {
-	float speed = 1f; // probably within [0, 2]
+	private float speed = 1f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;
@@ -18,7 +20,9 @@ public class AntObject extends GameObject implements Comparable<AntObject> {
 	private int functionNumber;
 	private float t;
 	private float dt;
-	
+  
+	private AntBehavior.LeaveRequestState state = LeaveRequestState.Idle;
+  
 	private NestObject nest;
 	private int health;
 	private int food;
@@ -232,5 +236,17 @@ public class AntObject extends GameObject implements Comparable<AntObject> {
 		}
 		
 		t += dt;
+	}
+	
+	public boolean isMoving() {
+		return move;
+	}
+	
+	public AntBehavior.LeaveRequestState getState() {
+		return state;
+	}
+	
+	public void setState(AntBehavior.LeaveRequestState state) {
+		this.state = state;
 	}
 }

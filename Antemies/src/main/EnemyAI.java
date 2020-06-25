@@ -1,47 +1,51 @@
 package main;
 
-import engine.objects.AntObject;
+import java.util.HashMap;
+
+import engine.maths.Vector3f;
+import engine.objects.Grid2D;
+import engine.objects.Tile;
+import main.objects.AntObject;
 
 public class EnemyAI {
-
-    Node[][] grid = new Node[3][3];
+    private Grid2D grid;
     private QLearning qLearn = new QLearning();
-    private AntObject enemyAnt = new AntObject();
-    private Double[][] Qtable = qLearn.execute(grid);
+    private HashMap<Tile, Double[]> qTable;
 
+    public EnemyAI(Grid2D grid) {
+    	this.grid = grid;
+    	this.qTable = qLearn.execute(grid);
+    }
 
     public void behave(AntObject ant) {
-        int startState = ant.getPosition();
-        int nextState = 0;
+        Vector3f startState = new Vector3f(ant.getTile().getX(), 1, ant.getTile().getY());
+        Vector3f nextState = new Vector3f(ant.getTile().getX(), 1, ant.getTile().getY());
+        
         int action = 0;
-
-        for (int i=0;i<Qtable[0].length;i++) {
-            if (Qtable[position][i] >= action) {
+        for (int i = 0; i < qTable.get(ant.getTile()).length; i++) {
+            if (qTable.get(ant.getTile())[i] >= action) {
                 action = i;
             }
         }
 
         if (action == 0) {
-            nextState = startState + 1;
+            nextState = Vector3f.add(startState, 1);
         } else if (action == 1) {
-            nextState = startState - 1;
+            nextState = Vector3f.add(startState, -1);
         } else if (action == 2) {
-            nextState = startState - grid.length;
+            nextState = Vector3f.add(startState, -grid.getSize());
         } else if (action == 3) {
-            nextState = startState + grid.length;
+            nextState = Vector3f.add(startState, grid.getSize());
         } else if (action == 4) {
-            nextState = (startState - grid.length) + 1;
+            nextState = Vector3f.add(startState, -grid.getSize() + 1);
         } else if (action == 5){
-            nextState = (startState - grid.length) - 1;
+            nextState = Vector3f.add(startState, -grid.getSize() - 1);;
         } else if (action == 6){
-            nextState = (startState + grid.length) + 1;
+            nextState = Vector3f.add(startState, grid.getSize() + 1);;
         } else if (action == 7){
-            nextState = (startState + grid.length) -1;
+            nextState = Vector3f.add(startState, grid.getSize() - 1);;
         }
 
-        ant.moveTo(grid, goal); // TODO move to nextState
-
+        ant.moveTo(grid, new Tile((int) nextState.getX(), (int) nextState.getZ()));
     }
-
-
 }

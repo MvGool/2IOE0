@@ -21,7 +21,9 @@ public class Input {
 	public Input() {
 		keyboard = new GLFWKeyCallback() {
 			public void invoke(long window, int key, int scancode, int action, int mods) {
-				keys[key] = (action != GLFW.GLFW_RELEASE);
+				if (key >= 0 && key < keys.length) {
+					keys[key] = (action != GLFW.GLFW_RELEASE);
+				}
 			}
 		};
 		

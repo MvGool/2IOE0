@@ -6,14 +6,29 @@
 
 package user_interface;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author 20168341
  */
-public class FrontPage extends javax.swing.JFrame {
-    
+public class FrontPage extends javax.swing.JPanel {
+	public int width;
+	public int height;
+	
+	public volatile boolean close;
+	public volatile boolean settings;
+	public volatile boolean startGame;
+	
     /** Creates new form FrontPage */
-    public FrontPage() {
+    public FrontPage(int width, int height) {
+    	this.width = width;
+    	this.height = height;
+    	
         initComponents();
     }
 
@@ -25,7 +40,7 @@ public class FrontPage extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
-
+    	
         title = new javax.swing.JLabel();
         singlePlayerButton = new javax.swing.JPanel();
         singlePlayerText = new javax.swing.JLabel();
@@ -36,16 +51,27 @@ public class FrontPage extends javax.swing.JFrame {
         versusMode = new javax.swing.JLabel();
         settingsButton = new javax.swing.JPanel();
         settingsText = new javax.swing.JLabel();
+        exitButton = new javax.swing.JPanel();
+        exitText = new javax.swing.JLabel();
         background = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        //setUndecorated(true);
+        //setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setName("frontPage"); // NOI18N
+        setSize(new java.awt.Dimension(width, height));
+        //setSize(new java.awt.Dimension(1938, 1127));
+        setLayout(null);
         //getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        
+        /*addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                close = true;
+            }
+        });*/
 
         title.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/Antemies.png"))); // NOI18N
-        //getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 100, -1, -1));
 
         singlePlayerButton.setBackground(new java.awt.Color(245, 245, 245));
         singlePlayerButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -69,7 +95,7 @@ public class FrontPage extends javax.swing.JFrame {
         singlePlayerText.setFont(new java.awt.Font("Lato", 0, 50)); // NOI18N
         singlePlayerText.setForeground(new java.awt.Color(102, 102, 102));
         singlePlayerText.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        singlePlayerText.setText("Single player mode");
+        singlePlayerText.setText("Start game");
         singlePlayerText.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout singlePlayerButtonLayout = new javax.swing.GroupLayout(singlePlayerButton);
@@ -77,9 +103,9 @@ public class FrontPage extends javax.swing.JFrame {
         singlePlayerButtonLayout.setHorizontalGroup(
             singlePlayerButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, singlePlayerButtonLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(115, 115, 115)
                 .addComponent(singlePlayerText)
-                .addGap(30, 30, 30))
+                .addGap(115, 115, 115))
         );
         singlePlayerButtonLayout.setVerticalGroup(
             singlePlayerButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -89,9 +115,7 @@ public class FrontPage extends javax.swing.JFrame {
                 .addGap(10, 10, 10))
         );
 
-        //getContentPane().add(singlePlayerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 410, -1, -1));
-
-        versusButton.setBackground(new java.awt.Color(245, 245, 245));
+        /*versusButton.setBackground(new java.awt.Color(245, 245, 245));
         versusButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         versusButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         versusButton.setPreferredSize(new java.awt.Dimension(477, 84));
@@ -159,7 +183,7 @@ public class FrontPage extends javax.swing.JFrame {
                     .addComponent(versusMode)
                     .addComponent(versusRed1))
                 .addGap(10, 10, 10))
-        );
+        );*/
 
         //getContentPane().add(versusButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 547, -1, -1));
 
@@ -194,9 +218,9 @@ public class FrontPage extends javax.swing.JFrame {
         settingsButtonLayout.setHorizontalGroup(
             settingsButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsButtonLayout.createSequentialGroup()
-                .addGap(113, 113, 113)
+                .addGap(110, 110, 110)
                 .addComponent(settingsText)
-                .addGap(113, 113, 113))
+                .addGap(110, 110, 110))
         );
         settingsButtonLayout.setVerticalGroup(
             settingsButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,40 +229,100 @@ public class FrontPage extends javax.swing.JFrame {
                 .addComponent(settingsText)
                 .addGap(10, 10, 10))
         );
+        
+        exitButton.setBackground(new java.awt.Color(245, 245, 245));
+        exitButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        exitButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        exitButton.setPreferredSize(new java.awt.Dimension(477, 84));
+        exitButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                exitButtonMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                exitButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                exitButtonMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                exitButtonMousePressed(evt);
+            }
+        });
 
-        //getContentPane().add(settingsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 681, -1, -1));
+        exitText.setFont(new java.awt.Font("Lato", 0, 50)); // NOI18N
+        exitText.setForeground(new java.awt.Color(102, 102, 102));
+        exitText.setText("Exit");
+        exitText.setIconTextGap(20);
+
+        javax.swing.GroupLayout exitButtonLayout = new javax.swing.GroupLayout(exitButton);
+        exitButton.setLayout(exitButtonLayout);
+        exitButtonLayout.setHorizontalGroup(
+            exitButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, exitButtonLayout.createSequentialGroup()
+                .addGap(190, 190, 190)
+                .addComponent(exitText)
+                .addGap(190, 190, 190))
+        );
+        exitButtonLayout.setVerticalGroup(
+            exitButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(exitButtonLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(exitText)
+                .addGap(10, 10, 10))
+        );
 
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/user_interface/images/background.jpg"))); // NOI18N
-        //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
 
-        setSize(new java.awt.Dimension(1938, 1127));
-        setLocationRelativeTo(null);
+        //title.setBounds(660, 150, 600, 160);
+        title.setBounds((int) (width * 660f / 1920f), (int) (height * 150f / 1080f), (int) (width * 600f / 1920f), (int) (height * 160f / 1080f));
+        add(title);
+        //getContentPane().add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 100, -1, -1));
+        
+        //singlePlayerButton.setBounds(720, 500, 477, 90);
+        singlePlayerButton.setBounds((int) (width * 720f / 1920f), (int) (height * 500f / 1080f), (int) (width * 477f / 1920f), (int) (height * 90f / 1080f));
+        add(singlePlayerButton);
+        //getContentPane().add(singlePlayerButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 410, -1, -1));
+        
+        //settingsButton.setBounds(720, 637, 477, 90);
+        settingsButton.setBounds((int) (width * 720f / 1920f), (int) (height * 637f / 1080f), (int) (width * 477f / 1920f), (int) (height * 90f / 1080f));
+        add(settingsButton);
+        //getContentPane().add(settingsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 681, -1, -1));
+        
+        exitButton.setBounds(720, 774, 477, 90);
+        exitButton.setBounds((int) (width * 720f / 1920f), (int) (height * 774f / 1080f), (int) (width * 477f / 1920f), (int) (height * 90f / 1080f));
+        add(exitButton);
+
+        background.setBounds(0, 0, width, height);
+        add(background);
+        //getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1920, 1080));
+        
+        //setLocationRelativeTo(null);
     }// </editor-fold>                        
 
-    private void settingsButtonMouseClicked(java.awt.event.MouseEvent evt) {                                            
-        SettingsPage settingsPage = new SettingsPage();
-        settingsPage.setVisible(true);
-        this.setVisible(false);
-    }                                           
-
     private void singlePlayerButtonMouseClicked(java.awt.event.MouseEvent evt) {                                                
-        SinglePlayerPage singlePlayerPage = new SinglePlayerPage();
-        singlePlayerPage.setVisible(true);
-        this.setVisible(false);
-    }                                               
-
+    	startGame = true;
+    }       
+    
     private void versusButtonMouseClicked(java.awt.event.MouseEvent evt) {                                          
-        VersusPage versusPage = new VersusPage();
-        versusPage.setVisible(true);
-        this.setVisible(false);
-    }                                         
+    	
+    }  
+    
+    private void settingsButtonMouseClicked(java.awt.event.MouseEvent evt) {
+    	settings = true;
+    }
+    
+    private void exitButtonMouseClicked(java.awt.event.MouseEvent evt) {
+    	close = true;
+    }                                       
 
     private void singlePlayerButtonMouseEntered(java.awt.event.MouseEvent evt) {                                                
-        singlePlayerButton.setBackground(new java.awt.Color(234, 234, 234));
+        singlePlayerButton.setBackground(new java.awt.Color(31, 157, 228));
+        singlePlayerText.setForeground(java.awt.Color.WHITE);
     }                                               
 
     private void singlePlayerButtonMouseExited(java.awt.event.MouseEvent evt) {                                               
         singlePlayerButton.setBackground(new java.awt.Color(245, 245, 245));
+        singlePlayerText.setForeground(new java.awt.Color(102, 102, 102));
     }                                              
 
     private void singlePlayerButtonMousePressed(java.awt.event.MouseEvent evt) {                                                
@@ -258,54 +342,39 @@ public class FrontPage extends javax.swing.JFrame {
     }                                         
 
     private void settingsButtonMouseEntered(java.awt.event.MouseEvent evt) {                                            
-        settingsButton.setBackground(new java.awt.Color(234, 234, 234));
+        settingsButton.setBackground(new java.awt.Color(31, 157, 228));
+        settingsText.setForeground(java.awt.Color.WHITE);
     }                                           
 
     private void settingsButtonMouseExited(java.awt.event.MouseEvent evt) {                                           
         settingsButton.setBackground(new java.awt.Color(245, 245, 245));
+        settingsText.setForeground(new java.awt.Color(102, 102, 102));
     }                                          
 
     private void settingsButtonMousePressed(java.awt.event.MouseEvent evt) {                                            
         settingsButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        settingsButton.setBackground(new java.awt.Color(245, 245, 245));
+        settingsText.setForeground(new java.awt.Color(102, 102, 102));
+    }
+    
+    private void exitButtonMouseEntered(java.awt.event.MouseEvent evt) {                                            
+        exitButton.setBackground(new java.awt.Color(215, 46, 44));
+        exitText.setForeground(java.awt.Color.WHITE);
     }                                           
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrontPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrontPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrontPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrontPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void exitButtonMouseExited(java.awt.event.MouseEvent evt) {                                           
+        exitButton.setBackground(new java.awt.Color(245, 245, 245));
+        exitText.setForeground(new java.awt.Color(102, 102, 102));
+    }                                          
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrontPage().setVisible(true);
-            }
-        });
+    private void exitButtonMousePressed(java.awt.event.MouseEvent evt) {                                            
+        exitButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
     }
 
     // Variables declaration - do not modify                     
     private javax.swing.JLabel background;
+    private javax.swing.JPanel exitButton;
+    private javax.swing.JLabel exitText;
     private javax.swing.JPanel settingsButton;
     private javax.swing.JLabel settingsText;
     private javax.swing.JPanel singlePlayerButton;

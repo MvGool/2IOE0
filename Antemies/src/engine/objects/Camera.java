@@ -1,10 +1,12 @@
 package engine.objects;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjglx.input.Mouse;
 
 import engine.io.Input;
-import engine.maths.Vector3f;
+import engine.io.Window;
+import engine.maths.*;
+import main.Main;
+import main.World;
 
 public class Camera {
 	private Vector3f position, rotation;
@@ -50,6 +52,14 @@ public class Camera {
 	}
 	
 	private void topDown() {	
+		Vector3f topLeftCorner = screenToWorldSpace(0, 0, Main.window, this);
+		Vector3f bottomRightCorner = screenToWorldSpace(Main.window.getWidth(), Main.window.getHeight(), Main.window, this);
+		int gridSize = World.getGridSize();
+		float xLowerBound = - gridSize/2 + (moveSpeed + 0.05f);
+		float xUpperBound = gridSize/2 - (moveSpeed + 0.05f);
+		float zLowerBound = gridSize/2 - 1f - (moveSpeed + 0.05f);
+		float zUpperBound = - gridSize/2 - 1f + (moveSpeed + 0.05f);
+		
 		newScroll = Input.getScrollY();
 		
 		float dScroll = (float) (newScroll - oldScroll);
@@ -65,14 +75,66 @@ public class Camera {
 		
 		if (position.getY() + dZoom/scrollSpeed >= zoomLowerBound && position.getY() + dZoom/scrollSpeed <= zoomUpperBound) {
 			position = Vector3f.add(position, new Vector3f(0, dZoom/scrollSpeed, 0));		
+			
+			while (topLeftCorner.getX() < xLowerBound) {
+				position.setX(position.getX() + 0.01f);
+				topLeftCorner.setX(topLeftCorner.getX() + 0.01f);
+			} 
+			
+			while (bottomRightCorner.getX() > xUpperBound) {
+				position.setX(position.getX() - 0.01f);
+				bottomRightCorner.setX(bottomRightCorner.getX() - 0.01f);
+			}
+			
+			while (topLeftCorner.getZ() < zUpperBound) {
+				position.setZ(position.getZ() + 0.01f);
+				topLeftCorner.setZ(topLeftCorner.getZ() + 0.01f);
+			}
+			
+			while (bottomRightCorner.getZ() > zLowerBound) {
+				position.setZ(position.getZ() - 0.01f);
+				bottomRightCorner.setZ(bottomRightCorner.getZ() - 0.01f);
+			}
 		}
 		
-		if (Input.isKeyDown(GLFW.GLFW_KEY_A)) position = Vector3f.add(position, new Vector3f(-moveSpeed, 0, 0));
-		if (Input.isKeyDown(GLFW.GLFW_KEY_D)) position = Vector3f.add(position, new Vector3f(moveSpeed, 0, 0));
-		if (Input.isKeyDown(GLFW.GLFW_KEY_W)) position = Vector3f.add(position, new Vector3f(0, 0, -moveSpeed));
-		if (Input.isKeyDown(GLFW.GLFW_KEY_S)) position = Vector3f.add(position, new Vector3f(0, 0, moveSpeed));
+		if (Input.isKeyDown(GLFW.GLFW_KEY_A) && topLeftCorner.getX() >= xLowerBound) {
+			position = Vector3f.add(position, new Vector3f(-moveSpeed, 0, 0));
+		}
+		if (Input.isKeyDown(GLFW.GLFW_KEY_D) && bottomRightCorner.getX() <= xUpperBound) {
+			position = Vector3f.add(position, new Vector3f(moveSpeed, 0, 0));
+		}
+		if (Input.isKeyDown(GLFW.GLFW_KEY_W) && topLeftCorner.getZ() >= zUpperBound) {
+			position = Vector3f.add(position, new Vector3f(0, 0, -moveSpeed));
+		}
+		if (Input.isKeyDown(GLFW.GLFW_KEY_S) && bottomRightCorner.getZ() <= zLowerBound) {
+			position = Vector3f.add(position, new Vector3f(0, 0, moveSpeed));
+		}
 		
-		rotation.set(viewAngle+90, 0, 0);
+		rotation.set(viewAngle + 90, 0, 0);
+	}
+	
+	public static Vector3f screenToWorldSpace(double x, double y, Window window, Camera camera) {
+		Matrix4f viewProjection = Matrix4f.multiply(window.getProjectionMatrix(), Matrix4f.view(new Vector3f(0, camera.getPosition().getY(), 0), camera.getRotation()));
+	    MatrixXf viewProjectionInverse = MatrixXf.inverse(Matrix4f.toMatrixXf(viewProjection));
+	    
+	    float newX = (float) (2.0 * x / window.getWidth() - 1);
+	    float newZ = (float) (- 2.0 * y / window.getHeight() + 1);
+	    Vector3f vec3f = new Vector3f(newX, 1, newZ);
+	    VectorXf vec4f = new VectorXf(4);
+	    vec4f.set(0, vec3f.getX());
+	    vec4f.set(1, vec3f.getY());
+	    vec4f.set(2, vec3f.getZ());
+	    vec4f.set(3, 1);
+	    
+	    VectorXf mul = MatrixXf.multiply(viewProjectionInverse, vec4f);
+	    Vector3f result;
+	    if (viewProjectionInverse.equals(MatrixXf.zero(4))) {
+	    	result = null;
+	    } else {
+	    	result = new Vector3f(camera.getPosition().getX() + camera.getPosition().getY() * mul.get(0), 1, camera.getPosition().getZ() + camera.getPosition().getY() * mul.get(1));
+	    }
+	    
+	    return result;
 	}
 
 	public Vector3f getPosition() {
