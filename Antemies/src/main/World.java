@@ -27,21 +27,25 @@ public class World {
 	private Tile previousTile;
 
 	private AntObject userAnt;
+	private AntBehavior userColonyBehavior;
 	private ArrayList<AntObject> userColony = new ArrayList<>();
 	
 	private AntObject enemyAnt;
 	private ArrayList<AntObject> enemyColony = new ArrayList<>();
+	private AntBehavior enemyColonyBehavior;
 	private EnemyAI enemyAI;
 
+	private AntObject follower;
+	
 	private NestObject nest;
 	private AnimGameObject ericModel;
 
-	private float scaleFood = 0.1f, scaleMaterial = 0.08f, scaleRock = 1f;
-	private ArrayList<Mesh> foodSources = new ArrayList<>();
-	private ArrayList<Mesh> materialSources = new ArrayList<>();
+	private static float scaleFood = 0.1f, scaleMaterial = 0.08f, scaleRock = 1f;
+	private static ArrayList<Mesh> foodSources = new ArrayList<>();
+	private static ArrayList<Mesh> materialSources = new ArrayList<>();
 	private ArrayList<Mesh> stoneSources = new ArrayList<>();
-	private Mesh foodMesh;
-	private Mesh materialMesh;
+	private static Mesh foodMesh;
+	private static Mesh materialMesh;
 	private Mesh stoneMesh;
 
 	public World(Renderer renderer, Camera camera) {
@@ -57,7 +61,7 @@ public class World {
 		try {
 			antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
 
-			nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50);
+			nest = new NestObject(new Vector3f(0, 0, 0), new Vector3f(-90, 0, 0), new Vector3f(.1f, .1f, .1f), 10, 50, 50);
 
 			for (Tile tile : grid.getTiles()) {
 				if (tile.getFood() > 0) {
@@ -97,12 +101,14 @@ public class World {
 		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
 		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh);
 		
+		userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh));
+		enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh));
+		
+		userColonyBehavior = new AntBehavior(grid, userColony, userAnt, nest);
+		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, nest);
 		enemyAI = new EnemyAI(grid);
 		
 		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
-
-		//ant = new AntObject(new Vector3f(1, 1, 1), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1), antMesh);
-		//ant.moveTo(grid, new Vector3f(3, 1, 2));
 
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg")); // Test texture: "/textures/tileTest.jpg"
@@ -116,6 +122,12 @@ public class World {
 		gridMesh.create(true);
 		userAnt.create(true);
 		enemyAnt.create(true);
+		for (AntObject ant : userColony) {
+			ant.create(true);
+		}
+		for (AntObject ant : enemyColony) {
+			ant.create(true);
+		}
 		shadowMesh.create(false);
 		trailMesh.create(false);
 		foodMesh.create(true);
@@ -126,14 +138,15 @@ public class World {
 	public void update(Renderer renderer, Camera camera) {
 		this.renderer = renderer;
 		this.camera = camera;
+		
 		updateShadow();
 		updateObjects();
 		updateTrail();
-		for (AntObject ant : userColony) {
-			if (!ant.isMoving()) {
-				enemyAI.behave(enemyAnt);
-			}
-		}
+		
+		userColonyBehavior.run();
+		
+		enemyColonyBehavior.run();
+		
 		if (!enemyAnt.isMoving()) {
 			enemyAI.behave(enemyAnt);
 		}
@@ -146,6 +159,12 @@ public class World {
 		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderMesh(enemyAnt, camera);
+		for (AntObject ant : userColony) {
+			renderer.renderMesh(ant, camera);
+		}
+		for (AntObject ant : enemyColony) {
+			renderer.renderMesh(ant, camera);
+		}
 		renderer.renderResources(foodMesh, camera);
 		renderer.renderResources(materialMesh, camera);
 		renderer.renderResources(stoneMesh, camera);
@@ -183,6 +202,12 @@ public class World {
 	private void updateObjects() {
 		userAnt.update();
 		enemyAnt.update();
+		for (AntObject ant : userColony) {
+			ant.update();
+		}
+		for (AntObject ant : enemyColony) {
+			ant.update();
+		}
 	}
 
 	private void updateTrail() {
@@ -204,6 +229,38 @@ public class World {
 
 		Mesh newMesh = grid.getTrailMesh();
 		trailMesh.reset(newMesh.getVertices(), newMesh.getIndices(), false);
+	}
+	
+	public static void removeFoodFrom(Tile tile) {
+		try {
+			Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
+			for (Mesh mesh : foodMeshes) {
+				mesh.rotateScale(1f/scaleFood, true);
+				mesh.move(new Vector3f(-tile.getX(), 0, -tile.getY()));
+				foodSources.remove(mesh);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
+		foodMesh = Mesh.merge(foodSources);
+	}
+	
+	public static void removeMaterialFrom(Tile tile) {
+		try {
+			Mesh[] materialMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
+			for (Mesh mesh : materialMeshes) {
+				mesh.rotateScale(1f/scaleMaterial, true);
+				mesh.move(new Vector3f(-tile.getX(), 0, -tile.getY()));
+				materialSources.remove(mesh);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
+		materialMesh = Mesh.merge(materialSources);
 	}
 	
 	public static int getGridSize() {

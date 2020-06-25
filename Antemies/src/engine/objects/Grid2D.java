@@ -228,8 +228,16 @@ public class Grid2D {
 		}	
 		
 		for (int i = 0; i < amount; i++) {
-			getRandomTile().setFood((int) (Math.random()*10 + 10));
-			getRandomTile().setMaterial((int) (Math.random()*10 + 10));
+			Tile foodTile = getRandomTile();
+			int foodValue = (int) (Math.random()*10 + 10);
+			foodTile.setFood(foodValue);
+			foodTile.setReward(foodValue);
+			
+			Tile materialTile = getRandomTile();
+			int materialValue = (int) (Math.random()*10 + 10);
+			materialTile.setMaterial(materialValue);
+			materialTile.setReward(materialValue);
+			
 			getRandomTile().setObstacle(true);
 			getRandomTile().setObstacle(true);
 			getRandomTile().setObstacle(true);

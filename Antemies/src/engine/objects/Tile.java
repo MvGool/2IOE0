@@ -1,6 +1,7 @@
 package engine.objects;
 
 import engine.maths.Vector3f;
+import main.World;
 
 public class Tile {
 	private int x, y;
@@ -83,7 +84,10 @@ public class Tile {
 
 	public void setFood(int food) {
 		this.food = food;
-		this.reward = food;
+		
+		if (food <= 0) {
+			World.removeFoodFrom(this);
+		}
 	}
 
 	public int getMaterial() {
@@ -92,7 +96,10 @@ public class Tile {
 
 	public void setMaterial(int material) {
 		this.material = material;
-		this.reward = material;
+		
+		if (material <= 0) {
+			World.removeMaterialFrom(this);
+		}
 	}
 
 	public Tile getParent() {
@@ -103,12 +110,12 @@ public class Tile {
 		parent = par;
 	}
 	
-	public void setReward(int reward) {
-		this.reward = reward;
-	}
-	
 	public int getReward() {
 		return this.reward;
+	}
+	
+	public void setReward(int reward) {
+		this.reward = reward;
 	}
 
 	@Override

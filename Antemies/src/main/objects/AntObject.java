@@ -33,30 +33,33 @@ public class AntObject extends GameObject {
 			//die
 		}
 	}
+	
+	public int food = 0;
+	public int addFood(int new_value){
+		food = food + new_value;
+		if (food > 40) {
+			int overload = food - 40;
+			food = food - overload;
+			return overload; //So the source can take it back
+		}
+		else {
+			return 0;
+		}
+	}
+	
 	public int material = 0;
 	public int addMaterial(int new_value){
 		material = material + new_value;
 		if (material + food > 40) {
 			int overload = material - 40;
 			material = material - overload;
-			return overload; //So the source can put take it back
+			return overload; //So the source can take it back
 		}
 		else {
 			return 0;
 		}
 	}
-	public int food = 0;
-	public int addFood(int new_value){
-		food = food + new_value;
-		if (material + food > 40) {
-			int overload = food - 40;
-			food = food - overload;
-			return overload; //So the source can put take it back
-		}
-		else {
-			return 0;
-		}
-	}
+	
 	public int attackValue = 20;
 	
 	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
@@ -225,6 +228,7 @@ public class AntObject extends GameObject {
 	public void setState(AntBehavior.LeaveRequestState state) {
 		this.state = state;
 	}
+	
 	public int getFood() {
 		return this.food;
 	}
@@ -240,6 +244,4 @@ public class AntObject extends GameObject {
 	public void setMaterial(int material) {
 		this.material = material;
 	}
-	
-	
 }

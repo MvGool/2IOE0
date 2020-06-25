@@ -6,18 +6,19 @@ import engine.model_loaders.StaticModelLoader;
 import engine.objects.GameObject;
 
 public class NestObject extends GameObject {
-	
-	private int ants = 10;
-	private int food = 50;
+	private int ants;
+	private int food;
+	private int material;
 
 	public NestObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
 		super(position, rotation, scalar, meshes);
 	}
 	
-	public NestObject(Vector3f position, Vector3f rotation, Vector3f scalar, int ants, int food) throws Exception {
+	public NestObject(Vector3f position, Vector3f rotation, Vector3f scalar, int ants, int food, int material) throws Exception {
 		this(position, rotation, scalar, StaticModelLoader.load("resources/models/ant_nest.obj", "/models/forrest_ground_03_diff_1k.jpg"));
 		this.ants = ants;
 		this.food = food;
+		this.material = material;
 	}
 
 	public int getAnts() {
@@ -34,5 +35,13 @@ public class NestObject extends GameObject {
 
 	public void setFood(int food) {
 		this.food = food;
+	}
+	
+	public int getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(int material) {
+		this.material = material;
 	}
 }

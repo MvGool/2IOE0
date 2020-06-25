@@ -16,24 +16,17 @@ public class AntBehavior implements Runnable {
 
     private Grid2D grid;
     private ArrayList<AntObject> ants;
-    //private ArrayList<Tile> foodSources;
-    //private ArrayList<Tile> materialSources;
     private AntObject foragerAnt;
     private NestObject nest;
-    private Tile base;
     
-
-    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, AntObject foragerAnt, Tile base, NestObject nest) {
+    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, AntObject foragerAnt, NestObject nest) {
     	this.grid = grid;
     	this.ants = ants;
     	this.foragerAnt = foragerAnt;
     	this.nest = nest;
-    	this.base = nest.getTile();
     }
     
     public enum LeaveRequestState {
-        //Idle {
-        //},
         followForager {
         },
         goToSource {
@@ -43,24 +36,8 @@ public class AntBehavior implements Runnable {
     }
 
     public void run() {
-        /*while (true) {
-            for (AntObject ant : ants) {
-                if (!foodSources.isEmpty()){
-                    if (ant.getState() == LeaveRequestState.Idle && !ant.isMoving()) {
-                        ant.moveTo(grid, foodSources.get(0));
-                        ant.setState(LeaveRequestState.goToFoodSource);
-                    } else if (ant.getState() == LeaveRequestState.goToFoodSource && !ant.isMoving()) {
-                        ant.moveTo(grid, base);
-                        ant.setState(LeaveRequestState.goToBase);
-                    } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
-                        ant.setState(LeaveRequestState.Idle);
-                    }
-                }
-            }
-        }*/
-    	
         ArrayList<Tile> foundSources = new ArrayList<>();
-        while (true) {
+        //while (true) {
         	if (grid.containsResource(foragerAnt.getTile())) {
         		Tile tile = grid.getTile(foragerAnt.getTile().getX(), foragerAnt.getTile().getY());
         		if (!foundSources.contains(tile)) {
@@ -80,29 +57,29 @@ public class AntBehavior implements Runnable {
                 	if (grid.containsResource(ant.getTile())) {
                 		Tile source = grid.getTile(ant.getTile().getX(), ant.getTile().getY());
                 		
-                		int foodOverload = ant.addFood(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getFood());
-	                    int materialOverload = ant.addMaterial(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getMaterial());
+                		int foodOverload = ant.addFood(source.getFood());
+	                    int materialOverload = ant.addMaterial(source.getMaterial());
 	                    
-	                    if (foodOverload != 0) {
-	                    	
-	                    } else if (materialOverload != 0) {
-	                    	
-	                    }
+	                    source.setFood(foodOverload);
+	                    source.setMaterial(materialOverload);
 	                    
-	                    ant.moveTo(grid, base);
+	                    ant.moveTo(grid, nest.getTile());
+	                    ant.setState(LeaveRequestState.goToBase);
+                	} else {
+	                    ant.setState(LeaveRequestState.followForager);
                 	}
-                	ant.setState(LeaveRequestState.goToBase);
                 } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
-                	nest.depositFood(ant.getFood());
-                	ant.setFood(0);
+                	if (ant.getTile().equals(nest.getTile())) {
+	                	nest.setFood(nest.getFood() + ant.getFood());
+	                	ant.setFood(0);
+	                	
+	                	nest.setMaterial(nest.getMaterial() + ant.getMaterial());
+	                	ant.setMaterial(0);
+                	}
                 	
-                	nest.depositMaterial(ant.getMaterial());
-                	ant.setMaterial(0);
-                	
-                	
-                    ant.setState(LeaveRequestState.followForager);
+                	ant.setState(LeaveRequestState.followForager);
                 }
-            }
+            //}
         }
     }
     
