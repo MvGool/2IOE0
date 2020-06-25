@@ -11,7 +11,7 @@ import main.AntBehavior;
 import main.Astar;
 import main.AntBehavior.LeaveRequestState;
 
-public class AntObject extends GameObject {
+public class AntObject extends GameObject implements Comparable<AntObject> {
 	private float speed = 1f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
@@ -20,34 +20,39 @@ public class AntObject extends GameObject {
 	private int functionNumber;
 	private float t;
 	private float dt;
-	
+  
 	private AntBehavior.LeaveRequestState state = LeaveRequestState.Idle;
+  
+	private NestObject nest;
+	private int health;
+	private int food;
+	private int material;
+	private final int ATTACK_DAMAGE = 20;
 	
-	public int health = 100;
-	public void addHealth(int added_value) {
-		health = health + added_value;
+	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes, NestObject nest) {
+		super(position, rotation, scalar, meshes);
+		this.nest = nest;
+		health = 100;
+		food = 0;
+		material = 0;
+	}
+	
+	public int getHealth() {
+		return health;
+	}
+	
+	public void updateHealth(int added_value) {
+		health += added_value;
 		if (health > 100) {
 			health = 100;
 		}
 		if (health <= 0) {
-			//die
+			health = 0;
 		}
 	}
-	public int material = 0;
-	public int addMaterial(int new_value){
-		material = material + new_value;
-		if (material + food > 40) {
-			int overload = material - 40;
-			material = material - overload;
-			return overload; //So the source can put take it back
-		}
-		else {
-			return 0;
-		}
-	}
-	public int food = 0;
+	
 	public int addFood(int new_value){
-		food = food + new_value;
+		food += new_value;
 		if (material + food > 40) {
 			int overload = food - 40;
 			food = food - overload;
@@ -57,10 +62,29 @@ public class AntObject extends GameObject {
 			return 0;
 		}
 	}
-	public int attackValue = 20;
 	
-	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
-		super(position, rotation, scalar, meshes);
+	public int addMaterial(int new_value){
+		material += new_value;
+		if (material + food > 40) {
+			int overload = material - 40;
+			material = material - overload;
+			return overload; //So the source can put take it back
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public void depositResource() {
+		nest.depositFood(food);
+		nest.depositMaterial(material);
+		food = 0;
+		material = 0;
+	}
+	
+	@Override
+	public int compareTo(AntObject ant) {
+		return health - ant.getHealth();
 	}
 	
 	public void moveTo(Grid2D grid, Tile goal) {
