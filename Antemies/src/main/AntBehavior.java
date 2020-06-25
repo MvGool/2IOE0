@@ -1,7 +1,7 @@
 package main;
 
 import main.objects.AntObject;
-
+import main.objects.NestObject;
 import engine.graphics.Mesh;
 import engine.maths.Vector3f;
 import engine.objects.GameObject;
@@ -19,13 +19,16 @@ public class AntBehavior implements Runnable {
     //private ArrayList<Tile> foodSources;
     //private ArrayList<Tile> materialSources;
     private AntObject foragerAnt;
+    private NestObject nest;
     private Tile base;
+    
 
-    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, AntObject foragerAnt, Tile base) {
+    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, AntObject foragerAnt, Tile base, NestObject nest) {
     	this.grid = grid;
     	this.ants = ants;
     	this.foragerAnt = foragerAnt;
-    	this.base = base;
+    	this.nest = nest;
+    	this.base = nest.getTile();
     }
     
     public enum LeaveRequestState {
@@ -76,14 +79,27 @@ public class AntBehavior implements Runnable {
                 } else if (ant.getState() == LeaveRequestState.goToSource && !ant.isMoving()) {
                 	if (grid.containsResource(ant.getTile())) {
                 		Tile source = grid.getTile(ant.getTile().getX(), ant.getTile().getY());
-                		int overload = ant.addFood(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getFood());
                 		
-	                    ant.addMaterial(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getMaterial());
+                		int foodOverload = ant.addFood(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getFood());
+	                    int materialOverload = ant.addMaterial(grid.getTile(ant.getTile().getX(), ant.getTile().getY()).getMaterial());
+	                    
+	                    if (foodOverload != 0) {
+	                    	
+	                    } else if (materialOverload != 0) {
+	                    	
+	                    }
+	                    
 	                    ant.moveTo(grid, base);
                 	}
                 	ant.setState(LeaveRequestState.goToBase);
                 } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
-                	// add food/material to nest
+                	nest.depositFood(ant.getFood());
+                	ant.setFood(0);
+                	
+                	nest.depositMaterial(ant.getMaterial());
+                	ant.setMaterial(0);
+                	
+                	
                     ant.setState(LeaveRequestState.followForager);
                 }
             }
@@ -93,7 +109,6 @@ public class AntBehavior implements Runnable {
     public void start(){
         System.out.println("starting");
         t = new Thread (this);
-        
         if (t == null) {
             t = new Thread (this);
             t.start ();

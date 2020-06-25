@@ -225,4 +225,21 @@ public class AntObject extends GameObject {
 	public void setState(AntBehavior.LeaveRequestState state) {
 		this.state = state;
 	}
+	public int getFood() {
+		return this.food;
+	}
+	
+	public int getMaterial() {
+		return this.material;
+	}
+	
+	public void setFood(int food) {
+		this.food = food;
+	}
+	
+	public void setMaterial(int material) {
+		this.material = material;
+	}
+	
+	
 }
