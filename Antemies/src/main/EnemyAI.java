@@ -24,10 +24,13 @@ public class EnemyAI {
         int action = 0;
         double actionValue = 0;
         for (int i = 0; i < qTable.get(ant.getTile()).length; i++) {
-            if (qTable.get(ant.getTile())[i] > actionValue) {
-                action = i;
-                actionValue = qTable.get(ant.getTile())[i];
-            }
+        	Double value = qTable.get(ant.getTile())[i];
+        	if (value != null) {
+	            if (value > actionValue) {
+	                action = i;
+	                actionValue = value;
+	            }
+        	}
         }
 
         if (action == 0) {
@@ -39,15 +42,20 @@ public class EnemyAI {
         } else if (action == 3) {
             nextState = Vector3f.add(startState, new Vector3f(0, 0, 1));
         } else if (action == 4) {
-            nextState = Vector3f.add(startState, new Vector3f(-1, 0, 1));
+            nextState = Vector3f.add(startState, new Vector3f(1, 0, -1));
         } else if (action == 5){
             nextState = Vector3f.add(startState, new Vector3f(-1, 0, -1));
         } else if (action == 6){
             nextState = Vector3f.add(startState, new Vector3f(1, 0, 1));
         } else if (action == 7){
-            nextState = Vector3f.add(startState, new Vector3f(1, 0, -1));
+            nextState = Vector3f.add(startState, new Vector3f(-1, 0, 1));
         }
         
-        ant.moveTo(grid, new Tile((int) nextState.getX(), (int) nextState.getZ()));
+        Tile newTile = new Tile((int) nextState.getX(), (int) nextState.getZ());
+        ant.moveTo(grid, newTile);
+        if (grid.containsResource(newTile)) {
+        	grid.getTile(newTile.getX(), newTile.getY()).setReward(0);
+        	this.qTable = qLearn.execute(grid);
+        }
     }
 }

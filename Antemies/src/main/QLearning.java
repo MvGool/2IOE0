@@ -27,8 +27,7 @@ public class QLearning {
         int states = grid.getSize() * grid.getSize();
         //final Double[][] Q = new Double[states][actions.length]; //Q-table
 
-        HashMap<Tile, Double[]> Q
-                = new HashMap<>();
+        HashMap<Tile, Double[]> Q = new HashMap<>();
 
         // Initialize Q
         for (int x = -grid.getSize()/2; x <= grid.getSize()/2; x++) {
@@ -37,8 +36,8 @@ public class QLearning {
 
                 for (int a = 0; a < actions.length; a++) {
                     if (a == 0) { // right movement
-                        if (grid.hasTile(x, y+1)) {
-                            if (grid.getTile(x, y+1).isObstacle()) {
+                        if (grid.hasTile(x + 1, y)) {
+                            if (grid.getTile(x + 1, y).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -47,8 +46,8 @@ public class QLearning {
                             legalMoves[a] = null;
                         }
                     } else if (a == 1) { //left movement
-                        if (grid.hasTile(x, y-1)) {
-                            if (grid.getTile(x, y-1).isObstacle()) {
+                        if (grid.hasTile(x - 1, y)) {
+                            if (grid.getTile(x - 1, y).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -57,8 +56,8 @@ public class QLearning {
                             legalMoves[a] = null;
                         }
                     }  else if (a == 2) { //upper movement
-                        if (grid.hasTile(x-1, y)) {
-                            if (grid.getTile(x-1, y).isObstacle()) {
+                        if (grid.hasTile(x, y - 1)) {
+                            if (grid.getTile(x, y - 1).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -67,8 +66,8 @@ public class QLearning {
                             legalMoves[a] = null;
                         }
                     } else if (a == 3) { //downward movement
-                        if (grid.hasTile(x+1, y)) {
-                            if (grid.getTile(x+1, y).isObstacle()) {
+                        if (grid.hasTile(x, y + 1)) {
+                            if (grid.getTile(x, y + 1).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -77,8 +76,8 @@ public class QLearning {
                             legalMoves[a] = null;
                         }
                     } else if (a == 4) { //45 degrees diagonal movement
-                        if (grid.hasTile(x-1, y+1)) {
-                            if (grid.getTile(x-1, y+1).isObstacle()) {
+                        if (grid.hasTile(x + 1, y - 1)) {
+                            if (grid.getTile(x + 1, y - 1).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -87,8 +86,8 @@ public class QLearning {
                             legalMoves[a] = null;
                         }
                     } else if (a == 5) { //-45 degrees diagonal movement
-                        if (grid.hasTile(x-1, y-1)) {
-                            if (grid.getTile(x-1, y-1).isObstacle()) {
+                        if (grid.hasTile(x - 1, y - 1)) {
+                            if (grid.getTile(x - 1, y - 1).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -97,8 +96,8 @@ public class QLearning {
                             legalMoves[a] = null;
                         }
                     } else if (a == 6) { //135 degrees diagonal movement
-                        if (grid.hasTile(x+1, y+1)) {
-                            if (grid.getTile(x+1, y+1).isObstacle()) {
+                        if (grid.hasTile(x + 1, y + 1)) {
+                            if (grid.getTile(x + 1, y + 1).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -107,8 +106,8 @@ public class QLearning {
                             legalMoves[a] = null;
                         }
                     } else if (a == 7) { //-135 degrees diagonal movement
-                        if (grid.hasTile(x+1, y-1)) {
-                            if (grid.getTile(x+1, y-1).isObstacle()) {
+                        if (grid.hasTile(x - 1, y + 1)) {
+                            if (grid.getTile(x - 1, y + 1).isObstacle()) {
                                 legalMoves[a] = null;
                             } else {
                                 legalMoves[a] = 0d;
@@ -129,8 +128,8 @@ public class QLearning {
             int nextStateY = 0;
 
             long t = System.currentTimeMillis();
-            long end = t + 500;
-            while (System.currentTimeMillis() < end){
+            long end = t + 1; // was 500
+            while (System.currentTimeMillis() < end) {
                 ArrayList<Integer> randomActions = new ArrayList<Integer>();
                 double maxQ = 0d;
                 int action = 0;
@@ -145,29 +144,29 @@ public class QLearning {
 
                 //Determine the next state using the best action
                 if (action == 0) { //right movement
-                    nextStateX = startStateX;
-                    nextStateY = startStateY + 1;
-                } else if (action == 1) { //left movement
-                    nextStateX = startStateX;
-                    nextStateY = startStateY - 1;
-                } else if (action == 2) { //upper movement
-                    nextStateX = startStateX - 1;
-                    nextStateY = startStateY;
-                } else if (action == 3) { //downward movement
                     nextStateX = startStateX + 1;
                     nextStateY = startStateY;
-                } else if (action == 4) { //45 degrees diagonal movement
+                } else if (action == 1) { //left movement
                     nextStateX = startStateX - 1;
+                    nextStateY = startStateY;
+                } else if (action == 2) { //upper movement
+                    nextStateX = startStateX;
+                    nextStateY = startStateY - 1;
+                } else if (action == 3) { //downward movement
+                    nextStateX = startStateX;
                     nextStateY = startStateY + 1;
+                } else if (action == 4) { //45 degrees diagonal movement
+                    nextStateX = startStateX + 1;
+                    nextStateY = startStateY - 1;
                 } else if (action == 5){ //-45 degrees diagonal movement
                     nextStateX = startStateX - 1;
                     nextStateY = startStateY - 1;
                 } else if (action == 6){ //135 degrees diagonal movement
                     nextStateX = startStateX + 1;
                     nextStateY = startStateY + 1;
-                } else if (action == 7){ //135 degrees diagonal movement
-                    nextStateX = startStateX + 1;
-                    nextStateY = startStateY - 1;
+                } else if (action == 7){ //-135 degrees diagonal movement
+                    nextStateX = startStateX - 1;
+                    nextStateY = startStateY + 1;
                 }
 
                 maxQ = 0d; //reset maxQ in order to use for the formula below

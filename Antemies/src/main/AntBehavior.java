@@ -93,6 +93,7 @@ public class AntBehavior implements Runnable {
     public void start(){
         System.out.println("starting");
         t = new Thread (this);
+        
         if (t == null) {
             t = new Thread (this);
             t.start ();

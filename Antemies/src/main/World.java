@@ -141,7 +141,7 @@ public class World {
 
 	public void render() {
 		renderer.renderTerrain(gridMesh, camera);
-		renderer.renderShadow(shadowMesh, camera);
+		//renderer.renderShadow(shadowMesh, camera);
 		renderer.renderTrail(trailMesh, camera);
 		renderer.renderMesh(nest, camera);
 		renderer.renderMesh(userAnt, camera);
