@@ -3,7 +3,7 @@ package engine.graphics;
 import engine.model_loaders.Bone;
 import engine.model_loaders.Node;
 import engine.model_loaders.Weight;
-import org.joml.Matrix4f;
+import org.joml.*;
 
 import java.util.List;
 import java.util.Map;
@@ -59,17 +59,42 @@ public class BoneMesh extends Mesh
 		Node boneNode = root.findNode(bone.name());
 		Node parent = boneNode.getParent();
 		Matrix4f offset = bone.getOffsetMatrix();
-		System.out.println(bone.name());
 
 		Matrix4f transform = boneNode.getTransformation();
 
+		// we multiply the local transform with those of all the parents
+		// up until the root node
 		while (parent.getParent() != null) {
 			Matrix4f matrix = parent.getTransformation();
 			transform.mul(matrix);
 			parent = parent.getParent();
 		}
 
+		// after that we multiply by offset matrix of the bone
 		transform.mul(offset);
+		// lastly we multiply the root transform with the transform and we then have
+		// the final transform of the bone
 		return root.getTransformation().mul(transform);
+	}
+
+	// interpolate between two given matrices using the given interpolation factor
+	public static Matrix4f interpolate(Matrix4f m1, Matrix4f m2, float t) {
+		// we extract the translation vectors
+		Vector3f v1 = new Vector3f(m1.get(3,0), m1.get(3,1), m1.get(3,2));
+		Vector3f v2 = new Vector3f(m2.get(3,0), m2.get(3,1), m2.get(3,2));
+		// we use linear interpolation on them
+		v1 = v1.lerp(v2, t);
+
+		// we extract the rotation quaternions
+		Quaternionf q1 = new Quaternionf();
+		m1.getNormalizedRotation(q1);
+		Quaternionf q2 = new Quaternionf();
+		m2.getNormalizedRotation(q2);
+		// we use spherical linear interpolation between them.
+		q1 = q1.slerp(q2, t);
+
+		// we use the calculated vector and quaternion to construct a new matrix that will be the result.
+		Matrix4f result =  new Matrix4f().identity().rotate(q1);
+		return result.translate(v1);
 	}
 }

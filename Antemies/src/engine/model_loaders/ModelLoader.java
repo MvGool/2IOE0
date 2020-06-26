@@ -13,12 +13,14 @@ import java.util.List;
 
 public class ModelLoader
 {
+	// build the mesh using the loaded vertices and indices
 	static Mesh processMesh(AIMesh aiMesh, String texturePath) {
 
 		List<Vertex> vertices = processVertices(aiMesh);
 		List<Integer> indices = processIndices(aiMesh);
 
 		Vertex[] verticesArray = new Vertex[vertices.size()];
+		// if no texture path specified we don't have to add a material
 		if (texturePath == null) {
 			return new Mesh(vertices.toArray(verticesArray),
 					indices.stream().mapToInt(i->i).toArray()
@@ -31,11 +33,14 @@ public class ModelLoader
 		}
 	}
 
+	// load all the vertices from the model fata
 	static List<Vertex> processVertices(AIMesh aiMesh) {
+		// get buffer for all parts we need for a vertex
 		AIVector3D.Buffer aiVertices = aiMesh.mVertices();
 		AIVector3D.Buffer aiNormals = aiMesh.mNormals();
 		AIVector3D.Buffer aiTextCoords = aiMesh.mTextureCoords(0);
 
+		// loop through all vertices and add them to a list
 		List<Vertex> vertices = new ArrayList<>();
 		while (aiVertices.remaining() > 0) {
 			AIVector3D aiVertex = aiVertices.get();
@@ -53,6 +58,7 @@ public class ModelLoader
 				normalV = new Vector3f(aiNormal.x(), aiNormal.y(), aiNormal.z());
 			}
 
+			// if no texture coords we set them as null
 			if (aiTextCoords == null) {
 				System.out.println("no texCoords");
 				texV = null;
@@ -68,15 +74,14 @@ public class ModelLoader
 				)
 			);
 		}
-		System.out.println(vertices.size());
 		return vertices;
 	}
 
+	// get all the indices from the model data for use in the mesh
 	static List<Integer> processIndices(AIMesh aiMesh) {
 		List<Integer> indices = new ArrayList<>();
-		int numFaces = aiMesh.mNumFaces();
 		AIFace.Buffer aiFaces = aiMesh.mFaces();
-		for (int i = 0; i < numFaces; i++) {
+		for (int i = 0; i < aiMesh.mNumFaces(); i++) {
 			AIFace aiFace = aiFaces.get(i);
 			IntBuffer buffer = aiFace.mIndices();
 			while (buffer.remaining() > 0) {

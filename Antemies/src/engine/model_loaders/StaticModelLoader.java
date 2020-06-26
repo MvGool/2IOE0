@@ -17,10 +17,14 @@ public class StaticModelLoader extends ModelLoader {
 
 	public static Mesh[] load(String modelPath, String texturePath) throws Exception {
 		AIScene scene = aiImportFile(modelPath, aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FixInfacingNormals);
+
+		// if scene is null then there was an error
 		if (scene == null || scene.mRootNode() == null) {
 			throw new Exception(aiGetErrorString());
 		}
 
+		// loop through all meshes and extract all info to create them with our
+		// own mesh class so we can render them
 		PointerBuffer aiMeshes = scene.mMeshes();
 		Mesh[] meshes = new Mesh[scene.mNumMeshes()];
 		for (int i = 0; i < meshes.length; i++) {
@@ -28,8 +32,6 @@ public class StaticModelLoader extends ModelLoader {
 			Mesh mesh = processMesh(aiMesh, texturePath); // Error here
 			meshes[i] = mesh;
 		}
-
-
 		return meshes;
 	}
 }

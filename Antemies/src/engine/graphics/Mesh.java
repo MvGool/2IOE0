@@ -99,11 +99,8 @@ public class Mesh {
 		if (this instanceof  BoneMesh) {
 			FloatBuffer weightBuffer = MemoryUtil.memAllocFloat(vertices.length * 4);
 			float[] weightData = new float[vertices.length * 4];
-			System.out.println(vertices.length);
 			BoneMesh m = (BoneMesh)this;
-			System.out.println(m.getWeightsKeys().toString());
 			for (Integer i : m.getWeightsKeys()) {
-				System.out.println(i);
 				List<Weight> weights = m.getWeightsForVertex(i);
 				for (int j = 0; j < weights.size() && j < 4; j++) {
 					weightData[i * 4 + j] = weights.get(j).getWeight();
@@ -114,7 +111,6 @@ public class Mesh {
 					}
 				}*/
 			}
-			System.out.println("weight list: " + m.getWeightsKeys().size() + " weight data: " + weightData.length);
 			weightBuffer.put(weightData).flip();
 			storeData(weightBuffer, 3, 4);
 		}

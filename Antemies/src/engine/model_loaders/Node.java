@@ -25,6 +25,8 @@ public class Node
 		this.name = name;
 		this.parent = parent;
 		this.children = new ArrayList<>();
+		// immediately store the transformation as a joml matrix as these
+		// are easier to work with
 		this.transformation = AnimModelLoader.AIMatrixToMatrix(matrix);
 	}
 
@@ -32,18 +34,23 @@ public class Node
 		children.add(child);
 	}
 
+	// recursively try to find a node by name
 	public Node findNode(String name) {
+		// if the name is the same we return it immediately
 		if (this.name.equals(name)) {
 			return this;
 		} else {
 			Node result = null;
 			for (Node child : children) {
+				// otherwise we keep looking through all children
 				result = child.findNode(name);
 				if (result != null) {
 					return result;
 				}
 			}
 		}
+		// if we haven't returned at this point then we can conclude that there was
+		// no node with the given name
 		return null;
 	}
 
