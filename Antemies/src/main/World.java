@@ -157,7 +157,7 @@ public class World {
 
 	public void render() {
 		renderer.renderTerrain(gridMesh, camera);
-		//renderer.renderShadow(shadowMesh, camera);
+		renderer.renderShadow(shadowMesh, camera);
 		renderer.renderTrail(trailMesh, camera);
 		renderer.renderMesh(userNest, camera);
 		renderer.renderMesh(enemyNest, camera);
@@ -224,7 +224,7 @@ public class World {
 		ArrayList<Tile> trail = grid.getTrail();
 		List<Tile> toRemove = new ArrayList<>();
 		for (Tile tile : trail) {
-			grid.getTile(tile.getX(), tile.getY()).setTrailValue(grid.getTile(tile.getX(), tile.getY()).getTrailValue() - 0.01f);
+			grid.getTile(tile.getX(), tile.getY()).setTrailValue(grid.getTile(tile.getX(), tile.getY()).getTrailValue() - 0.001f);
 			if (grid.getTile(tile.getX(), tile.getY()).getTrailValue() <= 0) {
 				toRemove.add(tile);
 			}
