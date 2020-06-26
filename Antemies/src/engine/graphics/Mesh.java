@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import engine.maths.Vector3f;
@@ -201,6 +202,26 @@ public class Mesh {
 			indicesOut[i] = indices.get(i);
 		}
 		
+		return new Mesh(verticesOut, indicesOut);
+	}
+
+	public static Mesh merge(HashMap<String, Mesh> meshes) {
+		ArrayList<Vertex> vertices = new ArrayList<>();
+		ArrayList<Integer> indices = new ArrayList<>();
+
+		for (Mesh mesh : meshes.values()) {
+			for (int index : mesh.getIndices()) {
+				indices.add(index + vertices.size());
+			}
+			vertices.addAll(Arrays.asList(mesh.getVertices()));
+		}
+
+		Vertex[] verticesOut = vertices.toArray(new Vertex[vertices.size()]);
+		int[] indicesOut = new int[indices.size()];
+		for (int i = 0; i < indices.size(); i++) {
+			indicesOut[i] = indices.get(i);
+		}
+
 		return new Mesh(verticesOut, indicesOut);
 	}
 	

@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import engine.graphics.BoneMesh;
@@ -13,6 +14,7 @@ import engine.model_loaders.StaticModelLoader;
 import engine.objects.*;
 import main.objects.AntObject;
 import main.objects.NestObject;
+import org.joml.Matrix4f;
 
 public class World {
 	private Renderer renderer;
@@ -44,8 +46,8 @@ public class World {
 	private Clock clock = new Clock(userNest, enemyNest);
 
 	private static float scaleFood = 0.1f, scaleMaterial = 0.08f, scaleRock = 1f;
-	private static ArrayList<Mesh> foodSources = new ArrayList<>();
-	private static ArrayList<Mesh> materialSources = new ArrayList<>();
+	private static HashMap<String, Mesh> foodSources = new HashMap<>();
+	private static HashMap<String, Mesh> materialSources = new HashMap<>();
 	private ArrayList<Mesh> stoneSources = new ArrayList<>();
 	private static Mesh foodMesh;
 	private static Mesh materialMesh;
@@ -57,6 +59,7 @@ public class World {
 	}
 
 	public void load() {
+
 		try {
 			antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
 
@@ -69,14 +72,14 @@ public class World {
 					for (Mesh mesh : foodMeshes) {
 						mesh.rotateScale(scaleFood, true);
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-						foodSources.add(mesh);
+						foodSources.put(tile.getX() + "" + tile.getY(), mesh);
 					}
 				} else if (tile.getMaterial() > 0) {
 					Mesh[] materialMeshes = StaticModelLoader.load("resources/models/sticks.obj", "/textures/stick/Bark_Pine_baseColor.jpg");
 					for (Mesh mesh : materialMeshes) {
 						mesh.rotateScale(scaleMaterial, false);
 						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
-						materialSources.add(mesh);
+						materialSources.put(tile.getX() + "" + tile.getY(), mesh);
 					}
 				} else if (tile.isObstacle()) {
 					Mesh[] stoneMeshes = StaticModelLoader.load("resources/models/rock_large.obj", "/models/rock_large_texture_001.png");
@@ -108,7 +111,7 @@ public class World {
 		userColonyBehavior = new AntBehavior(grid, userColony, userAnt, userNest);
 		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, enemyNest);
 		enemyAI = new EnemyAI(grid);
-		
+
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg")); // Test texture: "/textures/tileTest.jpg"
 		shadowMesh = grid.getShadowMesh();
@@ -132,7 +135,7 @@ public class World {
 		trailMesh.create(false);
 		foodMesh.create(true);
 		materialMesh.create(true);
-		stoneMesh.create(true);
+		stoneMesh.create(true);;
 	}
 
 	public void update(Renderer renderer, Camera camera) {
@@ -233,35 +236,20 @@ public class World {
 	}
 	
 	public static void removeFoodFrom(Tile tile) {
-		try {
-			Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
-			for (Mesh mesh : foodMeshes) {
-				mesh.rotateScale(1f/scaleFood, true);
-				mesh.move(new Vector3f(-tile.getX(), 0, -tile.getY()));
-				foodSources.remove(mesh);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-		
+		foodSources.remove(tile.getX() + "" + tile.getY());
+		foodMesh.destroy();
 		foodMesh = Mesh.merge(foodSources);
+		foodMesh.create(true);
+		foodMesh.setMaterial(new Material( "/models/textures/Apricot_02_diffuse.png"));
 	}
 	
 	public static void removeMaterialFrom(Tile tile) {
-		try {
-			Mesh[] materialMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
-			for (Mesh mesh : materialMeshes) {
-				mesh.rotateScale(1f/scaleMaterial, true);
-				mesh.move(new Vector3f(-tile.getX(), 0, -tile.getY()));
-				materialSources.remove(mesh);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-		
+		materialSources.remove(tile.getX() + "" + tile.getY());
+		materialMesh.destroy();
 		materialMesh = Mesh.merge(materialSources);
+		materialMesh.create(true);
+		materialMesh.setMaterial(new Material("/textures/stick/Bark_Pine_baseColor.jpg"));
+		materialMesh.getMaterial().setNormalMap("/textures/stick/Bark_Pine_normal.jpg");
 	}
 	
 	public static int getGridSize() {
