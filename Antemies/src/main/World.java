@@ -36,12 +36,9 @@ public class World {
 	private ArrayList<AntObject> enemyColony = new ArrayList<>();
 	private AntBehavior enemyColonyBehavior;
 	private EnemyAI enemyAI;
-
-	private AntObject follower;
 	
 	private NestObject userNest;
 	private NestObject enemyNest;
-	private AnimGameObject ericModel;
 	
 	private Clock clock = new Clock(userNest, enemyNest);
 
@@ -105,11 +102,11 @@ public class World {
 		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, false);
 		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, false);
 		
-		//userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, true));
-		//enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, true));
+		userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, true));
+		enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, true));
 		
-		userColonyBehavior = new AntBehavior(grid, userNest.getAnts(), userAnt, userNest);
-		enemyColonyBehavior = new AntBehavior(grid, enemyNest.getAnts(), enemyAnt, enemyNest);
+		userColonyBehavior = new AntBehavior(grid, userColony, userAnt, userNest);
+		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, enemyNest);
 		enemyAI = new EnemyAI(grid);
 
 		gridMesh = grid.getMesh();
@@ -125,10 +122,10 @@ public class World {
 		gridMesh.create(true);
 		userAnt.create(true);
 		enemyAnt.create(true);
-		for (AntObject ant : userNest.getAnts()) {
+		for (AntObject ant : userColony) {
 			ant.create(true);
 		}
-		for (AntObject ant : enemyNest.getAnts()) {
+		for (AntObject ant : enemyColony) {
 			ant.create(true);
 		}
 		shadowMesh.create(false);
@@ -163,10 +160,10 @@ public class World {
 		renderer.renderMesh(enemyNest, camera);
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderMesh(enemyAnt, camera);
-		for (AntObject ant : userNest.getAnts()) {
+		for (AntObject ant : userColony) {
 			renderer.renderMesh(ant, camera);
 		}
-		for (AntObject ant : enemyNest.getAnts()) {
+		for (AntObject ant : enemyColony) {
 			renderer.renderMesh(ant, camera);
 		}
 		renderer.renderResources(foodMesh, camera);
@@ -206,10 +203,10 @@ public class World {
 	private void updateObjects() {
 		userAnt.update();
 		enemyAnt.update();
-		for (AntObject ant : userNest.getAnts()) {
+		for (AntObject ant : userColony) {
 			ant.update();
 		}
-		for (AntObject ant : enemyNest.getAnts()) {
+		for (AntObject ant : enemyColony) {
 			ant.update();
 		}
 	}

@@ -9,7 +9,7 @@ import engine.model_loaders.StaticModelLoader;
 import engine.objects.GameObject;
 
 public class NestObject extends GameObject {
-	private final int INITIAL_ANTS = 2; // the number of ants at the beginning of the game
+	private final int INITIAL_ANTS = 1; // the number of ants at the beginning of the game
 	private Mesh[] antMesh;
 	private int food;
 	private int material;
@@ -21,7 +21,7 @@ public class NestObject extends GameObject {
 		material = 0;
 		ants = new ArrayList<AntObject>();
 		antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
-		generateAnts(INITIAL_ANTS);
+		//generateAnts(INITIAL_ANTS);
 	}
 
 	public NestObject(Vector3f position, Vector3f rotation, Vector3f scalar) throws Exception {
@@ -30,7 +30,7 @@ public class NestObject extends GameObject {
 		material = 0;
 		ants = new ArrayList<AntObject>();
 		antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
-		generateAnts(INITIAL_ANTS);
+		//generateAnts(INITIAL_ANTS);
 	}
   
 	public void generateAnts (int numberOfAnts) {
