@@ -57,10 +57,6 @@ public class World {
 	}
 
 	public void load() {
-		// TODO: remove other and eric model, is now just for debugging
-		Mesh[] other = null;
-		BoneMesh[] eric = null;
-
 		try {
 			antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
 
@@ -113,8 +109,6 @@ public class World {
 		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, enemyNest);
 		enemyAI = new EnemyAI(grid);
 		
-		ericModel = new AnimGameObject(new Vector3f(200, 0, 0), new Vector3f(90, 0, 0), new Vector3f(.01f, .01f, .01f), eric);
-
 		gridMesh = grid.getMesh();
 		gridMesh.setMaterial(new Material("/textures/forest_ground_1k/forrest_ground_01_diff_1k.jpg")); // Test texture: "/textures/tileTest.jpg"
 		shadowMesh = grid.getShadowMesh();
