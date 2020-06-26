@@ -8,6 +8,9 @@ import engine.maths.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a game object for which we can define animations
+ */
 public class AnimGameObject extends GameObject
 {
 	private Map<String, Animation> animations = new HashMap<>();
@@ -20,6 +23,8 @@ public class AnimGameObject extends GameObject
 		return (BoneMesh[])super.getMeshes();
 	}
 
+	// Not relevant anymore as animations can't be implemented
+	/*
 	public void playAnimation(String name) {
 
 	}
@@ -30,5 +35,5 @@ public class AnimGameObject extends GameObject
 
 	public void addAnimation(String name, Animation animation) {
 		animations.put(name, animation);
-	}
+	}*/
 }
