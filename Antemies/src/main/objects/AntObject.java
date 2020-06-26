@@ -12,7 +12,7 @@ import main.Astar;
 import main.AntBehavior.LeaveRequestState;
 
 public class AntObject extends GameObject implements Comparable<AntObject> {
-	private float speed = 1f; // probably within [0, 2]
+	private float speed = 0.1f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;
@@ -63,8 +63,8 @@ public class AntObject extends GameObject implements Comparable<AntObject> {
 
 	public int addFood(int new_value){
 		food += new_value;
-		if (material + food > 40) {
-			int overload = food - 40;
+		if (material + food > 10) {
+			int overload = food - 10;
 			food = food - overload;
 			return overload; //So the source can put take it back
 		}
@@ -75,8 +75,8 @@ public class AntObject extends GameObject implements Comparable<AntObject> {
 
 	public int addMaterial(int new_value){
 		material += new_value;
-		if (material + food > 40) {
-			int overload = material - 40;
+		if (material + food > 10) {
+			int overload = material - 10;
 			material = material - overload;
 			return overload; //So the source can put take it back
 		}

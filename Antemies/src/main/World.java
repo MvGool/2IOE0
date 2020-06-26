@@ -3,12 +3,10 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-import engine.graphics.BoneMesh;
 import engine.graphics.Material;
 import engine.graphics.Mesh;
 import engine.graphics.Renderer;
 import engine.maths.Vector3f;
-import engine.model_loaders.AnimModelLoader;
 import engine.model_loaders.StaticModelLoader;
 import engine.objects.*;
 import main.objects.AntObject;
@@ -39,7 +37,6 @@ public class World {
 	
 	private NestObject userNest;
 	private NestObject enemyNest;
-	private AnimGameObject ericModel;
 	
 	private Clock clock = new Clock(userNest, enemyNest);
 
@@ -50,6 +47,9 @@ public class World {
 	private static Mesh foodMesh;
 	private static Mesh materialMesh;
 	private Mesh stoneMesh;
+	
+	private static ArrayList<Tile> foodTiles = new ArrayList<>();
+	private static ArrayList<Tile> materialTiles = new ArrayList<>();
 
 	public World(Renderer renderer, Camera camera) {
 		this.renderer = renderer;
@@ -65,6 +65,7 @@ public class World {
 
 			for (Tile tile : grid.getTiles()) {
 				if (tile.getFood() > 0) {
+					foodTiles.add(tile);
 					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
 					for (Mesh mesh : foodMeshes) {
 						mesh.rotateScale(scaleFood, true);
@@ -72,6 +73,7 @@ public class World {
 						foodSources.add(mesh);
 					}
 				} else if (tile.getMaterial() > 0) {
+					materialTiles.add(tile);
 					Mesh[] materialMeshes = StaticModelLoader.load("resources/models/sticks.obj", "/textures/stick/Bark_Pine_baseColor.jpg");
 					for (Mesh mesh : materialMeshes) {
 						mesh.rotateScale(scaleMaterial, false);
@@ -154,7 +156,7 @@ public class World {
 
 	public void render() {
 		renderer.renderTerrain(gridMesh, camera);
-		//renderer.renderShadow(shadowMesh, camera);
+		renderer.renderShadow(shadowMesh, camera);
 		renderer.renderTrail(trailMesh, camera);
 		renderer.renderMesh(userNest, camera);
 		renderer.renderMesh(enemyNest, camera);
@@ -221,7 +223,7 @@ public class World {
 		ArrayList<Tile> trail = grid.getTrail();
 		List<Tile> toRemove = new ArrayList<>();
 		for (Tile tile : trail) {
-			grid.getTile(tile.getX(), tile.getY()).setTrailValue(grid.getTile(tile.getX(), tile.getY()).getTrailValue() - 0.01f);
+			grid.getTile(tile.getX(), tile.getY()).setTrailValue(grid.getTile(tile.getX(), tile.getY()).getTrailValue() - 0.001f);
 			if (grid.getTile(tile.getX(), tile.getY()).getTrailValue() <= 0) {
 				toRemove.add(tile);
 			}
@@ -232,13 +234,20 @@ public class World {
 		trailMesh.reset(newMesh.getVertices(), newMesh.getIndices(), false);
 	}
 	
-	public static void removeFoodFrom(Tile tile) {
+	public static void removeFoodFrom() {
 		try {
-			Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
-			for (Mesh mesh : foodMeshes) {
-				mesh.rotateScale(1f/scaleFood, true);
-				mesh.move(new Vector3f(-tile.getX(), 0, -tile.getY()));
-				foodSources.remove(mesh);
+			foodSources = new ArrayList<>();
+			for (Tile tile : foodTiles) {
+				if (tile.getFood() > 0) {
+					Mesh[] foodMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
+					for (Mesh mesh : foodMeshes) {
+						mesh.rotateScale(scaleFood, true);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						foodSources.add(mesh);
+					}
+				} else {
+					foodTiles.remove(tile);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -248,13 +257,20 @@ public class World {
 		foodMesh = Mesh.merge(foodSources);
 	}
 	
-	public static void removeMaterialFrom(Tile tile) {
+	public static void removeMaterialFrom() {
 		try {
-			Mesh[] materialMeshes = StaticModelLoader.load("resources/models/Apricot_02_hi_poly.obj", "/models/textures/Apricot_02_diffuse.png");
-			for (Mesh mesh : materialMeshes) {
-				mesh.rotateScale(1f/scaleMaterial, true);
-				mesh.move(new Vector3f(-tile.getX(), 0, -tile.getY()));
-				materialSources.remove(mesh);
+			materialSources = new ArrayList<>();
+			for (Tile tile : materialTiles) {
+				if (tile.getFood() > 0) {
+					Mesh[] materialMeshes = StaticModelLoader.load("resources/models/sticks.obj", "/textures/stick/Bark_Pine_baseColor.jpg");
+					for (Mesh mesh : materialMeshes) {
+						mesh.rotateScale(scaleMaterial, false);
+						mesh.move(new Vector3f(tile.getX(), 0, tile.getY()));
+						materialSources.add(mesh);
+					}
+				} else {
+					materialTiles.remove(tile);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

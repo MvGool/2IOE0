@@ -86,7 +86,8 @@ public class Tile {
 		this.food = food;
 		
 		if (food <= 0) {
-			World.removeFoodFrom(this);
+			reward = 0;
+//			World.removeFoodFrom();
 		}
 	}
 
@@ -98,7 +99,8 @@ public class Tile {
 		this.material = material;
 		
 		if (material <= 0) {
-			World.removeMaterialFrom(this);
+			reward = 0;
+//			World.removeMaterialFrom();
 		}
 	}
 

@@ -115,7 +115,7 @@ public class Grid2D {
 		List<Vertex> vertices = new ArrayList<>();
 		List<Integer> indices = new ArrayList<>();
 		
-		// Loop over all tiles adding them to the mesh
+		// Loop over size to create the mesh
 		for (int i = 0; i <= size; i++) {
 			for (int j = 0; j <= size; j++) {
 				vertices.add(new Vertex(new Vector3f(i-size/2, 0, j-size/2 - 1), new Vector3f(0, 1, 0), new Vector2f(i, j)));
@@ -229,12 +229,12 @@ public class Grid2D {
 		
 		for (int i = 0; i < amount; i++) {
 			Tile foodTile = getRandomTile();
-			int foodValue = (int) (Math.random()*10 + 10);
+			int foodValue = (int) (Math.random()*20 + 10);
 			foodTile.setFood(foodValue);
 			foodTile.setReward(foodValue);
 			
 			Tile materialTile = getRandomTile();
-			int materialValue = (int) (Math.random()*10 + 10);
+			int materialValue = (int) (Math.random()*20 + 10);
 			materialTile.setMaterial(materialValue);
 			materialTile.setReward(materialValue);
 			
