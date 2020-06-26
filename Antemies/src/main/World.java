@@ -239,17 +239,17 @@ public class World {
 		foodSources.remove(tile.getX() + "" + tile.getY());
 		foodMesh.destroy();
 		foodMesh = Mesh.merge(foodSources);
-		foodMesh.create(true);
 		foodMesh.setMaterial(new Material( "/models/textures/Apricot_02_diffuse.png"));
+		foodMesh.create(true);
 	}
 	
 	public static void removeMaterialFrom(Tile tile) {
 		materialSources.remove(tile.getX() + "" + tile.getY());
 		materialMesh.destroy();
 		materialMesh = Mesh.merge(materialSources);
-		materialMesh.create(true);
-		materialMesh.setMaterial(new Material("/textures/stick/Bark_Pine_baseColor.jpg"));
+		materialMesh.setMaterial(new Material("/textures/stick/Bark_Pine_baseColor.jpg"));		
 		materialMesh.getMaterial().setNormalMap("/textures/stick/Bark_Pine_normal.jpg");
+		materialMesh.create(true);
 	}
 	
 	public static int getGridSize() {
