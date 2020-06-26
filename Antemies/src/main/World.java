@@ -100,6 +100,7 @@ public class World {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
+    
 		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest);
 		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest);
 		
