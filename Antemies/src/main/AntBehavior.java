@@ -1,7 +1,7 @@
 package main;
 
 import main.objects.AntObject;
-
+import main.objects.NestObject;
 import engine.graphics.Mesh;
 import engine.maths.Vector3f;
 import engine.objects.GameObject;
@@ -16,42 +16,70 @@ public class AntBehavior implements Runnable {
 
     private Grid2D grid;
     private ArrayList<AntObject> ants;
-    private ArrayList<Tile> foodSources;
-    private ArrayList<Tile> materialSources;
-    private Tile base;
-
-    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, ArrayList<Tile> foodSources, ArrayList<Tile> materialSources, Tile base) {
+    private AntObject foragerAnt;
+    private NestObject nest;
+    
+    public AntBehavior(Grid2D grid, ArrayList<AntObject> ants, AntObject foragerAnt, NestObject nest) {
     	this.grid = grid;
     	this.ants = ants;
-    	this.foodSources = foodSources;
-    	this.materialSources = materialSources;
-    	this.base = base;
+    	this.foragerAnt = foragerAnt;
+    	this.nest = nest;
     }
     
     public enum LeaveRequestState {
-        Idle {
+        followForager {
         },
-        goToFoodSource {
+        goToSource {
         },
         goToBase {
         };
     }
 
     public void run() {
-        while (true) {
+        ArrayList<Tile> foundSources = new ArrayList<>();
+        //while (true) {
+        	if (grid.containsResource(foragerAnt.getTile())) {
+        		Tile tile = grid.getTile(foragerAnt.getTile().getX(), foragerAnt.getTile().getY());
+        		if (!foundSources.contains(tile)) {
+        			foundSources.add(tile);
+        		}
+        	}
+        	
             for (AntObject ant : ants){
-                if (!foodSources.isEmpty()){
-                    if (ant.getState() == LeaveRequestState.Idle && !ant.isMoving()) {
-                        ant.moveTo(grid, foodSources.get(0));
-                        ant.setState(LeaveRequestState.goToFoodSource);
-                    } else if (ant.getState() == LeaveRequestState.goToFoodSource && !ant.isMoving()) {
-                        ant.moveTo(grid, base);
-                        ant.setState(LeaveRequestState.goToBase);
-                    } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
-                        ant.setState(LeaveRequestState.Idle);
-                    }
+                if (ant.getState() == LeaveRequestState.followForager && !ant.isMoving()) {
+                	if (!foundSources.isEmpty()) {
+                		ant.moveTo(grid, foundSources.get(0));
+                        ant.setState(LeaveRequestState.goToSource);
+                	} else {
+                		ant.moveTo(grid, foragerAnt.getTile());
+                	}
+                } else if (ant.getState() == LeaveRequestState.goToSource && !ant.isMoving()) {
+                	if (grid.containsResource(ant.getTile())) {
+                		Tile source = grid.getTile(ant.getTile().getX(), ant.getTile().getY());
+                		
+                		int foodOverload = ant.addFood(source.getFood());
+	                    int materialOverload = ant.addMaterial(source.getMaterial());
+	                    
+	                    source.setFood(foodOverload);
+	                    source.setMaterial(materialOverload);
+	                    
+	                    ant.moveTo(grid, nest.getTile());
+	                    ant.setState(LeaveRequestState.goToBase);
+                	} else {
+	                    ant.setState(LeaveRequestState.followForager);
+                	}
+                } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
+                	if (ant.getTile().equals(nest.getTile())) {
+	                	nest.setFood(nest.getFood() + ant.getFood());
+	                	ant.setFood(0);
+	                	
+	                	nest.setMaterial(nest.getMaterial() + ant.getMaterial());
+	                	ant.setMaterial(0);
+                	}
+                	
+                	ant.setState(LeaveRequestState.followForager);
                 }
-            }
+            //}
         }
     }
     

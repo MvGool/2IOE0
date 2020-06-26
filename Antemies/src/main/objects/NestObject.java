@@ -21,7 +21,7 @@ public class NestObject extends GameObject {
 		ants = new ArrayList<AntObject>();
 		generateAnts(INITIAL_ANTS);
 	}
-	
+
 	public NestObject(Vector3f position, Vector3f rotation, Vector3f scalar) throws Exception {
 		this(position, rotation, scalar, StaticModelLoader.load("resources/models/ant_nest.obj", "/models/forrest_ground_03_diff_1k.jpg"));
 		food = 0;
@@ -29,7 +29,7 @@ public class NestObject extends GameObject {
 		ants = new ArrayList<AntObject>();
 		generateAnts(INITIAL_ANTS);
 	}
-	
+  
 	public void generateAnts (int numberOfAnts) {
 		for (int i = 0; i < numberOfAnts; i++) {
 			ants.add(new AntObject(
@@ -37,33 +37,41 @@ public class NestObject extends GameObject {
 					this.getScalar(), this.getMeshes(), this));
 		}
 	}
-	
+
 	public int getFood() {
 		return food;
 	}
-	
+
+	public void setFood(int food) {
+		this.food = food;
+	}
+
 	public int getMaterial() {
 		return material;
+	}
+  
+  public void setMaterial(int material) {
+		this.material = material;
 	}
 	
 	public ArrayList<AntObject> getAnts() {
 		return ants;
 	}
-	
+  
 	public int getPopulation() {
 		return ants.size();
 	}
-	
+
 	public void feedAnts() {
 		sort();
 		feed();
 		removeDeadAnts();
 	}
-	
+
 	private void sort() {
 		Collections.sort(ants);
 	}
-	
+
 	private void feed() {
 		int fedAnts = Math.min(food, ants.size());
 		for (int i = 0; i < fedAnts; i++) {
@@ -74,7 +82,7 @@ public class NestObject extends GameObject {
 			ants.get(i).updateHealth(-40);
 		}
 	}
-	
+
 	public void increasePopulation() {
 		int gainedAnts = material / 10;
 		material -= 10 * gainedAnts;
@@ -85,21 +93,21 @@ public class NestObject extends GameObject {
 		sort();
 		remove();
 	}
-	
+
 	private void remove() {
 		while (ants.get(0).getHealth() == 0) {
 			ants.remove(0);
 		}
 	}
-	
+
 	public void depositFood(int food) {
 		this.food += food;
 	}
-	
+
 	public void depositMaterial(int material) {
 		this.material += material;
 	}
-	
+
 //	public static void main(String[] args) {
 //		Vector3f vector = new Vector3f(0, 0, 0);
 //		Mesh[] meshes = new Mesh[1];
