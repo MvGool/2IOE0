@@ -30,7 +30,7 @@ public class NestObject extends GameObject {
 		generateAnts(INITIAL_ANTS);
 	}
 	
-	private void generateAnts (int numberOfAnts) {
+	public void generateAnts (int numberOfAnts) {
 		for (int i = 0; i < numberOfAnts; i++) {
 			ants.add(new AntObject(
 					this.getPosition(), this.getRotation(),
@@ -46,6 +46,10 @@ public class NestObject extends GameObject {
 		return material;
 	}
 	
+	public ArrayList<AntObject> getAnts() {
+		return ants;
+	}
+	
 	public int getPopulation() {
 		return ants.size();
 	}
@@ -53,6 +57,7 @@ public class NestObject extends GameObject {
 	public void feedAnts() {
 		sort();
 		feed();
+		removeDeadAnts();
 	}
 	
 	private void sort() {
@@ -76,7 +81,7 @@ public class NestObject extends GameObject {
 		generateAnts(gainedAnts);
 	}
 	
-	private void removeDeadAnts() {
+	public void removeDeadAnts() {
 		sort();
 		remove();
 	}

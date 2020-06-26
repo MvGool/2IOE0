@@ -32,6 +32,14 @@ public class AntObject extends GameObject implements Comparable<AntObject> {
 	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes, NestObject nest) {
 		super(position, rotation, scalar, meshes);
 		this.nest = nest;
+		this.nest.getAnts().add(this);
+		health = 100;
+		food = 0;
+		material = 0;
+	}
+	
+	public AntObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
+		super(position, rotation, scalar, meshes);
 		health = 100;
 		food = 0;
 		material = 0;
@@ -48,6 +56,7 @@ public class AntObject extends GameObject implements Comparable<AntObject> {
 		}
 		if (health <= 0) {
 			health = 0;
+			nest.removeDeadAnts();
 		}
 	}
 	
