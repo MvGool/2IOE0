@@ -85,9 +85,9 @@ public class Tile {
 	public void setFood(int food) {
 		this.food = food;
 		
-		if (food <= 0) {
+		/*if (food <= 0) {
 			World.removeFoodFrom(this);
-		}
+		}*/
 	}
 
 	public int getMaterial() {
@@ -97,9 +97,9 @@ public class Tile {
 	public void setMaterial(int material) {
 		this.material = material;
 		
-		if (material <= 0) {
+		/*if (material <= 0) {
 			World.removeMaterialFrom(this);
-		}
+		}*/
 	}
 
 	public Tile getParent() {

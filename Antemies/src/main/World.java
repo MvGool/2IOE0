@@ -102,14 +102,14 @@ public class World {
 			System.out.println(e.getMessage());
 		}
     
-		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, true);
-		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, true);
+		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, false);
+		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, false);
 		
-		userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, true));
-		enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, true));
+		//userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, true));
+		//enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, true));
 		
-		userColonyBehavior = new AntBehavior(grid, userColony, userAnt, userNest);
-		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, enemyNest);
+		userColonyBehavior = new AntBehavior(grid, userNest.getAnts(), userAnt, userNest);
+		enemyColonyBehavior = new AntBehavior(grid, enemyNest.getAnts(), enemyAnt, enemyNest);
 		enemyAI = new EnemyAI(grid);
 
 		gridMesh = grid.getMesh();
@@ -125,10 +125,10 @@ public class World {
 		gridMesh.create(true);
 		userAnt.create(true);
 		enemyAnt.create(true);
-		for (AntObject ant : userColony) {
+		for (AntObject ant : userNest.getAnts()) {
 			ant.create(true);
 		}
-		for (AntObject ant : enemyColony) {
+		for (AntObject ant : enemyNest.getAnts()) {
 			ant.create(true);
 		}
 		shadowMesh.create(false);
@@ -163,10 +163,10 @@ public class World {
 		renderer.renderMesh(enemyNest, camera);
 		renderer.renderMesh(userAnt, camera);
 		renderer.renderMesh(enemyAnt, camera);
-		for (AntObject ant : userColony) {
+		for (AntObject ant : userNest.getAnts()) {
 			renderer.renderMesh(ant, camera);
 		}
-		for (AntObject ant : enemyColony) {
+		for (AntObject ant : enemyNest.getAnts()) {
 			renderer.renderMesh(ant, camera);
 		}
 		renderer.renderResources(foodMesh, camera);
@@ -206,10 +206,10 @@ public class World {
 	private void updateObjects() {
 		userAnt.update();
 		enemyAnt.update();
-		for (AntObject ant : userColony) {
+		for (AntObject ant : userNest.getAnts()) {
 			ant.update();
 		}
-		for (AntObject ant : enemyColony) {
+		for (AntObject ant : enemyNest.getAnts()) {
 			ant.update();
 		}
 	}

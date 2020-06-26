@@ -9,16 +9,18 @@ import engine.model_loaders.StaticModelLoader;
 import engine.objects.GameObject;
 
 public class NestObject extends GameObject {
-	private final int INITIAL_ANTS = 10; // the number of ants at the beginning of the game
+	private final int INITIAL_ANTS = 2; // the number of ants at the beginning of the game
+	private Mesh[] antMesh;
 	private int food;
 	private int material;
 	private ArrayList<AntObject> ants;
 
-	public NestObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) {
+	public NestObject(Vector3f position, Vector3f rotation, Vector3f scalar, Mesh[] meshes) throws Exception {
 		super(position, rotation, scalar, meshes);
 		food = 0;
 		material = 0;
 		ants = new ArrayList<AntObject>();
+		antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
 		generateAnts(INITIAL_ANTS);
 	}
 
@@ -27,14 +29,14 @@ public class NestObject extends GameObject {
 		food = 0;
 		material = 0;
 		ants = new ArrayList<AntObject>();
+		antMesh = StaticModelLoader.load("resources/models/testmodels/Ant_fbx.fbx", "/textures/antskin.jpg");
 		generateAnts(INITIAL_ANTS);
 	}
   
 	public void generateAnts (int numberOfAnts) {
 		for (int i = 0; i < numberOfAnts; i++) {
 			ants.add(new AntObject(
-					this.getPosition(), this.getRotation(),
-					this.getScalar(), this.getMeshes(), this, false));
+					getRandomNestPosition(), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, this, true));
 		}
 	}
 
@@ -107,30 +109,10 @@ public class NestObject extends GameObject {
 		this.material += material;
 	}
 
-	public static void main(String[] args) {
-		Vector3f vector = new Vector3f(0, 0, 0);
-		Mesh[] meshes = new Mesh[1];
-		NestObject nest = new NestObject(vector, vector, vector, meshes);
-		for (int i = 0; i < nest.ants.size(); i++) {
-			nest.ants.get(i).updateHealth(-10*i);
-			System.out.println(i + ": " + nest.ants.get(i).getHealth());
-		}
-		nest.food += 5;
-		System.out.println(nest.food);
-		nest.feedAnts();
-		System.out.println(nest.food);
-		for (int i = 0; i < nest.ants.size(); i++) {
-			System.out.println(i + ": " + nest.ants.get(i).getHealth());
-		}
-		nest.feedAnts();
-		System.out.println(nest.food);
-		for (int i = 0; i < nest.ants.size(); i++) {
-			System.out.println(i + ": " + nest.ants.get(i).getHealth());
-		}
-		System.out.println("AAAAAA");
-		nest.removeDeadAnts();
-		for (int i = 0; i < nest.ants.size(); i++) {
-			System.out.println(i + ": " + nest.ants.get(i).getHealth());
-		}
+	public Vector3f getRandomNestPosition() {
+		float x = this.getPosition().getX() + (float) Math.random()*4 - 2;
+		float z = this.getPosition().getZ() + (float) Math.random()*4 - 2;
+		
+		return new Vector3f(x, 0, z);
 	}
 }

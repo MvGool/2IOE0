@@ -37,65 +37,50 @@ public class AntBehavior implements Runnable {
 
     public void run() {
         ArrayList<Tile> foundSources = new ArrayList<>();
-        //while (true) {
-        	if (grid.containsResource(foragerAnt.getTile())) {
-        		Tile tile = grid.getTile(foragerAnt.getTile().getX(), foragerAnt.getTile().getY());
-        		if (!foundSources.contains(tile)) {
-        			foundSources.add(tile);
-        		}
-        	}
-        	
-            for (AntObject ant : ants){
-                if (ant.getState() == LeaveRequestState.followForager && !ant.isMoving()) {
-                	if (!foundSources.isEmpty()) {
-                		ant.moveTo(grid, foundSources.get(0));
-                        ant.setState(LeaveRequestState.goToSource);
-                	} else {
-                		ant.moveTo(grid, foragerAnt.getTile());
-                	}
-                } else if (ant.getState() == LeaveRequestState.goToSource && !ant.isMoving()) {
-                	if (grid.containsResource(ant.getTile())) {
-                		Tile source = grid.getTile(ant.getTile().getX(), ant.getTile().getY());
-                		
-                		int foodOverload = ant.addFood(source.getFood());
-	                    int materialOverload = ant.addMaterial(source.getMaterial());
-	                    
-	                    source.setFood(foodOverload);
-	                    source.setMaterial(materialOverload);
-	                    
-	                    ant.moveTo(grid, nest.getTile());
-	                    ant.setState(LeaveRequestState.goToBase);
-                	} else {
-	                    ant.setState(LeaveRequestState.followForager);
-                	}
-                } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
-                	if (ant.getTile().equals(nest.getTile())) {
-	                	nest.setFood(nest.getFood() + ant.getFood());
-	                	ant.setFood(0);
-	                	
-	                	nest.setMaterial(nest.getMaterial() + ant.getMaterial());
-	                	ant.setMaterial(0);
-                	}
+    	if (grid.containsResource(foragerAnt.getTile())) {
+    		Tile tile = grid.getTile(foragerAnt.getTile().getX(), foragerAnt.getTile().getY());
+    		if (!foundSources.contains(tile)) {
+    			foundSources.add(tile);
+    		}
+    	}
+    	
+        for (AntObject ant : ants){
+            if (ant.getState() == LeaveRequestState.followForager && !ant.isMoving()) {
+            	if (!foundSources.isEmpty()) {
+            		ant.moveTo(grid, foundSources.get(0));
+                    ant.setState(LeaveRequestState.goToSource);
+            	} else {
+            		ant.moveTo(grid, foragerAnt.getTile());
+            	}
+            } else if (ant.getState() == LeaveRequestState.goToSource && !ant.isMoving()) {
+            	if (grid.containsResource(ant.getTile())) {
+            		Tile source = grid.getTile(ant.getTile().getX(), ant.getTile().getY());
+            		
+            		int foodOverload = ant.addFood(source.getFood());
+                    int materialOverload = ant.addMaterial(source.getMaterial());
+                    
+                    source.setFood(foodOverload);
+                    source.setMaterial(materialOverload);
+                    
+                    ant.moveTo(grid, nest.getTile());
+                    ant.setState(LeaveRequestState.goToBase);
+            	} else {
+            		if (ant.getTile().equals(foundSources.remove(0))) {
+            			foundSources.remove(0);
+            		}
+                    ant.setState(LeaveRequestState.followForager);
+            	}
+            } else if (ant.getState() == LeaveRequestState.goToBase && !ant.isMoving()) {
+            	if (ant.getTile().equals(nest.getTile())) {
+                	nest.setFood(nest.getFood() + ant.getFood());
+                	ant.setFood(0);
                 	
-                	ant.setState(LeaveRequestState.followForager);
-                }
-            //}
-        }
-    }
-    
-    public void start(){
-        System.out.println("starting");
-        t = new Thread (this);
-        if (t == null) {
-            t = new Thread (this);
-            t.start ();
+                	nest.setMaterial(nest.getMaterial() + ant.getMaterial());
+                	ant.setMaterial(0);
+            	}
+            	
+            	ant.setState(LeaveRequestState.followForager);
+            }
         }
     }
 }
-
-/*class TestThread {
-
-    public static void main(String args[]) throws InterruptedException {
-    	new AntBehavior().start();
-    }
-}*/

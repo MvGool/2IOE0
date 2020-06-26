@@ -205,21 +205,4 @@ public class Astar {
             System.out.println("No possible path");
         }
     }
-
-    /*public static void main(String[] args) {
-    	Tile start = new Tile(0, 0);
-    	Tile goal = new Tile(3, 2);
-    	Grid2D grid = new Grid2D(5);
-    	grid.addObstacle(0,4);
-    	grid.addObstacle(2,2);
-    	grid.addObstacle(3,1);
-    	grid.addObstacle(3,3);
-    	grid.addObstacle(2,1);
-    	grid.addObstacle(2,3);
-    	Astar aStar = new Astar(grid, start, goal);
-        aStar.display();
-        aStar.run();
-        aStar.displayScores();
-        aStar.displaySolution();
-    }*/
 }

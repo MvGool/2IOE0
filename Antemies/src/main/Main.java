@@ -75,7 +75,8 @@ public class Main implements Runnable {
 	
 	private void handleInputs() {
 		if (Input.isKeyDown(GLFW_KEY_F11)) window.setFullscreen(!window.isFullscreen());
-		if (Input.isKeyDown(GLFW_KEY_F1) && !holdF1) {
+		// first person only used for debugging
+		/*if (Input.isKeyDown(GLFW_KEY_F1) && !holdF1) {
 			holdF1 = true;
 		}
 		
@@ -87,7 +88,7 @@ public class Main implements Runnable {
 			}
 			
 			holdF1 = false;
-		}
+		}*/
 		
 		if (cameraMode == "firstperson") {
 			window.mouseState(true);

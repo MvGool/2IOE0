@@ -12,7 +12,7 @@ import main.Astar;
 import main.AntBehavior.LeaveRequestState;
 
 public class AntObject extends GameObject implements Comparable<AntObject> {
-	private float speed = 0.1f; // probably within [0, 2]
+	private float speed = 0.5f; // probably within [0, 2]
 	private boolean move = false;
 	private Spline spline;
 	private CubicPolynomial[] functions;
