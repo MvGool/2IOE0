@@ -40,6 +40,8 @@ public class World {
 	private NestObject userNest;
 	private NestObject enemyNest;
 	private AnimGameObject ericModel;
+	
+	private Clock clock = new Clock(userNest, enemyNest);
 
 	private static float scaleFood = 0.1f, scaleMaterial = 0.08f, scaleRock = 1f;
 	private static ArrayList<Mesh> foodSources = new ArrayList<>();
@@ -101,11 +103,11 @@ public class World {
 			System.out.println(e.getMessage());
 		}
     
-		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest);
-		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest);
+		userAnt = new AntObject(new Vector3f(0.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, true);
+		enemyAnt = new AntObject(new Vector3f(-5.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, true);
 		
-		userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest));
-		enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest));
+		userColony.add(new AntObject(new Vector3f(1.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, userNest, true));
+		enemyColony.add(new AntObject(new Vector3f(-6.5f, 0.1f, -0.5f), new Vector3f(0, 0, 0), new Vector3f(.0001f, .0001f, .0001f), antMesh, enemyNest, true));
 		
 		userColonyBehavior = new AntBehavior(grid, userColony, userAnt, userNest);
 		enemyColonyBehavior = new AntBehavior(grid, enemyColony, enemyAnt, enemyNest);
